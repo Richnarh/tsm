@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <div class="row wow zoomIn">
+        <div class="col-lg-4">
+            <h:form id="orderItemForm">
+                <h:panelGrid columns="2" class="spaced-form"> 
+                    <span>#{msg.product} <span class="text-danger">*</span> </span>
+                    <p:selectOneMenu class="col" value="#{inventoryController.inventoryItem.product}" 
+                                     filter="true" filterMatchMode="contains" required="true">
+                        <f:selectItem itemLabel="#{msg.choose}"/>
+                        <f:selectItems value="#{usercommonBeans.productList}"/>
+                    </p:selectOneMenu>
+                    
+                    <span>#{msg.package} <span class="text-danger">*</span> </span>
+                    <p:selectOneMenu class="col" value="#{inventoryController.inventoryItem.unitMeasurement}" 
+                                     filter="true" filterMatchMode="contains" required="true">
+                        <f:selectItem itemLabel="#{msg.choose}"/>
+                        <f:selectItems value="#{usercommonBeans.unitMeasurementList}"/>
+                    </p:selectOneMenu>
+
+                    <span>#{msg.quantity} <span class="text-danger">*</span> </span>
+                    <p:inputText value="#{inventoryController.inventoryItem.quantity}" required="true"/>
+
+                    <span>Cost Price <span class="text-danger">*</span> </span>
+                    <p:inputText value="#{inventoryController.inventoryItem.costPrice}" required="true"/>
+
+                    <span>Expired Date</span>
+                    <p:datePicker pattern="#{msg.formatted_date}" monthNavigator="true" yearNavigator="true" value="#{inventoryController.inventoryItem.expiryDate}" yearRange="#{msg.year_range}"/>
+
+                </h:panelGrid>
+
+                <div class="py-3">
+                    <p:commandButton value="Add to cart" icon="#{msg.add_icon}" class="kbtn-info mx-3" action="#{inventoryController.addInventoryItem()}" update=":inventoryItemTable, orderItemForm"/>
+
+                    <p:commandButton value="#{msg.clear}" class="kbtn-default ml-3" icon="#{msg.clear_icon}" immediate="true" action="#{inventoryController.clearInventoryItem()}" update="@form"/>
+                </div>
+            </h:form>
+        </div>
+        <div class="col-lg-8">
+            <h:form id="inventoryItemTable">
+                <p:dataTable value="#{inventoryController.inventoryItemList}" var="inventoryItem" 
+                             paginator="true" paginatorPosition="bottom" rows="6">
+                    <p:column style="width: 3px">
+                        <p:rowToggler/>
+                    </p:column>
+
+                    <p:rowExpansion>
+                        <p:panelGrid columns="2">
+                            <span>Item ID</span>
+                            <h:outputText value="#{inventoryItem.referenceNo}"/>
+                            
+                            <span>Expired Date</span>
+                            <h:outputText value="#{inventoryItem.expiryDate}">
+                                <f:convertDateTime pattern="#{msg.formated_yr_mnt}" type="localDate"/>
+                            </h:outputText>
+                        </p:panelGrid>
+                    </p:rowExpansion>
+
+                    <p:column headerText="#{msg.product}" style="width: 140px;">
+                        #{inventoryItem.product.productName}
+                    </p:column>
+                    
+                    <p:column headerText="#{msg.package}" style="width: 60px;">
+                        #{inventoryItem.unitMeasurement.units}
+                    </p:column>
+                    
+                    <p:column headerText="#{msg.qty}" class="text-end" style="width: 30px;">
+                        #{inventoryItem.quantity}
+                    </p:column>
+
+                    <p:column headerText="#{msg.cost}" class="text-end" style="width: 50px;">
+                        <h:outputText value="#{inventoryItem.costPrice}">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </p:column>
+                                        
+                    <p:column headerText="Total" class="text-end" style="width: 50px;">
+                        <h:outputText value="#{inventoryItem.costPrice * inventoryItem.quantity}">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="#{msg.action}" style="width: 80px;">
+                        <p:menuButton value="#{msg.manage}">
+                            <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{inventoryController.editInventoryItem(inventoryItem)}" immediate="true" update=":orderItemForm, @form"/>
+                            <p:menuitem icon="#{msg.clear_icon}" class="text-danger" value="#{msg.remove}" action="#{inventoryController.removeInventoryItem(inventoryItem)}" immediate="true" update="@form"/>
+                        </p:menuButton>
+                    </p:column>
+                </p:dataTable>
+
+                <center class="py-3 mt-2">
+                    <h:panelGrid columns="2">
+                        <span>Total Amount</span>
+                        <h:outputText value="#{inventoryController.totalAmount}" class="field-shade">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </h:panelGrid>
+                </center>
+            </h:form>
+            <hr/>
+            <center>
+                <h:form>
+                    <p:commandButton icon="#{msg.check_icon}" value="Save All" action="#{inventoryController.saveAll()}" class="kbtn-success mx-3" update=":inventoryItemTable"/>
+
+                <h:commandButton value="#{msg.close}" class="btn btn-danger btn-sm" immediate="true" action="#{inventoryController.closePage()}">
+                    <p:ajax update=":mainPanel"/>
+                </h:commandButton>
+                </h:form>
+            </center>
+            <br/>
+        </div>
+    </div>
+</html>
+

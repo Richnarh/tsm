@@ -1,0 +1,21 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 4, 2022, 3:55:15 PM
+    Author     : richa
+*/
+
+body{
+  background-image: url("../img/login.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: "Asap", sans-serif;
+}
+.pms-login{
+    border-radius: 5%;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ffffff;
+}

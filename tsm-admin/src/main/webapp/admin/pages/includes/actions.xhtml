@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
+
+    <style>
+        .action-list{
+            list-style-type: none;
+            font-family: sans-serif;
+            font-style: italic;
+            font-weight: bold;
+            text-align: start;
+        }
+    </style>
+    <p:dialog header="Manage Permissions" resizable="true" widgetVar="action" closeOnEscape="true" modal="true" height="150"  width="300">
+        <h:form id="actionForm" class="spaced-form">
+            <small>Click the actions below to enable permission</small>
+            <hr/>
+            <ui:repeat value="#{permissionController.pageActionList}" var="action">
+                <ul class="float-start">
+                    <li class="action-list"><h:commandLink class="ptext-link action-name" action="#{permissionController.activateAction(action)}" value="#{action.actionName}"/></li>
+                </ul>
+            </ui:repeat>
+            </h:form>
+    </p:dialog>
+</html>
+

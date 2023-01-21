@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <title>#{msg.title}</title> 
+        <link href="https://fonts.gstatic.com" rel="preconnect"/>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet"/>
+
+        <!-- Vendor CSS Files -->
+        <link href="#{application.contextPath}/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+        <link href="#{application.contextPath}/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet"/>
+        <link href="#{application.contextPath}/assets/vendor/remixicon/remixicon.css" rel="stylesheet"/>
+        <link href="#{application.contextPath}/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet"/>
+
+        <link href="#{application.contextPath}/assets/css/style.css" rel="stylesheet"/>   
+        <link href="#{application.contextPath}/assets/css/main.css" rel="stylesheet"/>  
+
+        <style>
+            .fixed-bottom {
+                z-index: 0 !important;
+            }
+            .ptext-link{
+                color: #17a2b8 !important;
+            }
+            .ptext-link:hover{
+                text-decoration: underline;
+            }
+            .header-nav .nav-profile {
+                color: #012970;
+                margin-right: 2em !important;;
+            }
+        </style>
+    </h:head>
+
+    <h:body>
+
+        <h:panelGroup>
+            <ui:include src="menu/top-nav.xhtml"/>
+        </h:panelGroup>
+
+        <h:panelGroup>
+            <ui:include src="menu/sidebar.xhtml"/>
+        </h:panelGroup>
+
+        <main id="main" class="main">
+            <div class="pagetitle">
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#{application.contextPath}/secured/index.xhtml">Home</a></li>
+                        <li class="breadcrumb-item active">
+                            <ui:insert name="pageTitle">
+                                Default Title
+                            </ui:insert>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+            <hr/>
+            <section class="section dashboard">
+
+                <p:messages globalOnly="true">
+                    <p:autoUpdate/>
+                </p:messages>
+
+                <ui:insert name="pageContent">
+                    Index Page
+                </ui:insert>
+
+            </section>
+        </main>
+
+<!--        <h:panelGroup>
+            <ui:include src="menu/footer.xhtml"/>
+        </h:panelGroup>-->
+
+        <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+        <!-- Vendor JS Files -->
+        <script src="#{application.contextPath}/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+        <script src="#{application.contextPath}/assets/vendor/tinymce/tinymce.min.js"></script>
+
+        <!-- Template Main JS File -->
+        <script src="#{application.contextPath}/assets/js/main.js"></script>
+    </h:body>
+</html>
+

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"> 
+
+    <h:body>
+        <ui:composition template="../templatesUI.xhtml">
+            <ui:define name="pageTitle">
+                Tax
+            </ui:define>
+            <ui:define name="pageContent">
+                <div class="card wow zoomIn">
+                    <div class="card-header">Tax</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h:form id="taxForm" class="spaced-form">
+                                    <h:panelGrid columns="2">
+                                        <span>Tax Name</span>
+                                        <p:inputText required="true" value="#{taxController.tax.taxName}"/>
+                                        
+                                        <span>Tax Rate</span>
+                                        <p:inputText required="true" value="#{taxController.tax.taxRate}"/>
+                                    </h:panelGrid>
+
+                                    <div class="pt-3">
+                                        <p:commandButton class="kbtn-success mr-3" value="#{taxController.optionText}" update="@form, :taxTable"
+                                                         action="#{taxController.saveTax()}" />
+
+                                        <p:commandButton class="kbtn-cancel" value="#{msg.clear}" immediate="true"
+                                                         action="#{taxController.clearTax()}" update="@form"/>
+                                    </div>
+                                </h:form>
+                            </div>
+
+                            <div class="col-md-8">
+                                <h:form id="taxTable">
+                                    <p:dataTable value="#{taxController.taxList}" var="tax">
+                                        <p:column headerText="Tax Name">
+                                            #{tax.taxName}
+                                        </p:column>
+                                                                                
+                                        <p:column headerText="Tax Rate">
+                                            #{tax.taxRate} %
+                                        </p:column>
+                                                                                
+                                        <p:column headerText="#{msg.action}" exportable="false" style="width: 80px;">
+                                            <p:commandButton styleClass="kbtn-info" value="#{msg.edit}" immediate="true" update="@form, :taxForm"
+                                                             action="#{taxController.editTax(tax)}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.action}" exportable="false" style="width: 100px;">
+                                            <p:commandButton styleClass="kbtn-danger" value="#{msg.delete}"  action="#{taxController.deleteTax(tax)}" 
+                                                             onclick="return confirm('#{msg.delete_message}')" update="@form"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

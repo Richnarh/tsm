@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+
+    <h:body>
+        <ui:composition template="../templatesUI.xhtml">
+            <ui:define name="pageTitle">
+                Price Upload
+            </ui:define>
+
+            <ui:define name="pageContent">
+                <h:panelGroup id="mainPanel">
+                    <div class="card mb-5 wow zoomIn">
+                        <div class="container-fluid">
+                            <div class="card-header">Upload #{msg.product} Prices</div>
+                            <h:panelGroup id="mainGroup">
+                                <div class="col-md-12 mx-auto py-3">
+                                    <h:form enctype="multipart/form-data">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                                <p:fileUpload value="#{priceUploadController.file}" mode="simple" skinSimple="true" required="true"/>
+                                                <p:commandButton class="kbtn-default mx-2" action="#{priceUploadController.uploadPrice()}" ajax="false" value="Upload Data"/>
+                                                
+                                                <h:outputLabel class="mx-2" value="New Order"/>
+                                                <p:selectBooleanCheckbox value="#{priceUploadController.newPurchaseOrder}">
+                                                    <p:ajax update="@form"/>
+                                                </p:selectBooleanCheckbox>
+                                                
+                                                <p:selectOneMenu class="mx-2" rendered="#{priceUploadController.newPurchaseOrder == false}" value="#{priceUploadController.selectedPurchaseOrder}">
+                                                    <f:selectItem itemLabel="#{msg.choose} Order"/>
+                                                    <f:selectItems value="#{usercommonBeans.purchaseOrderList}"/>
+                                                </p:selectOneMenu>
+                                            </div> 
+                                            <div class="col-md-2">
+                                                <span class="shadow-sm faded-shade">Count: #{priceUploadController.packagePriceList.size()}</span>
+                                            </div>
+                                        </div>
+                                    </h:form>
+                                </div>
+
+                                <h:form id="uploadTable" class="mb-3 wow">
+                                    <p:dataTable value="#{priceUploadController.packagePriceList}" reflow="true" var="packagePrice"
+                                                 scrollable="true" scrollHeight="400">
+
+                                        <p:column headerText="#{msg.product}">
+                                            #{packagePrice.productName}
+                                        </p:column>
+
+                                        <p:column headerText="Product Type">
+                                            #{packagePrice.productType}
+                                        </p:column>
+
+                                        <p:column headerText="Packages">
+                                            #{packagePrice.packaging}
+                                        </p:column>
+
+                                        <p:column headerText="Units M.">
+                                            #{packagePrice.unitsMeasurement}
+                                        </p:column>
+
+                                        <p:column headerText="Qty purchased" class="text-end">
+                                            #{packagePrice.qtyPurchased}
+                                        </p:column>
+
+                                        <p:column headerText="Units in pkg" class="text-end">
+                                            #{packagePrice.unitsInPackage}
+                                        </p:column>
+
+                                        <p:column headerText="Purchased Price" class="text-end">
+                                            <h:outputText value="#{packagePrice.purchasedPrice}">
+                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="Selling Price" class="text-end">
+                                            <h:outputText value="#{packagePrice.sellingPrice}">
+                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                    <div class="p-2">
+                                        <p:commandButton id="clear" class="kbtn-cancel mx-2" value="#{msg.clear}" action="#{priceUploadController.clear()}" update="@form"/>
+
+                                        <p:commandButton id="save" class="kbtn-success" icon="#{msg.check_icon}" value="Save Changes" action="#{priceUploadController.saveUpload()}" update="@form"/>
+                                    </div>
+
+                                </h:form>
+                                <p:blockUI block="mainGroup" trigger=":uploadTable:clear, :uploadTable:save">
+                                    <img src="#{application.contextPath}/assets/img/loading.gif" height="75px"/>
+                                    <p><small>Please wait...</small></p>
+                                </p:blockUI>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

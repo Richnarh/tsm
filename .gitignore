@@ -1,0 +1,11 @@
+.classpath
+.project
+.settings/
+tsm-web/nb-configuration.xml
+tsm-admin/nb-configuration.xml
+
+/tsm-web/target/
+/tsm-admin/target/
+*/tsm-web/target/*
+*/tsm-admin/target/*
+/tsm-entities/target/

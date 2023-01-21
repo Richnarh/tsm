@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+
+    <h:body>
+        <ui:composition template="../templatesUI.xhtml">
+            <ui:define name="pageTitle">
+               App Page Setup
+            </ui:define>
+
+            <ui:define name="pageContent">
+                <div class="col-md-12">
+                    <!--<div class="row">-->
+                        <div class="col-md-4">
+                            <h:form id="appPageForm" class="spaced-form">
+                                <h:panelGrid columns="2">
+                                    <span>#{msg.page} Code <span class="text-danger">*</span></span>
+                                    <p:inputText value="#{appPageController.appPage.pageCode}" required="true"/>
+                                    
+                                    <span>#{msg.page} Name <span class="text-danger">*</span></span>
+                                    <p:inputText value="#{appPageController.appPage.pageName}" required="true"/>
+
+                                    <span>#{msg.page} URL <span class="text-danger">*</span></span>
+                                    <p:inputText value="#{appPageController.appPage.pageUrl}" required="true"/>
+
+                                    <span>#{msg.page} Re-Order <span class="text-danger">*</span></span>
+                                    <p:inputText value="#{appPageController.appPage.reorder}" required="true"/>
+
+                                    <span>#{msg.page} #{msg.status} <span class="text-danger">*</span></span>
+                                    <p:selectOneMenu value="#{appPageController.appPage.pageStatus}" required="true">
+                                        <f:selectItem itemLabel="#{msg.choose}"/>
+                                        <f:selectItems value="#{commonClass.statusList}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+                                <br/>
+                                <p:commandButton icon="#{msg.check_icon_circle}" class="kbtn-success mx-3" value="#{msg.save}" action="#{appPageController.savePage()}" update="@form, :appPageTable"/>
+                                <p:commandButton icon="#{msg.clear_icon}" class="kbtn-default" value="#{msg.clear}" immediate="true" action="#{appPageController.clearPage()}" update="@form"/>
+                            </h:form>
+                        </div>
+                    <hr/>
+                        <div class="col-md-12">
+                            <h:form id="appPageTable">
+                                <p:dataTable value="#{appPageController.appPageList}" var="appPage" paginator="true" paginatorPosition="bottom" rows="12">
+                                     <p:column style="width: 20px;">
+                                            <p:rowToggler/>
+                                        </p:column>
+                                     <p:rowExpansion>
+                                         <h:panelGrid columns="2">
+                                             <span>Ref.</span>
+                                             <h:outputText value="#{appPage.refNo}"/>
+                                         </h:panelGrid>
+                                     </p:rowExpansion>
+                                    <p:column headerText="No." style="width: 20px;">
+                                        #{appPage.reorder}
+                                    </p:column>
+                                    <p:column headerText="#{msg.page} Code" style="width: 130px;">
+                                        #{appPage.pageCode}
+                                    </p:column>
+                                    <p:column headerText="#{msg.page} Name" style="width: 150px;">
+                                        #{appPage.pageName}
+                                    </p:column>
+                                    <p:column headerText="#{msg.page} URL">
+                                        #{appPage.pageUrl}
+                                    </p:column>
+                                    
+                                    <p:column headerText="#{msg.page} #{msg.status}" style="width: 80px;">
+                                        #{appPage.pageStatus.label}
+                                    </p:column>
+                                    
+                                      <p:column headerText="#{msg.action}" style="width: 80px;">
+                                            <p:menuButton value="#{msg.manage}">
+                                                <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{appPageController.editPage(appPage)}" immediate="true" update=":appPageForm"/>
+                                                <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}"  action="#{appPageController.deletePage(appPage)}" immediate="true" update="@form"/>
+                                            </p:menuButton>
+                                        </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    <!--</div>-->
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

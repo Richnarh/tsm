@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <h:body>
+        <ui:composition template="../templatesUI.xhtml">
+            <ui:define name="pageTitle">
+                Units Measurement
+            </ui:define>
+
+            <ui:define name="pageContent">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h:form id="unitMeasurementForm" class="spaced-form">
+                                <h:panelGrid columns="2">
+                                    <span>Units Name</span>
+                                    <p:inputText value="#{unitMeasurementController.unitMeasurement.units}" required="true"/>
+
+                                </h:panelGrid>
+                                <br/>
+                                <p:commandButton icon="#{msg.check_icon_circle}" class="kbtn-success mx-3" value="#{msg.save}" action="#{unitMeasurementController.saveUnitMeasurement()}" update="@form, :unitMeasurementTable"/>
+                                <p:commandButton icon="#{msg.clear_icon}" class="kbtn-default" value="#{msg.clear}" immediate="true" action="#{unitMeasurementController.clearUnitMeasurement()}" update="@form"/>
+                            </h:form>
+                        </div>
+                        <div class="col-md-8">
+                            <h:form id="unitMeasurementTable">
+                                <p:dataTable value="#{unitMeasurementController.unitMeasurementList}" var="unitMeasurement" paginator="true" paginatorPosition="bottom" rows="12">
+                                      <p:column exportable="false" style="width: 37px;">
+                                        <p:rowToggler/>
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <h:panelGrid columns="2">
+                                            <span>#{msg.created_date}</span>
+                                            <h:outputText value="#{unitMeasurement.createdDate}">
+                                                <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                                            </h:outputText>
+
+                                            <span>Ref. No.</span>
+                                            <h:outputText value="#{unitMeasurement.refNo}"/>
+
+                                        </h:panelGrid>
+                                    </p:rowExpansion>
+                                    <p:column headerText="U N I T S">
+                                        #{unitMeasurement.units}
+                                    </p:column>
+                                    <p:column headerText="#{msg.action}" style="width: 70px;">
+                                        <p:commandButton value="#{msg.edit}" class="kbtn-info" action="#{unitMeasurementController.editUnitMeasurement(unitMeasurement)}" update=":unitMeasurementForm"/>
+                                    </p:column>
+
+                                    <p:column headerText="#{msg.action}" style="width: 80px;">
+                                        <p:commandButton value="#{msg.delete}" class="kbtn-danger" onclick="return confirm('#{msg.delete_message}')" action="#{unitMeasurementController.deleteUnitMeasurement(unitMeasurement)}" update="@form"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

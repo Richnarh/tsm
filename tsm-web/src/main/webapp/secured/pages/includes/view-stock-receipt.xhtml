@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
+
+    <p:dialog header="view Stock Receipt" resizable="true" widgetVar="viewStockReceipt" closeOnEscape="true" modal="true" height="560" width="1260">
+
+        <h:panelGrid columns="8">
+           
+                <span>Receipt Code</span>
+                <h:outputText class="field-shade" value="#{stockReceiptController.stockReceipt.purchaseOrder.orderCode}"/>
+
+                <span>#{msg.date}</span>
+                <h:outputText class="field-shade" value="#{stockReceiptController.stockReceipt.purchaseOrder.purchasedDate}">
+                    <f:convertDateTime type="localDate" pattern="#{msg.formatted_date}"/>
+                </h:outputText>
+                
+                <span>#{msg.total_amount}</span>
+                <h:outputText class="field-shade" value="#{stockReceiptController.stockReceipt.totalAmount}">
+                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                </h:outputText>
+
+        </h:panelGrid>
+
+        <br/>
+        <ui:remove>
+            
+        <h:form class="spaced-form">
+            <p:dataTable value="#{stockReceiptController.viewStockList}" var="stockItem" scrollHeight="500" scrollable="true">
+                <p:column style="width: 10px;">
+                    <p:rowToggler/>
+                </p:column>
+
+                <p:rowExpansion>
+                    <h:panelGrid columns="2">
+                        <span>#{msg.id}</span>
+                        <h:outputText value="#{stockItem.id}"/>
+                    </h:panelGrid>
+                </p:rowExpansion>
+
+                <p:column headerText="Code" style="width: 100px;">
+                    <h:outputText value="#{stockItem.refNo}"/>
+                </p:column>
+
+                <p:column headerText="#{msg.product}">
+                    <h:outputText value="#{stockItem.productName}"/>
+                </p:column>
+
+                <p:column headerText="#{msg.package}" style="width: 130px;">
+                    <h:outputText value="#{stockItem.productPackage}"/>
+                </p:column>
+
+                <p:column headerText="#{msg.quantity}" style="width: 100px;" class="text-end">
+                    <h:outputText value="#{stockItem.pkgQuantity}"/>
+                </p:column>
+                
+                <p:column headerText="#{msg.package} Factor" style="width: 100px;" class="text-end">
+                    <h:outputText value="#{stockItem.packageFactor}"/>
+                </p:column>
+
+                <p:column headerText="#{msg.cost_price}" class="text-end" style="width: 100px;">
+                    <h:outputText value="#{stockItem.costPrice}">
+                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                    </h:outputText>
+                </p:column>
+                
+            </p:dataTable>
+            
+            <br/>
+            <center>
+                <p:commandButton icon="#{msg.close_icon}" immediate="true" class="kbtn-danger" value="#{msg.close}" update="@form" oncomplete="PF('viewStockReceipt').hide();"/>
+            </center>
+        </h:form>
+        </ui:remove>
+    </p:dialog>
+</html>
+

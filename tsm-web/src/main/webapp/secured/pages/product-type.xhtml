@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"> 
+
+    <h:body>
+        <ui:composition template="../templatesUI.xhtml">
+            <ui:define name="pageTitle">
+                Product Type
+            </ui:define>
+            <ui:define name="pageContent">
+                <div class="card wow zoomIn">
+                    <div class="card-header">Create Product Type</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h:form id="productTypeForm" class="spaced-form">
+                                    <h:panelGrid columns="2">
+                                        <span>Product Type Name</span>
+                                        <p:inputText required="true" value="#{productTypeController.productType.productTypeName}"/>
+                                    </h:panelGrid>
+
+                                    <div class="pt-3">
+                                        <p:commandButton class="kbtn-success mr-3" value="#{productTypeController.optionText}" update="@form, :productTypeTable"
+                                                         action="#{productTypeController.saveProductType()}" />
+
+                                        <p:commandButton class="kbtn-cancel" value="#{msg.clear}" immediate="true"
+                                                         action="#{productTypeController.clearProductType()}" update="@form"/>
+                                    </div>
+                                </h:form>
+                            </div>
+
+                            <div class="col-md-8">
+                                <h:form id="productTypeTable">
+                                    <p:dataTable value="#{productTypeController.productTypeList}" var="productType" scrollable="true" scrollHeight="300">
+                                        <p:column headerText="Type Name">
+                                            #{productType.productTypeName}
+                                        </p:column>
+                                                                                
+                                        <p:column headerText="#{msg.action}" exportable="false" style="width: 80px;">
+                                            <p:commandButton styleClass="kbtn-info" value="#{msg.edit}" immediate="true" update="@form, :productTypeForm"
+                                                             action="#{productTypeController.editProductType(productType)}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.action}" exportable="false" style="width: 100px;">
+                                            <p:commandButton styleClass="kbtn-danger" value="#{msg.delete}"  action="#{productTypeController.deleteProductType(productType)}" 
+                                                             onclick="return confirm('#{msg.delete_message}')" update="@form"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

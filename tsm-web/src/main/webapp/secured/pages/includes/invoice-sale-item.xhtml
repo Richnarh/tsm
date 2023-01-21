@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
+
+    <div class="container">
+        <h:form id="invoiceItemForm">    
+            <div class="row">
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span>#{msg.customer} <span class="text-danger">*</span></span>                                
+                            <h:selectOneMenu class="form-control" value="#{salesController.sales.customer}" required="true">
+                                <f:selectItem itemLabel="#{msg.choose} Customer"/>
+                                <f:selectItems value="#{usercommonBeans.customerList}"/>
+
+                                <p:ajax listener="#{salesController.selectedCustomerType()}" update="@form"/>
+                            </h:selectOneMenu>
+                            
+                            <span>#{msg.payment_method}</span>                                
+                            <h:selectOneMenu class="form-control" value="#{salesController.sales.paymentMethod}">
+                                <f:selectItem itemLabel="#{msg.choose}"/>
+                                <f:selectItems value="#{commonClass.paymentMethodList}"/>
+                            </h:selectOneMenu>
+                            
+                            <br/>
+                            <span class="mx-2">Proforma Invoice</span>
+                            <p:selectBooleanCheckbox value="#{salesController.sales.isProformaInvoice}"/>
+                        </div>
+                        <div class="col-md-4">
+                            <h:panelGroup id="customerType" rendered="#{salesController.enableType == true}">
+                                <span class="mx-2">Name</span>
+                                <h:inputText class="form-control" value="#{salesController.customerName}"/>
+
+                                <span class="mx-2">Phone #</span>
+                                <h:inputText class="form-control" value="#{salesController.phoneNumber}"/>
+
+                                <span class="mx-2">Address</span>
+                                <h:inputText class="form-control" value="#{salesController.address}"/>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="col-lg-4">      
+                    <ui:include src="item-form.xhtml"/>
+                </div>
+                <div class="col-lg-8">
+                    <table class="table">
+                    <tr>
+                        <th>Package</th>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                    <tbody>
+                        <ui:repeat value="#{salesController.saleItemList}" var="saleItem" >
+                            <tr>
+                                <td>#{saleItem.productPackage.unitMeasurement.units}</td>
+                                <td>#{saleItem.stockReceiptItem.product.productName}</td>
+                                <td>#{saleItem.quantity}</td>
+                                <td>
+                                    <h:outputText value="#{saleItem.unitPrice}">
+                                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                    </h:outputText>
+                                </td>
+                                <td>
+                                    <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
+                                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                    </h:outputText>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                    </tbody>
+                </table>
+                
+                    <center class="py-3 mt-2">
+                        <h:panelGrid columns="2">
+                            <span>Total Amount</span>
+                            <h:outputText value="#{salesController.totalAmount}" class="field-shade">
+                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                            </h:outputText>
+                        </h:panelGrid>
+                    </center>
+                    <hr/>
+                    <center>
+                        <p:commandButton icon="#{msg.check_icon}" value="Process and Save Transaction" action="#{salesController.saveAll()}" class="kbtn-success mr-5" immediate="true" ajax="false" update="@form"/>
+                        <p:commandButton value="#{msg.clear} All" class="kbtn-default mx-3" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form"/>
+                        <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{salesController.closePage()}">
+                            <p:ajax update="@form,:mainPanel"/>
+                        </h:commandButton>
+                    </center>
+                    <br/>
+                </div>
+            </div>
+        </h:form>
+    </div>
+</html>
+

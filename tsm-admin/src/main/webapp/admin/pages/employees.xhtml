@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <h:body>
+        <ui:composition template="../templatesUI.xhtml">
+            <ui:define name="pageTitle">
+                User Account
+            </ui:define>
+
+            <ui:define name="pageContent">
+                <div class="card shadow-sm">
+                    <h5 class="card-header">Register new employee</h5>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h:form id="accountForm">
+                                    <h:panelGrid columns="4" class="spaced-form">
+                                        <span>Branch<span class="text-danger">*</span></span>
+                                        <p:selectOneMenu class="col" value="#{userAccountController.userAccount.companyBranch}" filter="true" filterMatchMode="contains" required="true">
+                                            <f:selectItem itemLabel="#{msg.choose}"/>
+                                            <f:selectItems value="#{userCommons.companyBranchList}"/>
+                                        </p:selectOneMenu>
+
+                                        <span>#{msg.fullname} <span class="text-danger">*</span></span>
+                                        <p:inputText value="#{userAccountController.userAccount.fullname}" required="true"/>
+
+                                        <span>Email<span class="text-danger">*</span></span>
+                                        <p:inputText value="#{userAccountController.userAccount.email}" required="true"/>
+
+                                        <span>#{msg.phone}</span>
+                                        <p:inputText value="#{userAccountController.userAccount.phoneNumber}"/>
+
+                                        <span>Status</span>
+                                        <p:selectOneMenu class="col" value="#{userAccountController.userAccount.status}" required="true">
+                                            <f:selectItem itemLabel="#{msg.choose}"/>
+                                            <f:selectItems value="#{commonClass.statusList}"/>
+                                        </p:selectOneMenu>
+
+                                        <span>#{msg.access_level}</span>
+                                        <p:selectOneMenu class="col" value="#{userAccountController.userAccount.accessLevel}">
+                                            <f:selectItem itemLabel="#{msg.choose}"/>
+                                            <f:selectItems value="#{commonClass.accessLevelList}"/>
+                                        </p:selectOneMenu>
+
+                                    </h:panelGrid>
+                                    <hr/>
+                                    <center>
+                                        <p:commandButton class="kbtn-success mx-2" value="#{userAccountController.optionText}" action="#{userAccountController.saveUserAccount()}" update="@form, :accountTable"/>
+                                        <p:commandButton class="kbtn-default" value="Clear" icon="#{msg.clear_icon}" action="#{userAccountController.clear()}" immediate="true" ajax="false"/>
+                                    </center>
+                                </h:form>
+                            </div>
+                            <div class="col-md-6 mt-2">
+                                <h:form id="authForm">
+                                    <p:panel header="Set password for #{userAccountController.userAccount.fullname}" class="float-right">
+                                        <h:panelGrid columns="2">
+                                            <span>Username</span>
+                                            <h:outputText value="#{userAccountController.userAccount.username}" class="field-shade"/>
+                                            <span>Password</span>
+                                            <p:password required="true" value="#{userAccountController.userAccount.password}"/>
+                                            <br/><br/>
+                                        </h:panelGrid>
+                                        <h:commandButton class="btn btn-secondary btn-sm mx-2" value="#{msg.save}" action="#{userAccountController.updatePassword()}"/>
+                                        <h:commandButton class="btn btn-danger btn-sm" value="#{msg.clear}" immediate="true" action="#{userAccountController.clear()}"/>
+                                    </p:panel>
+                                </h:form>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div>
+                            <h:form id="accountTable">
+                                <p:dataTable value="#{userAccountController.userAccountList}" var="userAccount" scrollable="true" scrollHeight="400">
+                                    <p:column style="width: 25px;">
+                                        <p:rowToggler/>
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <h:panelGrid columns="2">
+                                            <span>#{msg.created_date}</span>
+                                            <h:outputText value="#{userAccount.createdDate}">
+                                                <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                                            </h:outputText>
+
+                                        </h:panelGrid>
+                                    </p:rowExpansion>
+
+                                    <p:column headerText="Full name">
+                                        #{userAccount.fullname}
+                                    </p:column>
+
+                                    <p:column headerText="Phone No.">
+                                        #{userAccount.phoneNumber}
+                                    </p:column>
+
+                                    <p:column headerText="Email">
+                                        #{userAccount.email}
+                                    </p:column>
+
+                                    <p:column headerText="#{msg.status}">
+                                        #{userAccount.status}
+                                    </p:column>
+                                    <p:column headerText="#{msg.action}" style="width:100px">
+                                        <p:menuButton value="#{msg.choose}">
+                                            <p:menuitem icon="#{msg.cog_icon}" value="#{msg.edit}" action="#{userAccountController.editUserAccount(userAccount)}" update=":accountForm, :authForm"/>
+                                            <p:menuitem icon="#{msg.delete_icon}" value="#{msg.delete}" action="#{userAccountController.deleteUserAccount(userAccount)}" update="@form"/>
+                                        </p:menuButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+
