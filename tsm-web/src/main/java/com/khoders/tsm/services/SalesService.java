@@ -13,6 +13,9 @@ import com.khoders.tsm.enums.CustomerType;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
+import com.khoders.tsm.entities.Product;
+import com.khoders.tsm.entities.ProductPackage;
+import com.khoders.tsm.entities.UnitMeasurement;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -137,5 +140,35 @@ public class SalesService
         }
         return Collections.emptyList();
     }
-
+   public List<ProductPackage> queryPackagePrice(Product product)
+    {
+        try
+        {
+            return crudApi.getEm().createQuery("SELECT e FROM ProductPackage e WHERE e.product =?1", ProductPackage.class)
+                    .setParameter(1, product)
+                    .getResultList();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+    
+    
+    public double queryPackagePrice(UnitMeasurement unitMeasurement, Product product)
+    {
+        try
+        {
+            return crudApi.getEm().createQuery("SELECT e FROM ProductPackage e WHERE e.unitMeasurement =?1 AND e.product=?2", ProductPackage.class)
+                    .setParameter(1, unitMeasurement)
+                    .setParameter(2, product)
+                    .getSingleResult().getPackagePrice();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 }
