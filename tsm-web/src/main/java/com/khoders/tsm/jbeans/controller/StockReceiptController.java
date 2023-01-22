@@ -13,6 +13,7 @@ import com.khoders.tsm.services.XtractService;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.enums.ReceiptStatus;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -79,6 +80,17 @@ public class StockReceiptController implements Serializable
             receiptStatus = ReceiptStatus.RECEIVED;
             crudApi.save(stockReceiptItem);
         }
+   }
+   
+   public void finalise(){
+       stockReceiptItemList = inventoryService.getStockReceiptItemList(stockReceipt);
+       double sum=0.0;
+       for (StockReceiptItem item : stockReceiptItemList) {
+           sum += (item.getPkgQuantity() * item.getCostPrice());
+       }
+       stockReceipt.setTotalAmount(sum);
+       
+       crudApi.save(stockReceipt);
    }
     
     public void selectPurchaseOrder(PurchaseOrder purchaseOrder){

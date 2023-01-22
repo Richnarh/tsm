@@ -38,11 +38,11 @@
                                     <h:form>
                                         <h:panelGrid columns="10" class="spaced-form">
 
-                                            <span>Receipt Status</span>
-                                            <h:outputText class="field-shade" value="Pending"/>
+                                            <span>Order Code</span>
+                                            <h:outputText class="field-shade" value="#{stockReceiptController.selectedPurchaseOrder.orderCode}"/>
 
-                                            <span>#{msg.total_amount} #{appSession.companyBranch.companyProfile.currency}</span>
-                                            <h:outputText class="field-shade" value="#{stockReceiptController.selectedPurchaseOrder.totalAmount}">
+                                            <span>Receipt Amount #{appSession.companyBranch.companyProfile.currency}</span>
+                                            <h:outputText class="field-shade" value="#{stockReceiptController.stockReceipt.totalAmount}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
                                             </h:outputText>
 
@@ -102,6 +102,10 @@
                                             </p:column>
 
                                         </p:dataTable>
+                                        
+                                        <center class="py-2">
+                                            <p:commandButton icon="#{msg.check_icon_circle}" action="#{stockReceiptController.finalise()}" class="kbtn-success" ajax="false" value="Finalise"/>
+                                        </center>
                                     </h:form>
                                 </h:panelGroup>
                             </div>
