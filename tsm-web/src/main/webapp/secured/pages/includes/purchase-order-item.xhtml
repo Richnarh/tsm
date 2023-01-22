@@ -15,23 +15,23 @@
                                      filter="true" filterMatchMode="contains" required="true">
                         <f:selectItem itemLabel="#{msg.choose}"/>
                         <f:selectItems value="#{usercommonBeans.productList}"/>
-                        <p:ajax listener="#{purchaseOrderController.packageData()}" update="packages"/>
                     </p:selectOneMenu>
 
                     <span>#{msg.package} <span class="text-danger">*</span> </span>
-                    <p:selectOneMenu id="packages" class="col" value="#{purchaseOrderController.purchaseOrderItem.productPackage}" required="true">
+                    <p:selectOneMenu id="packages" value="#{purchaseOrderController.purchaseOrderItem.unitMeasurement}" style="width: 200px;"
+                                     filter="true" filterMatchMode="contains" required="true">
                         <f:selectItem itemLabel="#{msg.choose}"/>
-                        <f:selectItems value="#{purchaseOrderController.productPackageList}"/>
+                        <f:selectItems value="#{usercommonBeans.unitMeasurementList}"/>
                     </p:selectOneMenu>
 
                     <span>#{msg.quantity} <span class="text-danger">*</span> </span>
-                    <p:inputText value="#{purchaseOrderController.purchaseOrderItem.qtyPurchased}" required="true"/>
+                    <p:inputText value="#{purchaseOrderController.purchaseOrderItem.qtyPurchased}" style="width: 200px;" required="true"/>
 
                     <span>Unit Cost <span class="text-danger">*</span> </span>
-                    <p:inputText value="#{purchaseOrderController.purchaseOrderItem.costPrice}" required="true"/>
+                    <p:inputText value="#{purchaseOrderController.purchaseOrderItem.costPrice}" style="width: 200px;" required="true"/>
 
                     <span>#{msg.description}</span>
-                    <p:inputTextarea value="#{purchaseOrderController.purchaseOrderItem.description}"/>
+                    <p:inputTextarea value="#{purchaseOrderController.purchaseOrderItem.description}" style="width: 200px;"/>
                 </h:panelGrid>
 
                 <div class="py-3">
@@ -51,8 +51,10 @@
 
                     <p:rowExpansion>
                         <p:panelGrid columns="2">
-                            <span>Id</span>
-                            <h:outputText value="#{purchaseOrderItem.id}"/>
+                            <span>#{msg.created_date}</span>
+                            <h:outputText value="#{purchaseOrderItem.createdDate}">
+                                <f:convertDateTime type="localDateTime" pattern="#{msg.formatted_date_time_am_pm}"/>
+                            </h:outputText>
                             
                             <span>Ref No.</span>
                             <h:outputText value="#{purchaseOrderItem.refNo}"/>
@@ -66,29 +68,21 @@
                         #{purchaseOrderItem.product.productName}
                     </p:column>
 
-                    <p:column headerText="#{msg.package}" style="width: 60px;">
-                        #{purchaseOrderItem.productPackage}
+                    <p:column headerText="#{msg.package}" style="width: 70px;">
+                        #{purchaseOrderItem.unitMeasurement.units}
                     </p:column>
 
                     <p:column headerText="#{msg.qty}" class="text-end" style="width: 30px;">
                         #{purchaseOrderItem.qtyPurchased}
                     </p:column>
 
-                    <p:column headerText="#{msg.cost}" class="text-end" style="width: 50px;">
+                    <p:column headerText="#{msg.cost}" class="text-end" style="width: 80px;">
                         <h:outputText value="#{purchaseOrderItem.costPrice}">
                             <f:convertNumber pattern="#{msg.money_pattern}"/>
                         </h:outputText>
                     </p:column>
 
-                    <ui:remove>
-                        <p:column headerText="#{msg.selling}" class="text-end" style="width: 50px;">
-                            <h:outputText value="#{purchaseOrderItem.sellingPrice}">
-                                <f:convertNumber pattern="#{msg.money_pattern}"/>
-                            </h:outputText>
-                        </p:column>
-                    </ui:remove>
-
-                    <p:column headerText="Total" class="text-end" style="width: 50px;">
+                    <p:column headerText="Total" class="text-end" style="width: 90px;">
                         <h:outputText value="#{purchaseOrderItem.costPrice * purchaseOrderItem.qtyPurchased}">
                             <f:convertNumber pattern="#{msg.money_pattern}"/>
                         </h:outputText>
@@ -102,16 +96,14 @@
                     </p:column>
                 </p:dataTable>
 
-                <ui:remove>
-                    <center class="py-3 mt-2">
-                        <h:panelGrid columns="2">
-                            <span>Total Amount</span>
-                            <h:outputText value="#{purchaseOrderController.totalAmount}" class="field-shade">
-                                <f:convertNumber pattern="#{msg.money_pattern}"/>
-                            </h:outputText>
-                        </h:panelGrid>
-                    </center>
-                </ui:remove>
+                <center class="py-3 mt-2">
+                    <h:panelGrid columns="2">
+                        <span>Total Amount #{appSession.companyBranch.companyProfile.currency}</span>
+                        <h:outputText value="#{purchaseOrderController.totalAmount}" class="field-shade">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </h:panelGrid>
+                </center>
             </h:form>
             <hr/>
             <center>

@@ -98,15 +98,21 @@
                                     <h:form class="spaced-form">
                                         <h:panelGrid columns="2">
                                            
-                                            <span>#{msg.customer}</span>
-                                            <p:selectOneMenu class="col" value="#{purchaseOrderController.purchaseOrder.customer}">
+                                            <span>#{msg.customer}<span class="text-danger">*</span></span>
+                                            <p:selectOneMenu class="col" value="#{purchaseOrderController.purchaseOrder.customer}" required="true">
                                                 <f:selectItem itemLabel="#{msg.choose}"/>
                                                 <f:selectItems value="#{usercommonBeans.customerList}"/>
                                             </p:selectOneMenu>
                                             
-                                            <span>#{msg.purchase} #{msg.date}</span>
+                                            <span>#{msg.purchase} #{msg.date}<span class="text-danger">*</span></span>
                                             <p:datePicker value="#{purchaseOrderController.purchaseOrder.purchasedDate}" pattern="#{msg.formatted_date}" required="true" yearNavigator="true" monthNavigator="true"/>
-                                        
+                                            
+                                            <span>#{msg.warehouse}<span class="text-danger">*</span></span>
+                                            <p:selectOneMenu immediate="true" value="#{purchaseOrderController.purchaseOrder.location}" required="true">
+                                                <f:selectItem itemLabel="#{msg.choose}"/>
+                                                <f:selectItems value="#{usercommonBeans.locationList}"/>
+                                            </p:selectOneMenu>
+                                            
                                             <span>#{msg.payment_method}</span>
                                             <p:selectOneMenu class="col" value="#{purchaseOrderController.purchaseOrder.paymentMethod}">
                                                 <f:selectItem itemLabel="#{msg.choose}"/>
@@ -137,7 +143,7 @@
 
                             <h:panelGroup rendered="#{purchaseOrderController.pageView.detailView}">
                                 <fieldset>
-                                    <legend class="text-info text-lg"> <u>Please Add Items</u> </legend>
+                                    <legend class="text-secondary text-lg"> <u>Please Add Items</u> </legend>
                                     <ui:include src="includes/purchase-order-item.xhtml"/>
                                 </fieldset>
                             </h:panelGroup>

@@ -9,6 +9,10 @@ import com.khoders.tsm.jbeans.dto.SalesTaxDto;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.entities.PurchaseOrder;
+import com.khoders.tsm.entities.PurchaseOrderItem;
+import com.khoders.tsm.entities.StockReceipt;
+import com.khoders.tsm.entities.StockReceiptItem;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +29,7 @@ public class XtractService
     @Inject private AppSession appSession;
     @Inject private CrudApi crudApi;
     @Inject private StockService stockService;
-    @Inject private TsmService tsmService;
+    @Inject private InventoryService inventoryService;
     @Inject private SalesService salesService;
     
     public SalesReceipt extractToPosReceipt(List<SaleItem> cartList, Sales sales){
@@ -80,6 +84,28 @@ public class XtractService
 
         return salesReceipt;
        
+    }
+    
+    public List<StockReceiptItem> extractStockReceiptItems(PurchaseOrder purchaseOrder, StockReceipt stockReceipt){
+       List<StockReceiptItem> stockReceiptItemList = new LinkedList<>();
+       
+       List<PurchaseOrderItem> orderItemList = inventoryService.getPurchaseOrderItem(purchaseOrder);
+       for (PurchaseOrderItem item : orderItemList) {
+            StockReceiptItem receiptItem = new StockReceiptItem();
+            receiptItem.setCostPrice(item.getCostPrice());
+            receiptItem.setSellingPrice(0.0);
+            receiptItem.setProduct(item.getProduct());
+            receiptItem.setPurchaseOrderItem(item);
+            receiptItem.setUnitMeasurement(item.getUnitMeasurement());
+            receiptItem.setStockReceipt(stockReceipt);
+            receiptItem.setPkgQuantity(item.getQtyPurchased());
+            receiptItem.setDescription(item.getDescription());
+            receiptItem.setUserAccount(appSession.getCurrentUser());
+            receiptItem.setCompanyBranch(appSession.getCompanyBranch());
+            receiptItem.genCode();
+            stockReceiptItemList.add(receiptItem);
+        }
+       return stockReceiptItemList;
     }
 // 
 //    public SalesReceipt extractToCashReceipt(Sales sales)

@@ -5,10 +5,14 @@
  */
 package com.khoders.tsm.entities;
 
+import com.khoders.resource.enums.Status;
 import com.khoders.tsm.entities.system.UserAccountRecord;
+import com.khoders.tsm.enums.ReceiptStatus;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -33,6 +37,14 @@ public class StockReceiptItem extends UserAccountRecord implements Serializable{
     @JoinColumn(name = "purchase_order_item", referencedColumnName = "id")
     @ManyToOne
     private PurchaseOrderItem purchaseOrderItem;
+    
+    @JoinColumn(name = "unit_measurement", referencedColumnName = "id")
+    @ManyToOne
+    private UnitMeasurement unitMeasurement;
+    
+    @Column(name = "receipt_status")
+    @Enumerated(EnumType.STRING)
+    private ReceiptStatus receiptStatus = ReceiptStatus.PENDING;
     
     @Column(name = "pkg_quantity")
     private double pkgQuantity;
@@ -138,6 +150,22 @@ public class StockReceiptItem extends UserAccountRecord implements Serializable{
 
     public void setSellingPrice(double sellingPrice) {
         this.sellingPrice = sellingPrice;
+    }
+
+    public UnitMeasurement getUnitMeasurement() {
+        return unitMeasurement;
+    }
+
+    public void setUnitMeasurement(UnitMeasurement unitMeasurement) {
+        this.unitMeasurement = unitMeasurement;
+    }
+
+    public ReceiptStatus getReceiptStatus() {
+        return receiptStatus;
+    }
+
+    public void setReceiptStatus(ReceiptStatus receiptStatus) {
+        this.receiptStatus = receiptStatus;
     }
     
     @Override

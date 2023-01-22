@@ -13,10 +13,13 @@ import com.khoders.tsm.services.XtractService;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.enums.ReceiptStatus;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -37,11 +40,14 @@ public class StockReceiptController implements Serializable
    @Inject private XtractService xtractService;
    
    private StockReceipt stockReceipt = new StockReceipt();
-   private Location location = new Location();
+   private Location selectedLocation = null;
    private PurchaseOrder selectedPurchaseOrder = null;
    private List<StockReceipt> stockReceiptList = new LinkedList<>();
    private List<PurchaseOrderItem> purchaseOrderItemList = new LinkedList<>();
    private List<StockReceiptItem> stockReceiptItemList = new LinkedList<>();
+   private List<PurchaseOrder> purchaseOrderList = new LinkedList<>();
+   
+   private ReceiptStatus receiptStatus = ReceiptStatus.PENDING;
    
    private String optionText;
    private LocalDate expiryDate;
@@ -54,8 +60,28 @@ public class StockReceiptController implements Serializable
      clearStockReceipt();
      stockReceiptList = inventoryService.getStockReceiptList();
    }
+   
+   public void initOrder(){
+     purchaseOrderList = inventoryService.getPurchaseOrderList();
+   }
+   
+   public void applyReceipt(StockReceiptItem stockReceiptItem){
+       System.out.println("Qty: "+stockReceiptItem.getPkgQuantity());
+       System.out.println("Cost price: "+stockReceiptItem.getCostPrice());
+       
+        if (crudApi.save(stockReceipt) != null) {
+            stockReceiptItem.setStockReceipt(stockReceipt);
+            stockReceiptItem.genCode();
+            stockReceiptItem.setReceiptStatus(ReceiptStatus.RECEIVED);
+            stockReceiptItem.setCompanyBranch(appSession.getCompanyBranch());
+            stockReceiptItem.setUserAccount(appSession.getCurrentUser());
+            stockReceiptItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+            receiptStatus = ReceiptStatus.RECEIVED;
+            crudApi.save(stockReceiptItem);
+        }
+   }
     
-    public void receivePurchaseOrder(PurchaseOrder purchaseOrder){
+    public void selectPurchaseOrder(PurchaseOrder purchaseOrder){
       selectedPurchaseOrder = purchaseOrder;
       stockReceiptItemList = new LinkedList<>();
       clearStockReceipt();
@@ -65,31 +91,34 @@ public class StockReceiptController implements Serializable
         stockReceipt.setPurchaseOrder(purchaseOrder);
         stockReceipt.setTotalAmount(purchaseOrder.getTotalAmount());
         stockReceipt.setBatchNo(SystemUtils.generateCode());
+        stockReceipt.setLocation(purchaseOrder.getLocation());
         stockReceipt.setUserAccount(appSession.getCurrentUser());
         stockReceipt.setReceivedBy(appSession.getCurrentUser());
         stockReceipt.setCompanyBranch(appSession.getCompanyBranch());
+        stockReceipt.setRefNo(purchaseOrder.getOrderCode());
         stockReceipt.setStockSaved(true);
-        savedStock = true;
+        
+        stockReceiptItemList = xtractService.extractStockReceiptItems(purchaseOrder,stockReceipt);
+        
       }else{
-        savedStock = false;
+          List<StockReceiptItem> receiptItemList = xtractService.extractStockReceiptItems(purchaseOrder,stockReceipt);
+          stockReceiptItemList = inventoryService.getStockReceiptItemList(stockReceipt);
+//          if(receiptItemList.size() > stockReceiptItemList.size()){
+//              Set<StockReceiptItem> copyReceiptList = new LinkedHashSet<>(stockReceiptItemList);
+//              System.out.println("copyReceipt Before: "+copyReceiptList.size());
+////              copyReceiptList.removeAll(stockReceiptItemList);
+//              
+//              System.out.println("receiptItemList:::::: "+receiptItemList.size());
+//              System.out.println("receiptItemList:::::: "+receiptItemList.toString());
+//              
+//              receiptItemList.addAll(copyReceiptList);
+//              System.out.println("receiptItemList After: "+receiptItemList.size());
+//              System.out.println("receiptItemList: "+receiptItemList.toString());
+//              
+//              stockReceiptItemList = new LinkedList<>();
+//              stockReceiptItemList.addAll(receiptItemList);
+//          }
       }
-      
-      purchaseOrderItemList = inventoryService.getPurchaseOrderItem(purchaseOrder);
-        for (PurchaseOrderItem item : purchaseOrderItemList) {
-            StockReceiptItem receiptItem = new StockReceiptItem();
-            receiptItem.setCostPrice(item.getCostPrice());
-            receiptItem.setSellingPrice(0.0);
-            receiptItem.setProduct(item.getProduct());
-            receiptItem.setPurchaseOrderItem(item);
-            receiptItem.setStockReceipt(stockReceipt);
-            receiptItem.setPkgQuantity(item.getQtyPurchased());
-            receiptItem.setDescription(item.getDescription());
-            receiptItem.setUserAccount(appSession.getCurrentUser());
-            receiptItem.setCompanyBranch(appSession.getCompanyBranch());
-            receiptItem.genCode();
-            stockReceiptItemList.add(receiptItem);
-        }
-      
     }
 
    public void saveStockReceipt(){
@@ -97,7 +126,6 @@ public class StockReceiptController implements Serializable
            stockReceipt.setBatchNo(stockReceipt.getBatchNo());
            if (crudApi.save(stockReceipt) != null) {
                stockReceiptItemList.forEach(item -> {
-                   item.setSellingPrice(sellingPrice);
                    crudApi.save(item);
                });
                PurchaseOrder purchaseOrder = crudApi.find(PurchaseOrder.class, stockReceipt.getPurchaseOrder().getId());
@@ -196,20 +224,28 @@ public class StockReceiptController implements Serializable
         return stockReceiptItemList;
     }
 
-    public Location getLocation() {
-        return location;
+    public Location getSelectedLocation() {
+        return selectedLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setSelectedLocation(Location selectedLocation) {
+        this.selectedLocation = selectedLocation;
     }
-
+    
     public double getSellingPrice() {
         return sellingPrice;
     }
 
     public void setSellingPrice(double sellingPrice) {
         this.sellingPrice = sellingPrice;
+    }
+
+    public List<PurchaseOrder> getPurchaseOrderList() {
+        return purchaseOrderList;
+    }
+
+    public ReceiptStatus getReceiptStatus() {
+        return receiptStatus;
     }
     
 }

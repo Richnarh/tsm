@@ -33,6 +33,10 @@ public class PurchaseOrder extends UserAccountRecord implements Serializable
     @ManyToOne
     private Customer customer;
     
+    @JoinColumn(name = "location", referencedColumnName = "id")
+    @ManyToOne
+    private Location location;
+    
     @Column(name = "payment_method")
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
@@ -115,6 +119,14 @@ public class PurchaseOrder extends UserAccountRecord implements Serializable
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
    
     public void genOrderCode()

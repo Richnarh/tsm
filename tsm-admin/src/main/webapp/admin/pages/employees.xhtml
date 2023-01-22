@@ -31,7 +31,7 @@
                                         <p:inputText value="#{userAccountController.userAccount.fullname}" required="true"/>
 
                                         <span>Email<span class="text-danger">*</span></span>
-                                        <p:inputText value="#{userAccountController.userAccount.email}" required="true"/>
+                                        <p:inputText value="#{userAccountController.userAccount.emailAddress}" required="true"/>
 
                                         <span>#{msg.phone}</span>
                                         <p:inputText value="#{userAccountController.userAccount.phoneNumber}"/>
@@ -60,8 +60,8 @@
                                 <h:form id="authForm">
                                     <p:panel header="Set password for #{userAccountController.userAccount.fullname}" class="float-right">
                                         <h:panelGrid columns="2">
-                                            <span>Username</span>
-                                            <h:outputText value="#{userAccountController.userAccount.username}" class="field-shade"/>
+                                            <span>#{msg.email_ddress}</span>
+                                            <h:outputText value="#{userAccountController.userAccount.emailAddress}" class="field-shade"/>
                                             <span>Password</span>
                                             <p:password required="true" value="#{userAccountController.userAccount.password}"/>
                                             <br/><br/>
@@ -98,8 +98,8 @@
                                         #{userAccount.phoneNumber}
                                     </p:column>
 
-                                    <p:column headerText="Email">
-                                        #{userAccount.email}
+                                    <p:column headerText="#{msg.email_ddress}">
+                                        #{userAccount.emailAddress}
                                     </p:column>
 
                                     <p:column headerText="#{msg.status}">

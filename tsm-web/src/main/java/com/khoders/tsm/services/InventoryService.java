@@ -313,4 +313,17 @@ public class InventoryService {
         return inventory;
     }
 
+    public List<StockReceiptItem> getStockReceiptItemList(StockReceipt stockReceipt) {
+        try {
+            TypedQuery<StockReceiptItem> typedQuery = crudApi.getEm().createQuery("SELECT e FROM StockReceiptItem e WHERE e.stockReceipt=?1", StockReceiptItem.class);
+            typedQuery.setParameter(1, stockReceipt);
+
+            return typedQuery.getResultList();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+
 }

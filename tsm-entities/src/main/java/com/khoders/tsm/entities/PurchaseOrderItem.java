@@ -16,12 +16,12 @@ import javax.persistence.Table;
 
 /**
  *
- * @author richa
+ * @author richard
  */
 @Entity
 @Table(name = "purchase_order_item")
-public class PurchaseOrderItem extends UserAccountRecord implements Serializable
-{
+public class PurchaseOrderItem extends UserAccountRecord implements Serializable{
+    
     @JoinColumn(name = "product", referencedColumnName = "id")
     @ManyToOne
     private Product product;
@@ -30,12 +30,16 @@ public class PurchaseOrderItem extends UserAccountRecord implements Serializable
     @ManyToOne
     private PurchaseOrder purchaseOrder;
     
+    @JoinColumn(name = "unit_measurement", referencedColumnName = "id")
+    @ManyToOne
+    private UnitMeasurement unitMeasurement;
+    
     @Column(name = "qty_purchased")
     private double qtyPurchased;
     
     @Column(name = "cost_price")
     private double costPrice;
-    
+        
     @Column(name = "sub_total")
     private double subTotal;
     
@@ -100,6 +104,14 @@ public class PurchaseOrderItem extends UserAccountRecord implements Serializable
 
     public void setSubTotal(double subTotal) {
         this.subTotal = subTotal;
+    }
+
+    public UnitMeasurement getUnitMeasurement() {
+        return unitMeasurement;
+    }
+
+    public void setUnitMeasurement(UnitMeasurement unitMeasurement) {
+        this.unitMeasurement = unitMeasurement;
     }
     
 }

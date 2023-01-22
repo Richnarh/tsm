@@ -36,7 +36,6 @@ public class PurchaseOrderController implements Serializable
     @Inject private CrudApi crudApi;
     @Inject private InventoryService inventoryService;
     @Inject private AppSession appSession;
-    @Inject private SalesService salesService;
     
     private PurchaseOrder purchaseOrder = new PurchaseOrder();
     private List<PurchaseOrder> purchaseOrderList = new LinkedList<>();
@@ -63,16 +62,9 @@ public class PurchaseOrderController implements Serializable
     {
         clearPurchaseOrder();
         pageView.restToCreateView();
-    }
+    }   
     
-    public void packageData()
-    {
-        productPackageList = salesService.queryPackagePrice(purchaseOrderItem.getProduct());
-    }
-    
-    
-    public void savePurchaseOrder()
-    {
+    public void savePurchaseOrder(){
         try
         {
            purchaseOrder.genOrderCode();

@@ -34,22 +34,13 @@
 
                 <span>#{msg.total_amount}</span>
                 <p:inputText disabled="true" value="#{stockReceiptController.stockReceipt.totalAmount}"/>
+
+                <span>#{msg.warehouse}</span>
+                <p:inputText disabled="true" value="#{stockReceiptController.stockReceipt.location.locationName}"/>
                 
-                <ui:remove>
-                     
-                    <span>#{msg.warehouse}</span>
-                    <p:selectOneMenu value="#{stockReceiptController.stockReceipt.warehouse}">
-                        <f:selectItem itemLabel="#{msg.choose}"/>
-                        <f:selectItems value="#{usercommonBeans.warehouseList}"/>
-                    </p:selectOneMenu>
-
-                    <span>#{msg.description}</span>
-                    <p:inputTextarea value="#{stockReceiptController.stockReceipt.description}"/>
-
-                </ui:remove>
             </h:panelGrid>
             
-            <p:dataTable value="#{stockReceiptController.purchaseOrderItemList}" var="purchaseOrderItem" scrollHeight="500" scrollable="true">
+            <p:dataTable value="#{stockReceiptController.stockReceiptItemList}" var="receiptItem" scrollHeight="500" scrollable="true">
                 <p:column style="width: 10px;">
                     <p:rowToggler/>
                 </p:column>
@@ -57,43 +48,39 @@
                 <p:rowExpansion>
                     <h:panelGrid columns="2">
                         <span>#{msg.created_date}</span>
-                        <h:outputText value="#{purchaseOrderItem.createdDate}">
+                        <h:outputText value="#{receiptItem.createdDate}">
                             <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
                         </h:outputText>
 
                         <span>#{msg.description}</span>
-                        <h:outputText value="#{purchaseOrderItem.description}"/>
+                        <h:outputText value="#{receiptItem.description}"/>
                     </h:panelGrid>
                 </p:rowExpansion>
-
-                <p:column headerText="Code" style="width: 100px;">
-                    <h:outputText value="#{purchaseOrderItem.refNo}"/>
-                </p:column>
                 
                 <p:column headerText="#{msg.product}">
-                    <h:outputText value="#{purchaseOrderItem.product.productName}"/>
+                    <h:outputText value="#{receiptItem.product.productName}"/>
                 </p:column>
                 
-                <p:column headerText="#{msg.product_package}">
-                    <h:outputText value="#{purchaseOrderItem.productPackage.unitMeasurement.units}"/>
+                <p:column headerText="#{msg.product} Type" style="width: 130px;">
+                    <h:outputText value="#{receiptItem.product.productType.productTypeName}"/>
                 </p:column>
                 
-                <p:column headerText="Units in package">
-                    <h:outputText value="#{purchaseOrderItem.productPackage.unitsInPackage}"/>
+                <p:column headerText="#{msg.product_package}" style="width: 130px;">
+                    <h:outputText value="#{receiptItem.unitMeasurement.units}"/>
                 </p:column>
-                
+                                
                 <p:column headerText="#{msg.qty}" style="width: 90px;">
-                    <p:inputText style="width: 80px;" value="#{purchaseOrderItem.qtyPurchased}"/>
+                    <p:inputText style="width: 90px;" value="#{receiptItem.pkgQuantity}"/>
                 </p:column>
                 
-                <p:column headerText="#{msg.cost_price}" style="width: 90px;">
-                    <p:inputText style="width: 80px;" value="#{purchaseOrderItem.costPrice}"/>
+                <p:column headerText="#{msg.cost_price}" style="width: 130px;">
+                    <p:inputText style="width: 130px;" value="#{receiptItem.costPrice}"/>
                 </p:column>
                 
             </p:dataTable>
             <center class="py-3">
                 <p:commandButton rendered="#{stockReceiptController.savedStock == true}" icon="#{msg.check_icon_circle}" immediate="true" action="#{stockReceiptController.saveStockReceipt()}" class="kbtn-success mx-2" value="#{stockReceiptController.optionText}" update="@form, :mainPanel"/>
-                <p:commandButton icon="#{msg.close_icon}" immediate="true" action="#{stockReceiptController.clearStockReceipt()}" class="kbtn-danger" value="#{msg.close}" update="@form" oncomplete="PF('stockReceipt').hide();"/>
+                <p:commandButton icon="#{msg.close_icon}" immediate="true" action="#{stockReceiptController.clearStockReceipt()}" class="kbtn-danger float-end" value="#{msg.close}" update="@form" oncomplete="PF('stockReceipt').hide();"/>
             </center>
         </h:form>
     </p:dialog>
