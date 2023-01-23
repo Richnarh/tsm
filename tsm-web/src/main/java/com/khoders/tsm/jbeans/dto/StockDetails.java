@@ -14,10 +14,37 @@ public class StockDetails {
     private String productType;
     private int reorderLevel;
     private String location;
+    private String packaging;
+    private String unitsMeasurement;
     private double sellingPrice;
     private double qtyInShop;
     private double qtyInWarehouse;
     private double costPrice;
+    private double unitsInPackage;
+
+    public String getPackaging() {
+        return packaging;
+    }
+
+    public void setPackaging(String packaging) {
+        this.packaging = packaging;
+    }
+
+    public String getUnitsMeasurement() {
+        return unitsMeasurement;
+    }
+
+    public void setUnitsMeasurement(String unitsMeasurement) {
+        this.unitsMeasurement = unitsMeasurement;
+    }
+
+    public double getUnitsInPackage() {
+        return unitsInPackage;
+    }
+
+    public void setUnitsInPackage(double unitsInPackage) {
+        this.unitsInPackage = unitsInPackage;
+    }
 
     public String getProductName() {
         return productName;

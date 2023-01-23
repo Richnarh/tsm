@@ -9,41 +9,37 @@
     <h:body>
         <ui:composition template="../templatesUI.xhtml">
             <ui:define name="pageTitle">
-                Price Upload
+                Stock Upload
             </ui:define>
 
             <ui:define name="pageContent">
                 <h:panelGroup id="mainPanel">
                     <div class="card mb-5 wow zoomIn">
                         <div class="container-fluid">
-                            <div class="card-header">Upload #{msg.product} Prices</div>
+                            <div class="card-header"><i class="#{msg.upload_icon}"></i> Upload Stock</div>
                             <h:panelGroup id="mainGroup">
-                                <div class="col-md-12 mx-auto py-3">
+                                <div class="col-md-12 mx-auto py-2">
                                     <h:form enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-10">
-                                                <p:fileUpload value="#{priceUploadController.file}" mode="simple" skinSimple="true" required="true"/>
-                                                <p:commandButton class="kbtn-default mx-2" action="#{priceUploadController.uploadPrice()}" ajax="false" value="Upload Data"/>
-                                                
-                                                <h:outputLabel class="mx-2" value="New Order"/>
-                                                <p:selectBooleanCheckbox value="#{priceUploadController.newPurchaseOrder}">
-                                                    <p:ajax update="@form"/>
-                                                </p:selectBooleanCheckbox>
-                                                
-                                                <p:selectOneMenu class="mx-2" rendered="#{priceUploadController.newPurchaseOrder == false}" value="#{priceUploadController.selectedPurchaseOrder}">
-                                                    <f:selectItem itemLabel="#{msg.choose} Order"/>
-                                                    <f:selectItems value="#{usercommonBeans.purchaseOrderList}"/>
+                                                <p:fileUpload value="#{stockUploadController.file}" mode="simple" skinSimple="true" required="true"/>
+                                                <p:commandButton icon="#{msg.upload_icon}" class="kbtn-default mx-2" action="#{stockUploadController.uploadPrice()}" ajax="false" value="Upload Data"/>
+                                            
+                                                <span>#{msg.warehouse}<span class="text-danger">*</span></span>
+                                                <p:selectOneMenu immediate="true" value="#{purchaseOrderController.purchaseOrder.location}" required="true">
+                                                    <f:selectItem itemLabel="#{msg.choose}"/>
+                                                    <f:selectItems value="#{usercommonBeans.locationList}"/>
                                                 </p:selectOneMenu>
                                             </div> 
                                             <div class="col-md-2">
-                                                <span class="shadow-sm faded-shade">Count: #{priceUploadController.packagePriceList.size()}</span>
+                                                <span class="shadow-sm faded-shade">Count: #{stockUploadController.packagePriceList.size()}</span>
                                             </div>
                                         </div>
                                     </h:form>
                                 </div>
 
                                 <h:form id="uploadTable" class="mb-3 wow">
-                                    <p:dataTable value="#{priceUploadController.packagePriceList}" reflow="true" var="packagePrice"
+                                    <p:dataTable value="#{stockUploadController.packagePriceList}" reflow="true" var="packagePrice"
                                                  scrollable="true" scrollHeight="400">
 
                                         <p:column headerText="#{msg.product}">
@@ -85,9 +81,9 @@
                                     </p:dataTable>
 
                                     <div class="p-2">
-                                        <p:commandButton id="clear" class="kbtn-cancel mx-2" value="#{msg.clear}" action="#{priceUploadController.clear()}" update="@form"/>
+                                        <p:commandButton id="clear" class="kbtn-cancel mx-2" value="#{msg.clear}" action="#{stockUploadController.clear()}" update="@form"/>
 
-                                        <p:commandButton id="save" class="kbtn-success" icon="#{msg.check_icon}" value="Save Changes" action="#{priceUploadController.saveUpload()}" update="@form"/>
+                                        <p:commandButton id="save" class="kbtn-success" icon="#{msg.check_icon}" value="Save Changes" action="#{stockUploadController.saveUpload()}" update="@form"/>
                                     </div>
 
                                 </h:form>
