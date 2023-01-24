@@ -9,15 +9,15 @@
         <h:form id="settingForm" class="spaced-form">
 
             <h:panelGrid columns="2">
-                <h:outputLabel class="mx-2" value="Prepare Inventory"/>
+                <h:outputLabel class="mx-2" value="Create Inventory"/>
                 <p:selectBooleanCheckbox immediate="true" value="#{stockUploadController.postToInventory}">
                     <p:ajax update="settingForm"/>
                 </p:selectBooleanCheckbox>
 
-                <h:outputLabel class="mx-2" value="Purchase Order"/>
+                <h:outputLabel class="mx-2" value="Create Purchase Order"/>
                 <p:selectBooleanCheckbox value="#{stockUploadController.prepareOrder}"/>
 
-                <h:outputLabel class="mx-2" value="Stock Receipt"/>
+                <h:outputLabel class="mx-2" value="Create Stock Receipt"/>
                 <p:selectBooleanCheckbox value="#{stockUploadController.recieveOrder}"/>
 
                 <h:panelGroup rendered="#{stockUploadController.postToInventory == true}">

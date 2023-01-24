@@ -27,7 +27,6 @@
     <class>com.khoders.tsm.entities.system.UserPage</class>
     <class>com.khoders.tsm.entities.system.UserPageAction</class>
     <class>com.khoders.tsm.entities.Packaging</class>
-    <class>com.khoders.tsm.entities.ProductPackage</class>
     <class>com.khoders.tsm.entities.UnitMeasurement</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
