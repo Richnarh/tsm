@@ -87,7 +87,10 @@ public class StockReceiptController implements Serializable
        }
        stockReceipt.setTotalAmount(sum);
        
-       crudApi.save(stockReceipt);
+       if(crudApi.save(stockReceipt) != null)
+            Msg.info("Receipt finalised with total amount updated!");
+       else
+           Msg.error("Oops! could not finalise receipt");
    }
     
     public void selectPurchaseOrder(PurchaseOrder purchaseOrder){
@@ -110,7 +113,7 @@ public class StockReceiptController implements Serializable
         stockReceiptItemList = xtractService.extractStockReceiptItems(purchaseOrder,stockReceipt);
         
       }else{
-          List<StockReceiptItem> receiptItemList = xtractService.extractStockReceiptItems(purchaseOrder,stockReceipt);
+//          List<StockReceiptItem> receiptItemList = xtractService.extractStockReceiptItems(purchaseOrder,stockReceipt);
           stockReceiptItemList = inventoryService.getStockReceiptItemList(stockReceipt);
 //          if(receiptItemList.size() > stockReceiptItemList.size()){
 //              Set<StockReceiptItem> copyReceiptList = new LinkedHashSet<>(stockReceiptItemList);

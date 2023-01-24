@@ -100,8 +100,8 @@ public class SalesController implements Serializable
     }
     public void inventoryProperties(){
         System.out.println("Over here----");
-        if(saleItem.getInventory().getSellingPrice() != 0.0){
-          saleItem.setUnitPrice(saleItem.getInventory().getSellingPrice());
+        if(saleItem.getInventory().getPackagePrice() != 0.0){
+          saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
         }
     }
     public void reset()

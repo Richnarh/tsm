@@ -5,7 +5,6 @@
  */
 package com.khoders.tsm.entities;
 
-import com.khoders.resource.enums.Status;
 import com.khoders.tsm.entities.system.UserAccountRecord;
 import com.khoders.tsm.enums.ReceiptStatus;
 import java.io.Serializable;

@@ -12,13 +12,17 @@ import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.jbeans.dto.StockDetails;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
+import com.khoders.tsm.entities.Customer;
+import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Packaging;
-import com.khoders.tsm.entities.ProductPackage;
+import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
+import com.khoders.tsm.enums.CustomerType;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -63,9 +67,10 @@ public class StockService {
         }
         return null;
     }
-    public ProductPackage existProdctPackage(Product product, UnitMeasurement unitMeasurement) {
-        return crudApi.getEm().createQuery("SELECT e FROM ProductPackage e WHERE e.product=:product AND e.unitMeasurement=:unitMeasurement", ProductPackage.class)
-                .setParameter("product", product)
+    public Inventory existProdctPackage(StockReceiptItem receiptItem, String units) {
+        UnitMeasurement unitMeasurement = getUnits(units);
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:receiptItem AND e.unitMeasurement=:unitMeasurement", Inventory.class)
+                .setParameter("receiptItem", receiptItem)
                 .setParameter("unitMeasurement", unitMeasurement)
                 .getResultStream().findFirst().orElse(null);
     }
@@ -92,12 +97,19 @@ public class StockService {
                 .getResultStream().findFirst().orElse(null);
     }
 
-    public List<ProductPackage> segmentedProducts(Product product) {
-        return crudApi.getEm().createQuery("SELECT e FROM ProductPackage e WHERE e.product=:product", ProductPackage.class)
-                .setParameter("product", product)
+    public List<Inventory> inventoryProduct(StockReceiptItem receiptItem) {
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:receiptItem", Inventory.class)
+                .setParameter("receiptItem", receiptItem)
                 .getResultList();
     }
-
+    
+    public Customer walkinCustomer() {
+        String qryString = "SELECT e FROM Customer e WHERE e.customerName=?1";
+        TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
+                .setParameter(1, CustomerType.WALK_IN_CUSTOMER.getLabel());
+        return typedQuery.getResultStream().findFirst().orElse(null);
+    }
+    
     public <T> T getObj(Class clazz, String fieldName) {
         T obj = (T) crudApi.getEm().createQuery("SELECT e FROM " + clazz.getClass().getSimpleName() + " e WHERE e." + fieldName + "=:fieldName", clazz)
                 .setParameter("fieldName", fieldName)
@@ -119,7 +131,7 @@ public class StockService {
                     productType.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                     crudApi.save(productType);
                 }
-                Product product = getObj(Product.class, details.getProductName());
+                Product product = getProduct(details.getProductName());
                 if (product == null) {
                     product = new Product();
                     product.setProductName(details.getProductName().trim());
@@ -128,6 +140,16 @@ public class StockService {
                     product.setCompanyBranch(appSession.getCompanyBranch());
                     product.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                     crudApi.save(product);
+                }
+                
+                UnitMeasurement unitMeasurement = getUnits(details.getUnitsMeasurement());
+                if(unitMeasurement == null){
+                    unitMeasurement = new UnitMeasurement();
+                    unitMeasurement.setCompanyBranch(appSession.getCompanyBranch());
+                    unitMeasurement.setUnits(details.getUnitsMeasurement());
+                    unitMeasurement.genCode();
+                    unitMeasurement.setUserAccount(appSession.getCurrentUser());
+                    crudApi.save(unitMeasurement);
                 }
             }
             return true;

@@ -23,7 +23,6 @@ import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Packaging;
-import com.khoders.tsm.entities.ProductPackage;
 import com.khoders.tsm.entities.UnitMeasurement;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -52,15 +51,7 @@ public class InventoryService {
 
         return Collections.emptyList();
     }
-    public List<ProductPackage> getProductPackageList() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM ProductPackage e ORDER BY e.createdDate DESC", ProductPackage.class).getResultList();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
-    }
     public List<UnitMeasurement> getUnitMeasurementList()
     {
         try
@@ -302,11 +293,11 @@ public class InventoryService {
             inventory = new Inventory();
             inventory.setCompanyBranch(transferItem.getCompanyBranch());
             inventory.setLocation(transferItem.getBatchTransfer().getFromLocation());
-            inventory.setSellingPrice(transferItem.getStockReceiptItem().getSellingPrice());
+//            inventory.setSellingPrice(transferItem.getStockReceiptItem().getSellingPrice());
             inventory.setStockReceiptItem(transferItem.getStockReceiptItem());
             inventory.setUserAccount(appSession.getCurrentUser());
             inventory.setLastModifiedBy(appSession.getCurrentUser().getEmailAddress());
-            inventory.setQuantity(transferItem.getQtyTransferred());
+//            inventory.setQuantity(transferItem.getQtyTransferred());
             crudApi.save(inventory);
         }
         

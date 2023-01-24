@@ -10,6 +10,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -18,25 +19,32 @@ import javax.persistence.Table;
  * @author Pascal
  */
 @Entity
-@Table(name = "inventory")
+@Table(name = "inventory") // Shop
 public class Inventory extends UserAccountRecord implements Serializable{
     @JoinColumn(name = "stock_receipt_item")
     @ManyToOne
     private StockReceiptItem stockReceiptItem;
     
-    @JoinColumn(name = "location")
+    @JoinColumn(name = "location") // shop name
     @ManyToOne
     private Location location;
     
-    @Column(name = "selling_price")
-    private double sellingPrice;
+    @Column(name = "units_in_package")
+    private double unitsInPackage;
     
-    @Column(name = "quantity")
-    private double quantity;
+    @Column(name = "package_price")
+    private double packagePrice; //selling price
     
-    @JoinColumn(name = "product_package", referencedColumnName = "id")
+    @Column(name = "description")
+    @Lob
+    private String description;
+    
+    @Column(name = "qty_in_shop")
+    private double qtyInShop;
+    
+    @JoinColumn(name = "units_measurement", referencedColumnName = "id")
     @ManyToOne
-    private ProductPackage productPackage;
+    private UnitMeasurement unitMeasurement;
     
     public StockReceiptItem getStockReceiptItem() {
         return stockReceiptItem;
@@ -54,30 +62,46 @@ public class Inventory extends UserAccountRecord implements Serializable{
         this.location = location;
     }
 
-    public double getSellingPrice() {
-        return sellingPrice;
+    public double getUnitsInPackage() {
+        return unitsInPackage;
     }
 
-    public void setSellingPrice(double sellingPrice) {
-        this.sellingPrice = sellingPrice;
+    public void setUnitsInPackage(double unitsInPackage) {
+        this.unitsInPackage = unitsInPackage;
     }
 
-    public double getQuantity() {
-        return quantity;
+    public double getPackagePrice() {
+        return packagePrice;
     }
 
-    public void setQuantity(double quantity) {
-        this.quantity = quantity;
+    public void setPackagePrice(double packagePrice) {
+        this.packagePrice = packagePrice;
     }
 
-    public ProductPackage getProductPackage() {
-        return productPackage;
+    public String getDescription() {
+        return description;
     }
 
-    public void setProductPackage(ProductPackage productPackage) {
-        this.productPackage = productPackage;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
+    public UnitMeasurement getUnitMeasurement() {
+        return unitMeasurement;
+    }
+
+    public void setUnitMeasurement(UnitMeasurement unitMeasurement) {
+        this.unitMeasurement = unitMeasurement;
+    }
+
+    public double getQtyInShop() {
+        return qtyInShop;
+    }
+
+    public void setQtyInShop(double qtyInShop) {
+        this.qtyInShop = qtyInShop;
+    }
+    
     @Override
     public String toString() {
         return stockReceiptItem+"";

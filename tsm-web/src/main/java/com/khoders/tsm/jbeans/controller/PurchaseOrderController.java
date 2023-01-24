@@ -11,11 +11,9 @@ import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
-import com.khoders.tsm.entities.ProductPackage;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
 import com.khoders.tsm.listener.AppSession;
-import com.khoders.tsm.services.SalesService;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +41,6 @@ public class PurchaseOrderController implements Serializable
     private PurchaseOrderItem purchaseOrderItem = new PurchaseOrderItem();
     private List<PurchaseOrderItem> purchaseOrderItemList = new LinkedList<>();
     private List<PurchaseOrderItem> removedOrderItemList = new LinkedList<>();
-    private List<ProductPackage> productPackageList = new LinkedList<>();
     
     private FormView pageView = FormView.listForm();
     private String optionText;
@@ -291,11 +288,5 @@ public class PurchaseOrderController implements Serializable
     public void setTotalAmount(double totalAmount)
     {
         this.totalAmount = totalAmount;
-    }
-
-    public List<ProductPackage> getProductPackageList()
-    {
-        return productPackageList;
-    }
-    
+    }    
 }

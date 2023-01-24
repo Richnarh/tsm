@@ -5,7 +5,9 @@
  */
 package com.khoders.tsm.entities.system;
 
+import javax.persistence.Column;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
@@ -22,6 +24,10 @@ public class UserAccountRecord extends RefNo{
     @ManyToOne
     @JoinColumn(name = "company_branch", referencedColumnName = "id")
     private CompanyBranch companyBranch;
+    
+    @Column(name = "data_source")
+    @Lob
+    private String dataSource;
 
     public UserAccount getUserAccount() {
         return userAccount;
@@ -38,6 +44,12 @@ public class UserAccountRecord extends RefNo{
     public void setCompanyBranch(CompanyBranch companyBranch) {
         this.companyBranch = companyBranch;
     }
-    
-    
+
+    public String getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
+    }
 }
