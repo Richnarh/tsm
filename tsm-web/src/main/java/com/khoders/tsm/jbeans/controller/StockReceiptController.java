@@ -81,11 +81,7 @@ public class StockReceiptController implements Serializable
    
    public void finalise(){
        stockReceiptItemList = inventoryService.getStockReceiptItemList(stockReceipt);
-       double sum=0.0;
-       for (StockReceiptItem item : stockReceiptItemList) {
-           sum += (item.getPkgQuantity() * item.getCostPrice());
-       }
-       stockReceipt.setTotalAmount(sum);
+       stockReceipt.setTotalAmount(stockReceiptItemList.stream().mapToDouble(StockReceiptItem::getCostPrice).sum());
        
        if(crudApi.save(stockReceipt) != null)
             Msg.info("Receipt finalised with total amount updated!");

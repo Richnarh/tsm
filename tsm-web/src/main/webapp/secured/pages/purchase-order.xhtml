@@ -81,7 +81,6 @@
                                             <p:menuButton value="#{msg.manage}">
                                             <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{purchaseOrderController.editPurchaseOrder(purchaseOrder)}" immediate="true" update=":mainPanel"/>
                                             <p:menuitem icon="#{msg.add_icon}" id="orderItem" class="text-info" value="Order Item" action="#{purchaseOrderController.managePurchaseOrderItem(purchaseOrder)}" immediate="true" update=":mainPanel"/>
-                                            <p:menuitem icon="#{msg.cog_icon}" id="receivedStock" class="text-info" value="Receive Stock" action="#{stockReceiptController.receivePurchaseOrder(purchaseOrder)}" immediate="true" oncomplete="PF('stockReceipt').show()" resetValues="true" update=":mainPanel"/>
                                             <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}" action="#{purchaseOrderController.deletePurchaseOrder(purchaseOrder)}" immediate="true"  update=":mainPanel"/>
                                             </p:menuButton>
                                         </p:column>
@@ -149,9 +148,6 @@
                             </h:panelGroup>
                         </div>
                     </div>
-                    
-                    <ui:include src="includes/stock-receipt.xhtml"/>
-                    <ui:include src="includes/view-stock-receipt.xhtml"/>
                 </h:panelGroup>
             </ui:define>
         </ui:composition>

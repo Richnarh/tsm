@@ -24,6 +24,7 @@ import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.TransferItem;
 import com.khoders.tsm.enums.CustomerType;
+import com.khoders.tsm.enums.ReceiptStatus;
 import com.khoders.tsm.enums.TransferStatus;
 import com.khoders.tsm.jbeans.dto.StockDetails;
 import com.khoders.tsm.services.InventoryService;
@@ -185,6 +186,7 @@ public class StockUploadController implements Serializable
                     stockReceipt.setBatchNo(SystemUtils.generateCode());
                     stockReceipt.setTotalAmount(purchaseOrder.getTotalAmount());
                     stockReceipt.setPurchaseOrder(purchaseOrder);
+                    stockReceipt.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
                     stockReceipt.setLocation(location);
                     stockReceipt.setReceivedBy(appSession.getCurrentUser());
                     stockReceipt.setUserAccount(appSession.getCurrentUser());
@@ -199,6 +201,7 @@ public class StockUploadController implements Serializable
                         orderItem = new PurchaseOrderItem();
                         orderItem.setPurchaseOrder(purchaseOrder);
                         orderItem.setCostPrice(stockData.getCostPrice());
+                        orderItem.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
                         orderItem.setProduct(stockService.getProduct(stockData.getProductName()));
                         orderItem.setQtyPurchased(stockData.getQtyInWarehouse());
                         orderItem.setSubTotal(stockData.getCostPrice() * stockData.getQtyInWarehouse());
@@ -217,8 +220,8 @@ public class StockUploadController implements Serializable
                         receiptItem.setUserAccount(appSession.getCurrentUser());
                         receiptItem.setCompanyBranch(appSession.getCompanyBranch());
                         receiptItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                        
-                        System.out.println("receiptItem: "+receiptItem);
+                        receiptItem.setReceiptStatus(ReceiptStatus.RECEIVED);
+                        receiptItem.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
                         crudApi.save(receiptItem);
                     }
                     if(postToInventory){

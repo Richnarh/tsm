@@ -16,8 +16,8 @@
             <h:form id="saleItemItemTable">
                 <table class="table">
                     <tr>
-                        <th>Package</th>
                         <th>Product</th>
+                        <th>Package</th>
                         <th>Qty</th>
                         <th>Unit Price</th>
                         <th>Total</th>
@@ -25,9 +25,9 @@
                     <tbody>
                         <ui:repeat value="#{salesController.saleItemList}" var="saleItem" >
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td>#{saleItem.quantity}</td>
+                                <td>#{saleItem.inventory.stockReceiptItem}</td>
+                                <td>#{saleItem.inventory.unitMeasurement}</td>
+                               <td>#{saleItem.quantity}</td>
                                 <td>
                                     <h:outputText value="#{saleItem.unitPrice}">
                                         <f:convertNumber pattern="#{msg.money_pattern}"/>

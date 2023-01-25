@@ -277,7 +277,7 @@ public class InventoryService {
     
     public List<Inventory> getInventoryList() {
         try {
-            TypedQuery<Inventory> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Inventory e", Inventory.class);
+            TypedQuery<Inventory> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Inventory e GROUP BY e.stockReceiptItem ORDER BY e.stockReceiptItem ASC", Inventory.class);
             return typedQuery.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

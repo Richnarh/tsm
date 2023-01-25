@@ -4,7 +4,6 @@ import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.SalesTax;
-import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.Tax;
 import com.khoders.tsm.enums.CustomerType;
 import com.khoders.tsm.jbeans.ReportFiles;
@@ -19,6 +18,7 @@ import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.entities.Inventory;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -51,8 +51,7 @@ public class SalesController implements Serializable
     private List<SalesTax> salesTaxList = new LinkedList<>();
     
     private Sales sales = new Sales();
-    private StockReceiptItem stockReceiptItem = new StockReceiptItem();
-    
+    private List<Inventory> inventoryList = new LinkedList<>();
     private DateRangeUtil dateRange = new DateRangeUtil();
     
     private FormView pageView = FormView.listForm();
@@ -100,16 +99,35 @@ public class SalesController implements Serializable
     }
     public void inventoryProperties(){
         System.out.println("Over here----");
-        if(saleItem.getInventory().getPackagePrice() != 0.0){
-          saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+        
+        inventoryList = new LinkedList<>();
+        System.out.println("productPackageList -- "+inventoryList);
+        double packagePrice = 0.0;
+        if (saleItem.getInventory() != null)
+        {
+            if (saleItem.getInventory() != null && saleItem.getInventory().getStockReceiptItem().getProduct() != null)
+            {
+                inventoryList = salesService.queryPackagePrice(saleItem.getInventory().getStockReceiptItem());
+            }
+
+            packagePrice = inventoryList.stream().findFirst().get().getPackagePrice();
+            saleItem.setUnitPrice(packagePrice);
         }
     }
-    public void reset()
-    {
+    
+    public void reset(){
       salesList = new LinkedList<>();  
       dateRange = new DateRangeUtil();
     }
-
+    
+    public void fetchPackagePrice(Inventory inventory)
+    {
+        System.out.println("Item selected -- ");
+        double packagePrice = salesService.queryPackagePrice(inventory.getUnitMeasurement(), saleItem.getInventory().getStockReceiptItem());  
+        System.out.println("packagePrice => "+packagePrice);
+        saleItem.setUnitPrice(packagePrice);
+        saleItem.setInventory(inventory);
+    }
     public void addSaleItem()
     {
         try
@@ -369,6 +387,10 @@ public class SalesController implements Serializable
         address = null;
     }
 
+    public List<Inventory> getInventoryList() {
+        return inventoryList;
+    }
+    
     public SaleItem getSaleItem()
     {
         return saleItem;

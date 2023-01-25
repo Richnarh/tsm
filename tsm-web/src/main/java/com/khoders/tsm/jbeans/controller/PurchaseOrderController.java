@@ -106,11 +106,7 @@ public class PurchaseOrderController implements Serializable
         clearPurchaseOrderItem();
         
         purchaseOrderItemList = inventoryService.getPurchaseOrderItem(purchaseOrder);
-              
-        for (PurchaseOrderItem items : purchaseOrderItemList) 
-        {
-            totalAmount += (items.getQtyPurchased() * items.getCostPrice());
-        }
+        totalAmount = purchaseOrderItemList.stream().mapToDouble(PurchaseOrderItem::getCostPrice).sum();
     }
 
     public void addPurchaseOrderItem()
@@ -132,7 +128,7 @@ public class PurchaseOrderController implements Serializable
 
             if (purchaseOrderItem != null) {
                
-                totalAmount += purchaseOrderItem.getQtyPurchased() * purchaseOrderItem.getCostPrice();
+                totalAmount += purchaseOrderItem.getCostPrice();
                 
                 purchaseOrderItemList.add(purchaseOrderItem);
                 purchaseOrderItemList = CollectionList.washList(purchaseOrderItemList, purchaseOrderItem);
@@ -151,14 +147,7 @@ public class PurchaseOrderController implements Serializable
     {
        try 
         {
-            for (PurchaseOrderItem orderItem : purchaseOrderItemList)
-            {
-//                if (totalAmount != purchaseOrder.getTotalAmount())
-//                {
-//                    FacesContext.getCurrentInstance().addMessage(null,
-//                            new FacesMessage(FacesMessage.SEVERITY_ERROR, Msg.setMsg("The item total sum: " + (totalAmount) + " is not equivalent to the purchase order total: " + purchaseOrder.getTotalAmount()), null));
-//                        return;
-//                }
+            for (PurchaseOrderItem orderItem : purchaseOrderItemList){
                 orderItem.genCode();
                 orderItem.setPurchaseOrder(purchaseOrder);
                 orderItem.setSubTotal(orderItem.getQtyPurchased() * orderItem.getCostPrice());

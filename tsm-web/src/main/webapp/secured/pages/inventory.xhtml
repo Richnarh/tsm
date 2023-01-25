@@ -21,7 +21,7 @@
                                                  action="#{inventoryController.initProduct()}" update="@form"/>
                                 <p:dataTable value="#{inventoryController.stockReceiptItemList}" var="stockReceiptItem" scrollable="true" scrollHeight="400">
                                     <p:column headerText="#{msg.product}" filterBy="#{stockReceiptItem.stockReceiptItem.product.productName}" filterMatchMode="contains">
-                                        <h:commandLink styleClass="ptext-link" value="#{stockReceiptItem.stockReceiptItem.product.productName} #{stockReceiptItem.stockReceiptItem.product.packaging.packagingName}" action="#{inventoryController.selectProduct(stockReceiptItem)}">
+                                        <h:commandLink styleClass="ptext-link" value="#{stockReceiptItem.product.productName} #{stockReceiptItem.product.packaging.packagingName}" action="#{inventoryController.selectProduct(stockReceiptItem)}">
                                             <p:ajax update=":inventoryForm"/>
                                         </h:commandLink>
                                     </p:column>
@@ -55,14 +55,14 @@
                                     </h:panelGrid>
                                     <br/>
                                     <p:commandButton value="#{inventoryController.optionText}" class="kbtn-success mx-3" icon="#{msg.check_icon}" action="#{inventoryController.saveInventory()}" update=":inventoryTable, @form"/>
-                                    <p:commandButton value="#{msg.clear}" class="kbtn-default" icon="#{msg.clear_icon}" action="#{inventoryController.clearProductPackage()}" immediate="true" update="@form"/>
+                                    <p:commandButton value="#{msg.clear}" class="kbtn-default" icon="#{msg.clear_icon}" action="#{inventoryController.clearInventory()}" immediate="true" update="@form"/>
                                 </div>
 
                                 <div>
                                     <p:dataTable id="segmentTable" value="#{inventoryController.segmentedList}" var="segment">
                                         <f:facet name="header">Snapshot of selected product</f:facet>
                                         <p:column headerText="Product">
-                                            <h:outputText value="#{segment.product.productName}"/>
+                                            <h:outputText value="#{segment.stockReceiptItem.product.productName}"/>
                                         </p:column>
                                         <p:column headerText="Units" style="width: 100px;">
                                             <h:outputText value="#{segment.unitMeasurement.units}"/>

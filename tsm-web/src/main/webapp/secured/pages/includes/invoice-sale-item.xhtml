@@ -60,8 +60,8 @@
                     <tbody>
                         <ui:repeat value="#{salesController.saleItemList}" var="saleItem" >
                             <tr>
-                                <td>#{saleItem.productPackage.unitMeasurement.units}</td>
-                                <td>#{saleItem.stockReceiptItem.product.productName}</td>
+                                <td>#{saleItem.inventory.unitMeasurement}</td>
+                                <td>#{saleItem.inventory.stockReceiptItem}</td>
                                 <td>#{saleItem.quantity}</td>
                                 <td>
                                     <h:outputText value="#{saleItem.unitPrice}">

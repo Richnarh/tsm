@@ -14,7 +14,6 @@ import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Inventory;
-import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import java.time.LocalDate;
@@ -141,7 +140,20 @@ public class SalesService
         }
         return Collections.emptyList();
     }
-    
+    public List<Inventory> queryPackagePrice(StockReceiptItem receiptItem)
+    {
+        try
+        {
+            return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem =:receiptItem", Inventory.class)
+                    .setParameter("receiptItem", receiptItem)
+                    .getResultList();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
     public double queryPackagePrice(UnitMeasurement unitMeasurement, StockReceiptItem StockReceiptItem)
     {
         try

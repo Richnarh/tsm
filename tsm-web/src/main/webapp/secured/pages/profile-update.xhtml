@@ -22,7 +22,13 @@
                                         <div class="form-group row">
                                             <label class="col-sm-4 col-form-label">#{msg.fullname}<span class="text-danger">*</span> </label>
                                             <div class="col-md-8">
-                                                <p:inputText class="col" value="#{appSession.currentUser.username}" required="true"/>
+                                                <p:inputText class="col" value="#{appSession.currentUser.fullname}" required="true"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row pt-3">
+                                            <label class="col-sm-4 col-form-label">#{msg.email_ddress}<span class="text-danger">*</span> </label>
+                                            <div class="col-md-8">
+                                                <p:inputText class="col" value="#{appSession.currentUser.emailAddress}" required="true"/>
                                             </div>
                                         </div>
                                         

@@ -8,11 +8,9 @@
 
     <h:panelGrid columns="2" class="spaced-form"> 
         <span>#{msg.product} <span class="text-danger">*</span> </span>                                
-        <p:selectOneMenu style="width: 100%" 
-                         filter="true" filterMatchMode="contains" required="true">
+        <p:selectOneMenu style="width: 100%" filter="true" value="#{salesController.saleItem.inventory}" filterMatchMode="contains" required="true">
             <f:selectItem itemLabel="#{msg.choose} Product"/>
-            <f:selectItems value="#{usercommonBeans.stockReceiptItemList}"/>
-
+            <f:selectItems value="#{usercommonBeans.inventoryList}"/>
             <p:ajax listener="#{salesController.inventoryProperties()}" update="packagePanel" oncomplete="PF('prodPackage').show()" resetValues="true"/>
         </p:selectOneMenu>
 
@@ -20,7 +18,7 @@
         <p:inputText value="#{salesController.saleItem.quantity}" required="true"/>
 
         <span>Unit Price <span class="text-danger">*</span> </span>
-        <p:inputText id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
+        <p:inputText disabled="true" id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
 
         <span>Qty Rem</span>
         <h:inputText class="form-control" value="#{salesController.saleItem.quantity}" disabled="true" style="width: 100px"/>
