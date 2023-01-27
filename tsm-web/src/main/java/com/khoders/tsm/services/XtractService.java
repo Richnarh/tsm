@@ -8,11 +8,12 @@ import com.khoders.tsm.jbeans.dto.SalesReceipt;
 import com.khoders.tsm.jbeans.dto.SalesTaxDto;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
-import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
+import com.khoders.tsm.jbeans.dto.ProductDto;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +40,8 @@ public class XtractService
         List<SaleItemDto> saleItemList = new LinkedList<>();
         List<SalesTaxDto> salesTaxes = new LinkedList<>();
 
-        salesReceipt.setReceiptNumber(SystemUtils.generateRefNo());
+        salesReceipt.setReceiptNumber(sales.getReceiptNumber());
+        salesReceipt.setBranchName(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchName() : "");
         salesReceipt.setDate(LocalDateTime.now());
         salesReceipt.setCashier(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
         salesReceipt.setPhoneNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
@@ -52,7 +54,6 @@ public class XtractService
 
         salesReceipt.setTotalAmount(totalAmount);
         salesReceipt.setTotalPayable(invoiceValue);
-
         for (SalesTax salesTax : salesTaxesList)
         {
             SalesTaxDto taxItem = new SalesTaxDto();
@@ -62,14 +63,14 @@ public class XtractService
 
             salesTaxes.add(taxItem);
         }
-
+        
         for (SaleItem posCart : cartList)
         {
             SaleItemDto itemDto = new SaleItemDto();
-//            if(posCart.getInventory() != null && posCart.getInventory().getProduct() != null)
-//            {
-//              itemDto.setProduct(posCart.getInventory().getProduct().getProductName());
-//            }
+            if(posCart.getInventory() != null && posCart.getInventory().getStockReceiptItem() != null)
+            {
+              itemDto.setProduct(posCart.getInventory().getStockReceiptItem().getProduct().getProductName());
+            }
             itemDto.setQuantity(posCart.getQuantity());
             itemDto.setUnitPrice(posCart.getUnitPrice());
 
@@ -202,25 +203,24 @@ public class XtractService
 //        return invoiceDto;
 //    }
 //    
-//    public List<ProductDto> extractProduct(){
-//        List<ProductDto> dtoList = new LinkedList<>();
-//         
-//        List<Product> productList = tsmService.getProductList();
-//        for (Product product : productList)
-//        {
-//         ProductDto dto = new ProductDto();
-//         dto.setCompanyAddress(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchName() : "");
-//         dto.setWebsite(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null ? appSession.getCompanyBranch().getCompanyProfile().getWebsite() : "");
-//         dto.setTelNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
-//         dto.setProductCode(product.getRefNo());
-//         dto.setProductName(product.getProductName());
-//         dto.setReorderLevel(product.getReorderLevel());
-//         dto.setPackaging(product.getPackaging() != null ? product.getPackaging().getPackagingName() : "");
-//         dto.setProductType(product.getProductType() != null ? product.getProductType().getProductTypeName() : "");
-//         dtoList.add(dto);
-//        }
-//        return dtoList;
-//    }
+    public List<ProductDto> extractProduct(){
+        List<ProductDto> dtoList = new LinkedList<>();
+         
+        List<Product> productList = inventoryService.getProductList();
+        for (Product product : productList){
+         ProductDto dto = new ProductDto();
+         dto.setCompanyAddress(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchName() : "");
+         dto.setWebsite(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null ? appSession.getCompanyBranch().getCompanyProfile().getWebsite() : "");
+         dto.setTelNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
+         dto.setProductCode(product.getRefNo());
+         dto.setProductName(product.getProductName());
+         dto.setReorderLevel(product.getReorderLevel());
+         dto.setPackaging(product.getPackaging() != null ? product.getPackaging().getPackagingName() : "");
+         dto.setProductType(product.getProductType() != null ? product.getProductType().getProductTypeName() : "");
+         dtoList.add(dto);
+        }
+        return dtoList;
+    }
 //    
 //    public List<StockSummary> extractStockSummary(){
 //        List<StockSummary> viewStockList = new LinkedList<>();

@@ -23,6 +23,9 @@
                                         
                                         <span>Tax Rate</span>
                                         <p:inputText required="true" value="#{taxController.tax.taxRate}"/>
+                                        
+                                        <span>Order</span>
+                                        <p:inputText required="true" value="#{taxController.tax.reOrder}"/>
                                     </h:panelGrid>
 
                                     <div class="pt-3">
@@ -44,6 +47,10 @@
                                                                                 
                                         <p:column headerText="Tax Rate">
                                             #{tax.taxRate} %
+                                        </p:column>
+                                        
+                                        <p:column headerText="Re order">
+                                            #{tax.reOrder}
                                         </p:column>
                                                                                 
                                         <p:column headerText="#{msg.action}" exportable="false" style="width: 80px;">

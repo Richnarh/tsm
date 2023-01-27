@@ -335,6 +335,7 @@ public class SalesController implements Serializable
                 Msg.error("Cannot process an empty receipt!");
                 return;
             }
+            
             SalesReceipt extractedItem = xtractService.extractToPosReceipt(saleItemList, sales);
 
             salesReceiptList.add(extractedItem);

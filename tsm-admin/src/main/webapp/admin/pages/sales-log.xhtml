@@ -85,7 +85,7 @@
                                     </div>
                                 </div>
                                 <div class="card">
-                                    <h5 class="card-header bg-gradient-lightblue">
+                                    <h5 class="card-header" style="background-color: #154c79; color: #f9f9f9;">
                                         S A L E S 
 
                                         <span>(#{transactionHistoryController.clientName} - #{transactionHistoryController.phoneNumber}) - <h:outputText value="#{transactionHistoryController.valueDate}">
@@ -96,7 +96,7 @@
                                         <p:dataTable value="#{transactionHistoryController.saleItemList}" var="saleItem" scrollable="true" scrollHeight="400">
 
                                             <p:column headerText="#{msg.product}">
-                                                #{saleItem.stockReceiptItem.product.productName}
+                                                #{saleItem.inventory.stockReceiptItem}
                                             </p:column>
                                             <p:column headerText="#{msg.quantity}" class="text-right">
                                                 #{saleItem.quantity}

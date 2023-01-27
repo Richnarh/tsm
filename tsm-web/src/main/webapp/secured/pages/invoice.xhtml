@@ -99,6 +99,7 @@
 
                                         <p:column headerText="#{msg.action}" style="width: 100px;">
                                             <p:menuButton value="#{msg.choose}">
+                                                <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}" ajax="false"/>
                                                 <p:menuitem icon="#{msg.cog_icon}" value="View as POS" immediate="true" action="#{salesController.viewAsPosSale(sales)}" ajax="false"/>
                                                 <p:menuitem icon="#{msg.cog_icon}" value="View as Invoice" immediate="true" action="#{salesController.viewAsInvoiceSale(sales)}" ajax="false"/>
                                             </p:menuButton>
@@ -113,7 +114,6 @@
                             
                             <!-- To be used later -->
                             <ui:remove>
-                                <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print POS Receipt" action="#{salesController.generatePOSReceipt(sales)}" ajax="false"/>
                                 <p:menuitem icon="#{msg.cog_icon}" value="View as Invoice" immediate="true" action="#{salesController.viewAsInvoiceSale(sales)}" ajax="false"/>
                                 <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Cash Receipt" action="#{salesController.geneateCashReceipt(sales)}" ajax="false"/>
                                 <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Invoice" action="#{salesController.generateInvoice(sales)}" ajax="false"/>
