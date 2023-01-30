@@ -48,21 +48,17 @@
                                    </ui:remove>
 
                                     <div class="float-end">
-                                        <h:commandButton id="pos" value="#{msg.new} Sale" class="btn btn-primary btn-sm"
-                                                         action="#{salesController.initPosSales()}">
+                                        <h:commandButton id="pos" value="#{msg.new} Sale" class="btn btn-outline-primary btn-sm"
+                                                         action="#{salesController.initNewSale()}">
                                             <p:ajax update=":mainPanel"/>
                                         </h:commandButton>
                                     </div>
-
                                     <span class="shadow-sm float-end col-1 faded-shade">Count: #{salesController.salesList.size()}</span>
                                 </h:form>
 
                                 <h:form id="salesTable" class="mb-3">
-
-                                    <p:dataTable value="#{salesController.salesList}" reflow="true" var="sales"
-                                                 scrollable="true" scrollHeight="400">
+                                    <p:dataTable value="#{salesController.salesList}" reflow="true" var="sales" scrollable="true" scrollHeight="400">
                                         <f:facet name="header">Transactions/Sales for Today</f:facet>
-
                                         <p:column style="width: 15px;">
                                             <p:rowToggler/>
                                         </p:column>
@@ -91,6 +87,10 @@
                                             #{sales.customer.customerName}
                                         </p:column>
 
+                                        <p:column headerText="Sales Type">
+                                            <h:outputText value="#{sales.salesType}"/>
+                                        </p:column>
+                                        
                                         <p:column headerText="#{msg.total_amount}" class="text-end">
                                             <h:outputText value="#{sales.totalAmount}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
@@ -100,8 +100,7 @@
                                         <p:column headerText="#{msg.action}" style="width: 100px;">
                                             <p:menuButton value="#{msg.choose}">
                                                 <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}" ajax="false"/>
-                                                <p:menuitem icon="#{msg.cog_icon}" value="View as POS" immediate="true" action="#{salesController.viewAsPosSale(sales)}" ajax="false"/>
-                                                <p:menuitem icon="#{msg.cog_icon}" value="View as Invoice" immediate="true" action="#{salesController.viewAsInvoiceSale(sales)}" ajax="false"/>
+                                                <p:menuitem icon="#{msg.check_icon_circle}" value="View Sales" immediate="true" action="#{salesController.viewAsPosSale(sales)}" ajax="false"/>
                                             </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
@@ -125,15 +124,18 @@
                                 
                             <h:panelGroup rendered="#{salesController.pageView.createView}">
                                 <div class="py-3">
-                                    <ui:include src="includes/pos-sale-item.xhtml"/>
-                                </div>
-                            </h:panelGroup>
-
-                            <h:panelGroup rendered="#{salesController.pageView.detailView}">
-                                <div class="py-3">
+                                    <h:form>
+                                        
+                                    </h:form>
                                     <ui:include src="includes/invoice-sale-item.xhtml"/>
                                 </div>
                             </h:panelGroup>
+
+<!--                            <h:panelGroup rendered="{salesController.pageView.detailView}">
+                                <div class="py-3">
+                                    <ui:include src="includes/invoice-sale-item.xhtml"/>
+                                </div>
+                            </h:panelGroup>-->
                         </div>
                     </div>
                 </h:panelGroup>

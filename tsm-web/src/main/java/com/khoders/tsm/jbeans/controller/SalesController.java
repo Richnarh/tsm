@@ -1,5 +1,6 @@
 package com.khoders.tsm.jbeans.controller;
 
+import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
@@ -19,6 +20,7 @@ import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
+import com.khoders.tsm.enums.SalesType;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -46,6 +48,7 @@ public class SalesController implements Serializable
     private SaleItem saleItem = new SaleItem();
     private List<SaleItem> saleItemList = new LinkedList<>();
     private List<Sales> salesList = new LinkedList<>();
+    private SalesType selectedSalesType = SalesType.NORMAL_SALES;
     
     private List<Tax> taxList = new LinkedList<>();
     private List<SalesTax> salesTaxList = new LinkedList<>();
@@ -60,6 +63,7 @@ public class SalesController implements Serializable
     
     double totalAmount,totalSaleAmount,totalPayable = 0.0;
     private Customer customer = null;
+    private PaymentMethod paymentMethod = PaymentMethod.CASH;
     
     @PostConstruct
     private void init()
@@ -69,7 +73,7 @@ public class SalesController implements Serializable
         taxList = salesService.getTaxList();
     }
     
-    public void initPosSales()
+    public void initNewSale()
     {
         clearAll();
         pageView.restToCreateView();
@@ -101,7 +105,6 @@ public class SalesController implements Serializable
         System.out.println("Over here----");
         
         inventoryList = new LinkedList<>();
-        System.out.println("productPackageList -- "+inventoryList);
         double packagePrice = 0.0;
         if (saleItem.getInventory() != null)
         {
@@ -115,6 +118,11 @@ public class SalesController implements Serializable
         }
     }
     
+    public void selectSalesType(){
+        System.out.println("selectedSalesType: "+sales.getSalesType());
+        this.selectedSalesType = sales.getSalesType();
+    }
+        
     public void reset(){
       salesList = new LinkedList<>();  
       dateRange = new DateRangeUtil();
@@ -377,6 +385,7 @@ public class SalesController implements Serializable
     public void closePage()
     {
        sales = new Sales();
+       sales.setSalesType(SalesType.NORMAL_SALES);
        enableType = false;
        resetEnable();
        pageView.restToListView();
@@ -521,4 +530,29 @@ public class SalesController implements Serializable
     {
         return totalPayable;
     }
+
+    public SalesType getSelectedSalesType() {
+        return selectedSalesType;
+    }
+
+    public void setSelectedSalesType(SalesType selectedSalesType) {
+        this.selectedSalesType = selectedSalesType;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+    
 }

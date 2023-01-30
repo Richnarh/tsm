@@ -28,6 +28,7 @@
     <class>com.khoders.tsm.entities.system.UserPageAction</class>
     <class>com.khoders.tsm.entities.Packaging</class>
     <class>com.khoders.tsm.entities.UnitMeasurement</class>
+    <class>com.khoders.tsm.entities.CreditPayment</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

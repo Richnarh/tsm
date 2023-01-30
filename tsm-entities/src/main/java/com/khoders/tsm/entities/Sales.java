@@ -8,6 +8,7 @@ package com.khoders.tsm.entities;
 import com.khoders.tsm.entities.system.UserAccountRecord;
 import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.enums.SalesType;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,8 +46,9 @@ public class Sales extends UserAccountRecord {
     @Column(name = "qty_purchased")
     private double qtyPurchased;
 
-    @Column(name = "is_proforma_invoice")
-    private boolean isProformaInvoice = false;
+    @Column(name = "sales_type")
+    @Enumerated(EnumType.STRING)
+    private SalesType salesType = SalesType.NORMAL_SALES;
 
     public LocalDateTime getPurchaseDate() {
         return purchaseDate;
@@ -96,14 +98,14 @@ public class Sales extends UserAccountRecord {
         this.qtyPurchased = qtyPurchased;
     }
 
-    public boolean isIsProformaInvoice() {
-        return isProformaInvoice;
+    public SalesType getSalesType() {
+        return salesType;
     }
 
-    public void setIsProformaInvoice(boolean isProformaInvoice) {
-        this.isProformaInvoice = isProformaInvoice;
+    public void setSalesType(SalesType salesType) {
+        this.salesType = salesType;
     }
-
+    
     public void genReceipt() {
         if (getReceiptNumber() != null) {
             setReceiptNumber(getReceiptNumber());
@@ -111,4 +113,11 @@ public class Sales extends UserAccountRecord {
             setReceiptNumber(SystemUtils.generateRefNo());
         }
     }
+
+    @Override
+    public String toString() {
+        return customer+" "+receiptNumber;
+    }
+    
+    
 }

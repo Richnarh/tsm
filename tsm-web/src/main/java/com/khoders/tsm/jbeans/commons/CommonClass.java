@@ -9,6 +9,7 @@ import com.khoders.tsm.enums.TransferStatus;
 import com.khoders.resource.enums.ClientType;
 import com.khoders.resource.enums.DeliveryMethod;
 import com.khoders.resource.enums.PaymentMethod;
+import com.khoders.tsm.enums.SalesType;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -42,5 +43,9 @@ public class CommonClass implements Serializable
     public List<TransferStatus> getTransferStatusList()
     {
         return Arrays.asList(TransferStatus.values());
+    }
+    public List<SalesType> getSalesTypeList()
+    {
+        return Arrays.asList(SalesType.values());
     }
 }

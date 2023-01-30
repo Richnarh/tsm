@@ -97,19 +97,6 @@ public class Customer extends UserAccountRecord
     {
         this.emailAddress = emailAddress;
     }
-    
-    @Override
-    public void genCode()
-    {
-        if (getRefNo() != null)
-        {
-            setRefNo(getRefNo());
-        } else
-        {
-            setRefNo(SystemUtils.generateRefNo());
-        }
-    } 
-    
     @Override
     public String toString()
     {

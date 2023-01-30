@@ -12,6 +12,7 @@ import com.khoders.tsm.entities.system.UserAccount;
 import com.khoders.tsm.services.InventoryService;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.tsm.entities.Packaging;
+import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.UnitMeasurement;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -44,6 +45,7 @@ public class UsercommonBeans implements Serializable
     private List<Inventory> inventoryList = new LinkedList<>();
     private List<Packaging> packagingList = new LinkedList<>();
     private List<UnitMeasurement> unitMeasurementList = new LinkedList<>();
+    private List<Sales> salesList = new LinkedList<>();
     
     @PostConstruct
     public void init(){
@@ -59,6 +61,7 @@ public class UsercommonBeans implements Serializable
         inventoryList = inventoryService.getInventoryList();
         packagingList = inventoryService.getPackagingList();
         unitMeasurementList = inventoryService.getUnitMeasurementList();
+        salesList = inventoryService.getSales();
     }
 
     public List<Product> getProductList()
@@ -113,6 +116,10 @@ public class UsercommonBeans implements Serializable
 
     public List<UnitMeasurement> getUnitMeasurementList() {
         return unitMeasurementList;
+    }
+
+    public List<Sales> getSalesList() {
+        return salesList;
     }
     
 }

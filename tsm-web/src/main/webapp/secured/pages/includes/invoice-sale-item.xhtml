@@ -7,77 +7,89 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
 
     <div class="container">
-        <h:form id="invoiceItemForm">    
-            <div class="row">
-                <div class="mb-3">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span>#{msg.customer} <span class="text-danger">*</span></span>                                
-                            <h:selectOneMenu class="form-control" value="#{salesController.sales.customer}" required="true">
-                                <f:selectItem itemLabel="#{msg.choose} Customer"/>
-                                <f:selectItems value="#{usercommonBeans.customerList}"/>
+        <div class="row">
+            <div class="mb-3">
+                <h:form id="invoiceItemForm" class="spaced-form">    
+                    <h:panelGrid columns="2">
+                        <span class="mx-2">Sales Type</span>
+                        <p:selectOneMenu value="#{salesController.sales.salesType}">
+                            <f:selectItems value="#{commonClass.salesTypeList}"/>
+                            <p:ajax listener="#{salesController.selectSalesType()}" update="@form"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <br/>
+                    <h:panelGroup rendered="#{salesController.selectedSalesType != 'NORMAL_SALES'}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <span>#{msg.customer} <span class="text-danger">*</span></span>                                
+                                <h:selectOneMenu class="form-control" value="#{salesController.sales.customer}" required="true">
+                                    <f:selectItem itemLabel="#{msg.choose} Customer"/>
+                                    <f:selectItems value="#{usercommonBeans.customerList}"/>
 
-                                <p:ajax listener="#{salesController.selectedCustomerType()}" update="@form"/>
-                            </h:selectOneMenu>
-                            
-                            <span>#{msg.payment_method}</span>                                
-                            <h:selectOneMenu class="form-control" value="#{salesController.sales.paymentMethod}">
-                                <f:selectItem itemLabel="#{msg.choose}"/>
-                                <f:selectItems value="#{commonClass.paymentMethodList}"/>
-                            </h:selectOneMenu>
-                            
-                            <br/>
-                            <span class="mx-2">Proforma Invoice</span>
-                            <p:selectBooleanCheckbox value="#{salesController.sales.isProformaInvoice}"/>
+                                    <p:ajax listener="#{salesController.selectedCustomerType()}" update="@form"/>
+                                </h:selectOneMenu>
+
+                                <span>#{msg.payment_method}</span>                                
+                                <h:selectOneMenu class="form-control" value="#{salesController.sales.paymentMethod}">
+                                    <f:selectItem itemLabel="#{msg.choose}"/>
+                                    <f:selectItems value="#{commonClass.paymentMethodList}"/>
+                                </h:selectOneMenu>
+
+                                <br/>
+                            </div>
+                            <div class="col-md-4">
+                                <h:panelGroup id="customerType" rendered="#{salesController.enableType == true}">
+                                    <span class="mx-2">Name</span>
+                                    <h:inputText class="form-control" value="#{salesController.customerName}"/>
+
+                                    <span class="mx-2">Phone #</span>
+                                    <h:inputText class="form-control" value="#{salesController.phoneNumber}"/>
+
+                                    <span class="mx-2">Address</span>
+                                    <h:inputText class="form-control" value="#{salesController.address}"/>
+                                </h:panelGroup>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <h:panelGroup id="customerType" rendered="#{salesController.enableType == true}">
-                                <span class="mx-2">Name</span>
-                                <h:inputText class="form-control" value="#{salesController.customerName}"/>
-
-                                <span class="mx-2">Phone #</span>
-                                <h:inputText class="form-control" value="#{salesController.phoneNumber}"/>
-
-                                <span class="mx-2">Address</span>
-                                <h:inputText class="form-control" value="#{salesController.address}"/>
-                            </h:panelGroup>
-                        </div>
-                    </div>
-                </div>
-                <hr/>
-                <div class="col-lg-4">      
+                    </h:panelGroup>
+                </h:form>
+            </div>
+            <hr/>
+            <div class="col-lg-4">      
+                <h:form id="itemForm">
                     <ui:include src="item-form.xhtml"/>
-                </div>
-                <div class="col-lg-8">
+                </h:form>
+            </div>
+            <div class="col-lg-8">
+                <h:form id="saleItemItemTable">
                     <table class="table">
-                    <tr>
-                        <th>Package</th>
-                        <th>Product</th>
-                        <th>Qty</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
-                    </tr>
-                    <tbody>
-                        <ui:repeat value="#{salesController.saleItemList}" var="saleItem" >
-                            <tr>
-                                <td>#{saleItem.inventory.unitMeasurement}</td>
-                                <td>#{saleItem.inventory.stockReceiptItem}</td>
-                                <td>#{saleItem.quantity}</td>
-                                <td>
-                                    <h:outputText value="#{saleItem.unitPrice}">
-                                        <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                    </h:outputText>
-                                </td>
-                                <td>
-                                    <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
-                                        <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                    </h:outputText>
-                                </td>
-                            </tr>
-                        </ui:repeat>
-                    </tbody>
-                </table>
-                
+                        <tr>
+                            <th>Package</th>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                        <tbody>
+                            <ui:repeat value="#{salesController.saleItemList}" var="saleItem" >
+                                <tr>
+                                    <td>#{saleItem.inventory.unitMeasurement}</td>
+                                    <td>#{saleItem.inventory.stockReceiptItem}</td>
+                                    <td>#{saleItem.quantity}</td>
+                                    <td>
+                                        <h:outputText value="#{saleItem.unitPrice}">
+                                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td>
+                                        <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
+                                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                        </h:outputText>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+
                     <center class="py-3 mt-2">
                         <h:panelGrid columns="2">
                             <span>Total Amount</span>
@@ -88,16 +100,13 @@
                     </center>
                     <hr/>
                     <center>
-                        <p:commandButton icon="#{msg.check_icon}" value="Process and Save Transaction" action="#{salesController.saveAll()}" class="kbtn-success mr-5" immediate="true" ajax="false" update="@form"/>
-                        <p:commandButton value="#{msg.clear} All" class="kbtn-default mx-3" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form"/>
-                        <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{salesController.closePage()}">
-                            <p:ajax update="@form,:mainPanel"/>
-                        </h:commandButton>
+                        <p:commandButton icon="#{msg.check_icon}" value="Process and Save Transaction" action="#{salesController.saveAll()}" class="kbtn-success mr-5" immediate="true" ajax="false" update="@form, :invoiceItemForm, "/>
+                        <p:commandButton value="#{msg.clear} All" class="kbtn-default mx-3" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form, :itemForm"/>
+                        <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{salesController.closePage()}"/>
                     </center>
-                    <br/>
-                </div>
+                </h:form>
             </div>
-        </h:form>
+        </div>
     </div>
 </html>
 
