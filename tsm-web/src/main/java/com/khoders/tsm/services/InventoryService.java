@@ -187,12 +187,7 @@ public class InventoryService {
 
     public List<Sales> getSales() {
         try {
-            TypedQuery<Sales> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2", Sales.class)
-                    .setParameter(1, LocalDate.now())
-                    .setParameter(2, LocalDate.now());
-
-            return typedQuery.getResultList();
-
+            return crudApi.getEm().createQuery("SELECT e FROM Sales e", Sales.class).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }

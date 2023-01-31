@@ -13,6 +13,7 @@ import com.khoders.tsm.enums.CustomerType;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
+import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
@@ -168,5 +169,11 @@ public class SalesService
             e.printStackTrace();
         }
         return 0.0;
+    }
+
+    public List<CreditPayment> getCreditSales(Sales sales) {
+        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = ?1", CreditPayment.class)
+                    .setParameter(1, sales)
+                    .getResultList();
     }
 }

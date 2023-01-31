@@ -55,7 +55,7 @@ public class CreditPayment extends UserAccountRecord{
     
     @Column(name = "payment_method")
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+    private PaymentMethod paymentMethod = PaymentMethod.CASH;
     
     @Column(name = "delete_payment")
     private boolean deletePyament;

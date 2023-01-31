@@ -16,21 +16,28 @@
                 <h:panelGroup id="mainPanel">
                     <div class="card p-3">
                         <div class="container-fluid">
-                            <div class="card-header">#{msg.creditPayment}s</div>
+                            <div class="card-header">#{msg.credit_payment}s</div>
                             <h:panelGroup rendered="#{creditPaymentController.pageView.listView}">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-12 py-2">
                                         <h:form id="initForm" style="margin-bottom: 5px;">
+                                            <h:panelGrid columns="2">
+                                                <span>Select Sale &nbsp;</span>
+                                                <p:selectOneMenu value="#{creditPaymentController.creditPayment.sales}">
+                                                    <f:selectItem itemLabel="#{msg.choose}"/>
+                                                    <f:selectItems value="#{usercommonBeans.salesList}"/>
+                                                    <p:ajax listener="#{creditPaymentController.selectSale()}" update="@form, :creditPaymentTable"/>
+                                                </p:selectOneMenu>
+                                            </h:panelGrid>
                                             <div class="float-end">
                                                 <p:commandButton id="reload" value="Reload" class="mx-3" icon="#{msg.refresh_icon}"
                                                                  action="#{creditPaymentController.init()}" update=":mainPanel"/>
 
-                                                <h:commandButton id="newProduct" value="#{msg.new} #{msg.creditPayment}" class="btn btn-outline-primary btn-sm"
-                                                                 action="#{creditPaymentController.initProduct()}">
+                                                <h:commandButton id="newProduct" value="#{msg.new} #{msg.credit_payment}" class="btn btn-outline-primary btn-sm"
+                                                                 action="#{creditPaymentController.initCreditPayment()}">
                                                     <p:ajax update=":mainPanel"/>
                                                 </h:commandButton>
                                             </div>
-                                            <span class="shadow-sm col-2 faded-shade">Count: #{creditPaymentController.creditPaymentList.size()}</span>
                                         </h:form>
                                     </div>
                                 </div>
@@ -60,7 +67,9 @@
                                         </p:rowExpansion>
 
                                         <p:column headerText="#{msg.date}">
-                                            <h:outputText value="#{creditPayment.customer}"/>
+                                            <h:outputText value="#{creditPayment.paymentDate}">
+                                                <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                                            </h:outputText>
                                         </p:column>
 
                                         <p:column headerText="#{msg.payment_method}">
@@ -76,13 +85,13 @@
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
                                             </h:outputText>
                                         </p:column>
-                                        
+
                                         <p:column headerText="#{msg.amount} paid" class="text-end">
                                             <h:outputText value="#{creditPayment.amountPaid}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
                                             </h:outputText>
                                         </p:column>
-                                        
+
                                         <p:column headerText="#{msg.credit} Rem." class="text-end">
                                             <h:outputText value="#{creditPayment.creditRemaining}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
@@ -91,8 +100,8 @@
 
                                         <p:column headerText="#{msg.action}" style="width: 100px;">
                                             <p:menuButton value="#{msg.manage}">
-                                                <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{creditPaymentController.editProduct(creditPayment)}" immediate="true" ajax="false"/>
-                                                <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}" action="#{creditPaymentController.deleteProduct(creditPayment)}" immediate="true"  update=":mainPanel"/>
+                                                <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{creditPaymentController.editCreditPayment(creditPayment)}" immediate="true" ajax="false"/>
+                                                <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}" action="#{creditPaymentController.deleteCreditPayment(creditPayment)}" immediate="true"  update=":mainPanel"/>
                                             </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
@@ -110,9 +119,9 @@
                                 <h:form class="spaced-form">
                                     <h:panelGrid columns="2">
                                         <h:panelGrid columns="2">
-                                            <span>Selected #{msg.customer}</span>
-                                            <h:outputText class="field-shade" value="#{creditPaymentController.selectedCustomer}"/>
-                                            
+                                            <span>Selected sale</span>
+                                            <h:outputText class="field-shade" value="#{creditPaymentController.selectedSale.customer} #{creditPaymentController.selectedSale.receiptNumber}"/>
+
                                             <span>#{msg.payment_method}</span>
                                             <h:selectOneMenu class="form-control" value="#{creditPaymentController.creditPayment.paymentMethod}">
                                                 <f:selectItem itemLabel="#{msg.choose}"/>
@@ -120,11 +129,11 @@
                                             </h:selectOneMenu>
 
                                             <span>#{msg.date} <span class="text-danger">*</span></span>
-                                            <p:datePicker value="#{creditPaymentController.creditPayment.paymentDate}" yearNavigator="true" monthNavigator="true" required="true"/>
+                                            <p:datePicker pattern="#{msg.formatted_date}" value="#{creditPaymentController.creditPayment.paymentDate}" yearNavigator="true" monthNavigator="true" required="true"/>
 
                                             <span>#{msg.amount} paid <span class="text-danger">*</span></span>
                                             <p:inputText value="#{creditPaymentController.creditPayment.amountPaid}" required="true"/>
-                                            
+
                                             <span>#{msg.description}</span>
                                             <p:inputText value="#{creditPaymentController.creditPayment.description}"/>
                                         </h:panelGrid>

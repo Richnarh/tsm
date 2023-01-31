@@ -13,6 +13,7 @@ import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Customer;
+import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.services.SalesService;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -23,7 +24,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -43,21 +43,31 @@ public class CreditPaymentController implements Serializable{
     private Customer selectedCustomer = null;
    
     private FormView pageView = FormView.listForm();
+    private Sales selectedSale = null;
     
     @PostConstruct
     public void init(){
         clearCreditPayment();
     }
     
-    public void initCreditPayment()
-    {
+    public void initCreditPayment(){
+        if(selectedSale == null){
+            Msg.error("Please select sale");
+            return;
+        }
         clearCreditPayment();
         pageView.restToCreateView();
     }
+    
+   public void selectSale(){
+       selectedSale = creditPayment.getSales();
+       creditPaymentList = salesService.getCreditSales(selectedSale);
+   }
 
    public void saveCreditPayment()
     {
        try{
+           creditPayment.setSales(selectedSale);
            creditPayment.genCode();
           if(crudApi.save(creditPayment) != null){
               creditPaymentList = CollectionList.washList(creditPaymentList, creditPayment);
@@ -72,8 +82,7 @@ public class CreditPaymentController implements Serializable{
             e.printStackTrace();
         }
     }
-   
-   
+      
     public void editCreditPayment(CreditPayment creditPayment)
     {
        pageView.restToCreateView();
@@ -88,14 +97,11 @@ public class CreditPaymentController implements Serializable{
           if(crudApi.delete(creditPayment))
           {
               creditPaymentList.remove(creditPayment);
-              
-              FacesContext.getCurrentInstance().addMessage(null, 
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, Msg.DELETE_MESSAGE, null)); 
+              Msg.info(Msg.DELETE_MESSAGE);
           }
           else
           {
-              FacesContext.getCurrentInstance().addMessage(null, 
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, Msg.FAILED_MESSAGE, null));
+            Msg.error(Msg.FAILED_MESSAGE);
           }
         } catch (Exception e) 
         {
@@ -106,6 +112,7 @@ public class CreditPaymentController implements Serializable{
     public void closePage()
     {
        creditPayment = new CreditPayment();
+       selectedSale = null;
        optionText = "Save Changes";
        pageView.restToListView();
     }
@@ -157,5 +164,12 @@ public class CreditPaymentController implements Serializable{
     {
         this.pageView = pageView;
     }
-    
+
+    public Sales getSelectedSale() {
+        return selectedSale;
+    }
+
+    public void setSelectedSale(Sales selectedSale) {
+        this.selectedSale = selectedSale;
+    }
 }
