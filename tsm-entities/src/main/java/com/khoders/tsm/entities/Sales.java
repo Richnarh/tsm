@@ -9,6 +9,7 @@ import com.khoders.tsm.entities.system.UserAccountRecord;
 import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.enums.SalesType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +46,10 @@ public class Sales extends UserAccountRecord {
 
     @Column(name = "qty_purchased")
     private double qtyPurchased;
-
+    
+    @Column(name = "due_date")
+    private LocalDate dueDate;
+    
     @Column(name = "sales_type")
     @Enumerated(EnumType.STRING)
     private SalesType salesType = SalesType.NORMAL_SALES;
@@ -104,6 +108,14 @@ public class Sales extends UserAccountRecord {
 
     public void setSalesType(SalesType salesType) {
         this.salesType = salesType;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
     
     public void genReceipt() {

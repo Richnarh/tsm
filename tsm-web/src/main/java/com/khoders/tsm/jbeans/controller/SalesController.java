@@ -1,6 +1,7 @@
 package com.khoders.tsm.jbeans.controller;
 
 import com.khoders.resource.enums.PaymentMethod;
+import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
@@ -19,9 +20,11 @@ import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.enums.SalesType;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +67,7 @@ public class SalesController implements Serializable
     double totalAmount,totalSaleAmount,totalPayable = 0.0;
     private Customer customer = null;
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
+    private LocalDate dueDate;
     
     @PostConstruct
     private void init()
@@ -226,9 +230,10 @@ public class SalesController implements Serializable
         double qtyBought = saleItemList.stream().mapToDouble(SaleItem::getQuantity).sum();
         try 
         {
-                customer = salesService.walkinCustomer();
-                sales.setCustomer(customer);
-            
+                if(sales.getCustomer().equals(customer)){
+                    customer = salesService.walkinCustomer();
+                    sales.setCustomer(customer);
+                }
                 sales.genCode();
                 sales.setPurchaseDate(LocalDateTime.now());
                 sales.setTotalAmount(totalAmount);
@@ -272,6 +277,22 @@ public class SalesController implements Serializable
         {
             e.printStackTrace();
         }
+    }
+    
+    public void processCreditSale(Sales sales, List<SaleItem> saleItemList){
+        CreditPayment creditPayment = new CreditPayment();
+        creditPayment.setValueDate(sales.getValueDate());
+        creditPayment.setTotalCredit(sales.getTotalAmount());
+        creditPayment.setSales(sales);
+        creditPayment.setCreditRemaining(sales.getTotalAmount());
+        creditPayment.setPaymentStatus(PaymentStatus.PENDING);
+        creditPayment.setCustomer(sales.getCustomer());
+        creditPayment.setDueDate(dueDate);
+        creditPayment.setDataSource("Credit sales with receipt # "+sales.getReceiptNumber());
+        creditPayment.setUserAccount(appSession.getCurrentUser());
+        creditPayment.setCompanyBranch(appSession.getCompanyBranch());
+        creditPayment.setLastModifiedBy(appSession.getCurrentUser().getFullname());
+        crudApi.save(creditPayment);
     }
     
     public void taxCalculation()
@@ -553,6 +574,14 @@ public class SalesController implements Serializable
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
     
 }

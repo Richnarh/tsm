@@ -61,7 +61,7 @@ public class UsercommonBeans implements Serializable
         inventoryList = inventoryService.getInventoryList();
         packagingList = inventoryService.getPackagingList();
         unitMeasurementList = inventoryService.getUnitMeasurementList();
-        salesList = inventoryService.getSales();
+        salesList = inventoryService.getCreditSales();
     }
 
     public List<Product> getProductList()

@@ -5,6 +5,7 @@
  */
 package com.khoders.tsm.jbeans.controller;
 
+import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
@@ -20,8 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -44,6 +43,7 @@ public class CreditPaymentController implements Serializable{
    
     private FormView pageView = FormView.listForm();
     private Sales selectedSale = null;
+    private PaymentStatus paymentStatus = null;
     
     @PostConstruct
     public void init(){
@@ -62,13 +62,18 @@ public class CreditPaymentController implements Serializable{
    public void selectSale(){
        selectedSale = creditPayment.getSales();
        creditPaymentList = salesService.getCreditSales(selectedSale);
+       creditPaymentList.forEach(item ->{
+           if(item.getPaymentStatus().equals(PaymentStatus.FULLY_PAID))
+               paymentStatus = item.getPaymentStatus();
+       });
+       if(selectedSale == null)
+           paymentStatus = null;
    }
 
    public void saveCreditPayment()
     {
        try{
-           creditPayment.setSales(selectedSale);
-           creditPayment.genCode();
+           initSales();
           if(crudApi.save(creditPayment) != null){
               creditPaymentList = CollectionList.washList(creditPaymentList, creditPayment);
               Msg.info(Msg.SUCCESS_MESSAGE);
@@ -82,12 +87,49 @@ public class CreditPaymentController implements Serializable{
             e.printStackTrace();
         }
     }
-      
+   
+    void initSales(){
+        creditPayment.setSales(selectedSale);
+        creditPayment.genCode();
+        creditPayment.setValueDate(selectedSale.getValueDate());
+        creditPayment.setTotalCredit(selectedSale.getTotalAmount());
+        
+        creditPayment.setCustomer(selectedSale.getCustomer());
+        creditPayment.setDueDate(selectedSale.getValueDate());
+        creditPayment.setDataSource("Credit sales with receipt # "+selectedSale.getReceiptNumber());
+        creditPayment.setUserAccount(appSession.getCurrentUser());
+        creditPayment.setCompanyBranch(appSession.getCompanyBranch());
+        creditPayment.setLastModifiedBy(appSession.getCurrentUser().getFullname());
+        
+        List<CreditPayment> cpList = salesService.getCreditSales(selectedSale);
+        double totalAmountPaid = cpList.stream().mapToDouble(CreditPayment::getAmountPaid).sum();
+        System.out.println("cpList: "+cpList.size());
+        System.out.println("totalAmountPaid: "+totalAmountPaid);
+        System.out.println("selectedSale.getTotalAmount(): "+selectedSale.getTotalAmount());
+        double amountRem = selectedSale.getTotalAmount() - totalAmountPaid;
+        System.out.println("amountRem: "+amountRem);
+        if(amountRem > 0.0){
+            creditPayment.setCreditRemaining(amountRem - creditPayment.getAmountPaid());
+            if (creditPayment.getCreditRemaining() == 0.0) {
+                creditPayment.setPaymentStatus(PaymentStatus.FULLY_PAID);
+            } else {
+                creditPayment.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
+            }
+        }else{
+            creditPayment.setCreditRemaining(amountRem);
+            creditPayment.setPaymentStatus(PaymentStatus.FULLY_PAID);
+        }
+    }  
+    
+    public void printReceipt(CreditPayment creditPayment){
+        
+    }
     public void editCreditPayment(CreditPayment creditPayment)
     {
-       pageView.restToCreateView();
        this.creditPayment=creditPayment;
+       selectedSale = creditPayment.getSales();
        optionText = "Update";
+       pageView.restToCreateView();
     }
     
     public void deleteCreditPayment(CreditPayment creditPayment)
@@ -172,4 +214,9 @@ public class CreditPaymentController implements Serializable{
     public void setSelectedSale(Sales selectedSale) {
         this.selectedSale = selectedSale;
     }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+    
 }

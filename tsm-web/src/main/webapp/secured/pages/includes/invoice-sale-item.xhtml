@@ -20,34 +20,28 @@
                     <br/>
                     <h:panelGroup rendered="#{salesController.selectedSalesType != 'NORMAL_SALES'}">
                         <div class="row">
-                            <div class="col-md-4">
-                                <span>#{msg.customer} <span class="text-danger">*</span></span>                                
-                                <h:selectOneMenu class="form-control" value="#{salesController.sales.customer}" required="true">
-                                    <f:selectItem itemLabel="#{msg.choose} Customer"/>
-                                    <f:selectItems value="#{usercommonBeans.customerList}"/>
+                            <div class="col-md-12">
+                                <h:panelGrid columns="3">
+                                    <span>#{msg.customer} <span class="text-danger">*</span></span>                                
+                                    <p:selectOneMenu value="#{salesController.sales.customer}" required="true" filter="true" filterMatchMode="contains">
+                                        <f:selectItem itemLabel="#{msg.choose} Customer"/>
+                                        <f:selectItems value="#{usercommonBeans.customerList}"/>
+                                        <p:ajax listener="#{salesController.selectedCustomerType()}" update="@form"/>
+                                    </p:selectOneMenu>
+                                    <p:commandLink class="shadow-sm p-2 ptext-link" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
+                                </h:panelGrid>
 
-                                    <p:ajax listener="#{salesController.selectedCustomerType()}" update="@form"/>
-                                </h:selectOneMenu>
+                                <h:panelGrid columns="2">
+                                    <span>#{msg.payment_method}</span>                                
+                                    <p:selectOneMenu value="#{salesController.sales.paymentMethod}">
+                                        <f:selectItem itemLabel="#{msg.choose}"/>
+                                        <f:selectItems value="#{commonClass.paymentMethodList}"/>
+                                    </p:selectOneMenu>
 
-                                <span>#{msg.payment_method}</span>                                
-                                <h:selectOneMenu class="form-control" value="#{salesController.sales.paymentMethod}">
-                                    <f:selectItem itemLabel="#{msg.choose}"/>
-                                    <f:selectItems value="#{commonClass.paymentMethodList}"/>
-                                </h:selectOneMenu>
-
+                                    <p:outputLabel rendered="#{salesController.selectedSalesType == 'CREDIT_SALES'}" value="#{msg.due_date}" class="p-2"/>
+                                    <p:datePicker rendered="#{salesController.selectedSalesType == 'CREDIT_SALES'}" class="mt-2" pattern="#{msg.formatted_date}" yearNavigator="true" monthNavigator="true" value="#{salesController.dueDate}"/>
+                                </h:panelGrid>
                                 <br/>
-                            </div>
-                            <div class="col-md-4">
-                                <h:panelGroup id="customerType" rendered="#{salesController.enableType == true}">
-                                    <span class="mx-2">Name</span>
-                                    <h:inputText class="form-control" value="#{salesController.customerName}"/>
-
-                                    <span class="mx-2">Phone #</span>
-                                    <h:inputText class="form-control" value="#{salesController.phoneNumber}"/>
-
-                                    <span class="mx-2">Address</span>
-                                    <h:inputText class="form-control" value="#{salesController.address}"/>
-                                </h:panelGroup>
                             </div>
                         </div>
                     </h:panelGroup>
@@ -107,6 +101,10 @@
                 </h:form>
             </div>
         </div>
+
+        <p:dialog header="Add Customer" resizable="false" widgetVar="customerForm" closeOnEscape="true" modal="true" id="customerModal" height="319" width="450">
+            <ui:include src="customer-modal.xhtml"/>
+        </p:dialog>
     </div>
 </html>
 

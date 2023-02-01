@@ -172,7 +172,7 @@ public class SalesService
     }
 
     public List<CreditPayment> getCreditSales(Sales sales) {
-        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = ?1", CreditPayment.class)
+        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = ?1 ORDER BY e.paymentDate DESC", CreditPayment.class)
                     .setParameter(1, sales)
                     .getResultList();
     }

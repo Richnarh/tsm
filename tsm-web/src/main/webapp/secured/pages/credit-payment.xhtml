@@ -26,23 +26,23 @@
                                                 <p:selectOneMenu value="#{creditPaymentController.creditPayment.sales}">
                                                     <f:selectItem itemLabel="#{msg.choose}"/>
                                                     <f:selectItems value="#{usercommonBeans.salesList}"/>
-                                                    <p:ajax listener="#{creditPaymentController.selectSale()}" update="@form, :creditPaymentTable"/>
+                                                    <p:ajax listener="#{creditPaymentController.selectSale()}" update="@form, :mainPanel, :creditPaymentTable"/>
                                                 </p:selectOneMenu>
                                             </h:panelGrid>
                                             <div class="float-end">
-                                                <p:commandButton id="reload" value="Reload" class="mx-3" icon="#{msg.refresh_icon}"
-                                                                 action="#{creditPaymentController.init()}" update=":mainPanel"/>
+                                                <h:commandLink target="_blank" value="Print Payment" class="shadow-sm p-2 mx-2"/>
 
-                                                <h:commandButton id="newProduct" value="#{msg.new} #{msg.credit_payment}" class="btn btn-outline-primary btn-sm"
+                                                <h:commandButton rendered="#{creditPaymentController.paymentStatus != 'FULLY_PAID'}" id="newProduct" value="#{msg.new} #{msg.credit_payment}" class="btn btn-outline-primary btn-sm"
                                                                  action="#{creditPaymentController.initCreditPayment()}">
                                                     <p:ajax update=":mainPanel"/>
                                                 </h:commandButton>
                                             </div>
+                                            <h:outputText rendered="#{creditPaymentController.paymentStatus == 'FULLY_PAID'}" class="field-shade col-3" value="This sale is fully paid!"/>
                                         </h:form>
                                     </div>
                                 </div>
                                 <h:form id="creditPaymentTable">
-                                    <p:dataTable value="#{creditPaymentController.creditPaymentList}" var="creditPayment" paginator="true" paginatorPosition="bottom" rows="12">
+                                    <p:dataTable value="#{creditPaymentController.creditPaymentList}" var="creditPayment">
                                         <p:column style="width: 30px;">
                                             <p:rowToggler/>
                                         </p:column>
@@ -76,12 +76,17 @@
                                             <h:outputText value="#{creditPayment.paymentMethod}"/>
                                         </p:column>
 
-                                        <p:column headerText="#{msg.payment_status}">
-                                            <h:outputText value="#{creditPayment.paymentStatus}"/>
+                                        <p:column headerText="#{msg.payment_status}" style="background: #07a" class="text-white">
+                                            <h:panelGroup rendered="#{creditPayment.paymentStatus != 'FULLY_PAID'}">
+                                                <span class="text-warning fw-bold">#{creditPayment.paymentStatus}</span>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{creditPayment.paymentStatus == 'FULLY_PAID'}">
+                                                <span class="text-white fw-bold bg-success p-2">#{creditPayment.paymentStatus}</span>
+                                            </h:panelGroup>
                                         </p:column>
 
-                                        <p:column headerText="#{msg.total} #{msg.credit}" class="text-end">
-                                            <h:outputText value="#{creditPayment.totalCredtit}">
+                                        <p:column headerText="#{msg.total} #{msg.amount}" class="text-end">
+                                            <h:outputText value="#{creditPayment.totalCredit}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
                                             </h:outputText>
                                         </p:column>
@@ -92,21 +97,27 @@
                                             </h:outputText>
                                         </p:column>
 
-                                        <p:column headerText="#{msg.credit} Rem." class="text-end">
-                                            <h:outputText value="#{creditPayment.creditRemaining}">
-                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                            </h:outputText>
+                                        <p:column headerText="#{msg.amount} Rem" style="background: #07a" class="text-end text-white">
+                                            <h:panelGroup rendered="#{creditPayment.paymentStatus != 'FULLY_PAID'}">
+                                                <h:outputText class="text-warning fw-bold" value="#{creditPayment.creditRemaining}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{creditPayment.paymentStatus == 'FULLY_PAID'}">
+                                                <h:outputText class="text-white fw-bold bg-success p-2" value="#{creditPayment.creditRemaining}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </h:panelGroup>
                                         </p:column>
 
                                         <p:column headerText="#{msg.action}" style="width: 100px;">
-                                            <p:menuButton value="#{msg.manage}">
-                                                <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{creditPaymentController.editCreditPayment(creditPayment)}" immediate="true" ajax="false"/>
-                                                <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}" action="#{creditPaymentController.deleteCreditPayment(creditPayment)}" immediate="true"  update=":mainPanel"/>
+                                            <p:menuButton value="#{msg.choose}">
+                                                <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{creditPaymentController.printReceipt(creditPayment)}" ajax="false"/>
                                             </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
 
-                                    <p:blockUI block="creditPaymentTable" trigger=":initForm:reload, :initForm:newProduct">
+                                    <p:blockUI block="creditPaymentTable" trigger=":initForm:newProduct">
                                         <img src="#{application.contextPath}/assets/img/loading.gif" height="75px"/>
                                         <p><small>Please wait...</small></p>
                                     </p:blockUI>

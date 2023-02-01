@@ -38,7 +38,7 @@ public class CreditPayment extends UserAccountRecord{
     private Sales sales;
     
     @Column(name = "total_credit")
-    private double totalCredtit;
+    private double totalCredit;
     
     @Column(name = "credit_remaining")
     private double creditRemaining;
@@ -48,6 +48,9 @@ public class CreditPayment extends UserAccountRecord{
     
     @Column(name = "payment_date")
     private LocalDate paymentDate = LocalDate.now();
+    
+    @Column(name = "due_date")
+    private LocalDate dueDate;
     
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
@@ -76,14 +79,14 @@ public class CreditPayment extends UserAccountRecord{
         this.sales = sales;
     }
 
-    public double getTotalCredtit() {
-        return totalCredtit;
+    public double getTotalCredit() {
+        return totalCredit;
     }
 
-    public void setTotalCredtit(double totalCredtit) {
-        this.totalCredtit = totalCredtit;
+    public void setTotalCredit(double totalCredit) {
+        this.totalCredit = totalCredit;
     }
-
+    
     public double getCreditRemaining() {
         return creditRemaining;
     }
@@ -138,6 +141,14 @@ public class CreditPayment extends UserAccountRecord{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
     }
     
 }

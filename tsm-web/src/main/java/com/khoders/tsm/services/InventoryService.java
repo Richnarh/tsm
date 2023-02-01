@@ -24,6 +24,7 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Packaging;
 import com.khoders.tsm.entities.UnitMeasurement;
+import com.khoders.tsm.enums.SalesType;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -188,6 +189,17 @@ public class InventoryService {
     public List<Sales> getSales() {
         try {
             return crudApi.getEm().createQuery("SELECT e FROM Sales e", Sales.class).getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
+    
+    public List<Sales> getCreditSales() {
+        try {
+            return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.salesType=:creditSale", Sales.class)
+                    .setParameter("creditSale", SalesType.CREDIT_SALES)
+                    .getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
