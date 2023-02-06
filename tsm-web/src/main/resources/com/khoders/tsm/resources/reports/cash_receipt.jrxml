@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cashReceipt" pageWidth="226" pageHeight="372" columnWidth="186" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="20" uuid="427ac2ea-a5fe-42e9-86c5-b0e0e91759e7">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="static-text-style" fontName="Times New Roman" fontSize="10" isBold="true">
+		<box>
+			<pen lineColor="#F5F5F5"/>
+			<bottomPen lineWidth="1.0" lineColor="#F5F5F5"/>
+		</box>
+		<paragraph leftIndent="2" rightIndent="0" spacingBefore="0"/>
+	</style>
+	<style name="field-label" vTextAlign="Middle" isBlankWhenNull="true" fontName="Times New Roman" fontSize="10" isBold="true"/>
+	<style name="field-value" vTextAlign="Middle" isBlankWhenNull="true" fontName="Times New Roman" fontSize="10"/>
+	<style name="detail-background" mode="Transparent" backcolor="#DBDBDB" fontName="Times New Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{no} % 2 == 1]]></conditionExpression>
+			<style mode="Opaque" backcolor="rgba(242, 242, 242, 0.94509804)"/>
+		</conditionalStyle>
+	</style>
+	<style name="detail-data" vTextAlign="Middle" isBlankWhenNull="true" fontName="Times New Roman" fontSize="10"/>
+	<style name="main-title" fontName="Times New Roman"/>
+	<style name="title" fontName="Times New Roman" isBold="true">
+		<box>
+			<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#003366"/>
+		</box>
+		<paragraph leftIndent="2" spacingBefore="1"/>
+	</style>
+	<style name="title-background" mode="Opaque" forecolor="#FFFFFF" backcolor="#D6A73E" fontName="Times New Roman" isBold="true">
+		<box>
+			<bottomPen lineWidth="1.0"/>
+		</box>
+		<paragraph spacingBefore="2"/>
+	</style>
+	<parameter name="logo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="receiptNumber" class="java.lang.String"/>
+	<field name="date" class="java.time.LocalDateTime"/>
+	<field name="branchName" class="java.lang.String"/>
+	<field name="website" class="java.lang.String"/>
+	<field name="invoiceAmnt" class="java.lang.Double"/>
+	<field name="amountPaid" class="java.lang.Double"/>
+	<field name="amountRem" class="java.lang.Double"/>
+	<field name="modeOfPayment" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="62" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="179" splitType="Stretch">
+			<staticText>
+				<reportElement style="title" x="0" y="156" width="80" height="15" uuid="c2d55aed-cc42-481f-8ee7-1ced9e2582ab">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+				</reportElement>
+				<box>
+					<leftPen lineWidth="1.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="1.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement>
+					<paragraph leftIndent="4" spacingBefore="2" spacingAfter="0"/>
+				</textElement>
+				<text><![CDATA[Mode of payment]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="1" y="-60" width="185" height="55" uuid="f7f55cff-78b1-47ff-8640-8438fe283424"/>
+				<staticText>
+					<reportElement style="field-label" x="67" y="2" width="116" height="15" uuid="97d7fff1-6931-4ed9-806a-b0601b3da6f4">
+						<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center">
+						<font size="9"/>
+						<paragraph firstLineIndent="4" rightIndent="2"/>
+					</textElement>
+					<text><![CDATA[The Success Man Enterprise]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="field-label" x="67" y="22" width="116" height="15" uuid="abbef05a-00bb-4cde-937c-0bd1668e6471">
+						<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center">
+						<font size="9"/>
+						<paragraph firstLineIndent="4" rightIndent="2"/>
+					</textElement>
+					<text><![CDATA[CASH RECEIPT]]></text>
+				</staticText>
+				<image>
+					<reportElement x="1" y="0" width="60" height="45" uuid="be9b290a-3905-4a5a-93e1-99cbc76d01ad"/>
+					<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+				</image>
+			</frame>
+			<textField isBlankWhenNull="true">
+				<reportElement style="field-value" x="70" y="6" width="116" height="15" uuid="72b2d38f-cfdb-4dae-adcd-a85512fa2243">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{receiptNumber}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="field-label" x="0" y="6" width="60" height="15" uuid="05963211-5cb4-40d6-b038-7e50838e698d"/>
+				<textElement textAlignment="Left">
+					<paragraph firstLineIndent="2" rightIndent="0"/>
+				</textElement>
+				<text><![CDATA[Receipt No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="field-label" x="0" y="54" width="80" height="15" uuid="ffb02228-80f5-4880-ba5f-bdd96a2e36a4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement>
+					<paragraph firstLineIndent="2" rightIndent="0"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="field-label" x="0" y="79" width="80" height="15" uuid="32f5bbb9-362c-4c53-bfff-8a6af1f7247d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement>
+					<paragraph firstLineIndent="2" rightIndent="0"/>
+				</textElement>
+				<text><![CDATA[Total Amount]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="field-value" x="70" y="23" width="116" height="15" uuid="feb55991-95fe-4125-b000-ce4da33530fb"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[java.time.format.DateTimeFormatter.ofPattern("MMM d, yyyy hh:mm a").format($F{date})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="field-label" x="0" y="23" width="60" height="15" uuid="95ef8ff4-0fc4-4d33-a902-cacffbae6881">
+					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<paragraph firstLineIndent="2" rightIndent="0"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="field-label" x="60" y="23" width="10" height="15" uuid="43dae759-0005-411d-84e1-1e18961eaf0c">
+					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement>
+					<paragraph firstLineIndent="4" rightIndent="2"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="field-label" x="60" y="6" width="10" height="15" uuid="967557b5-fc2d-4e80-837d-81aceadd53e5">
+					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement>
+					<paragraph firstLineIndent="4" rightIndent="2"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="45" width="186" height="1" uuid="8b1d8864-d40e-4f0d-99a6-3d80298931ce"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="field-label" x="93" y="54" width="93" height="15" uuid="0d57ac2e-e1cc-4a60-9c7d-69b25503235c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<paragraph firstLineIndent="2" rightIndent="0"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="title" x="93" y="75" width="93" height="15" uuid="3a5cb4d5-1e3b-4530-bd29-0aa9d4249d2c">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
+				</box>
+				<textElement textAlignment="Right">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{invoiceAmnt}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="title" x="93" y="97" width="93" height="15" uuid="f72a8c86-5af1-4167-aefd-342a9fb77610">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
+				</box>
+				<textElement textAlignment="Right">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amountPaid}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="field-label" x="0" y="97" width="80" height="15" uuid="cb73c825-b6d4-4138-aa85-611f30781022">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement>
+					<paragraph firstLineIndent="2" rightIndent="0"/>
+				</textElement>
+				<text><![CDATA[Amount Paid]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="field-label" x="0" y="115" width="80" height="15" uuid="05143ad9-a24d-4428-a2eb-7ecfd875d4a3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<textElement>
+					<paragraph firstLineIndent="2" rightIndent="0"/>
+				</textElement>
+				<text><![CDATA[Amount Left]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement style="title" x="93" y="115" width="93" height="15" uuid="2954032e-31a1-4183-a51d-ee35eaa53d7e">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
+				</box>
+				<textElement textAlignment="Right">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amountRem}]]></textFieldExpression>
+			</textField>
+			<textField pattern="GH¢ #,##0.00" isBlankWhenNull="true">
+				<reportElement style="title" x="80" y="156" width="106" height="15" uuid="b393277c-1dd7-4680-9dc6-530621dc2cb8">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
+				</box>
+				<textElement textAlignment="Right">
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modeOfPayment}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="186" height="1" uuid="9b210f46-b718-45c7-96de-1518e0374c34"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="58" splitType="Stretch">
+			<textField>
+				<reportElement style="detail-data" x="0" y="28" width="186" height="13" uuid="0d3bab37-646d-4b46-9a15-544ddf9598fd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{website}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="186" height="1" uuid="0a368c82-0b8f-4035-b6a8-bde4fee4d99d"/>
+				<graphicElement>
+					<pen lineWidth="1.25" lineStyle="Solid" lineColor="#D6A73E"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="title" x="0" y="3" width="186" height="13" uuid="6e5785cc-c7ec-4750-8b68-7dfa380a5e6c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
+				</reportElement>
+				<box>
+					<leftPen lineWidth="1.25" lineColor="#FFFFFF"/>
+					<bottomPen lineWidth="1.25" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" isItalic="true"/>
+					<paragraph leftIndent="4" spacingBefore="2" spacingAfter="0"/>
+				</textElement>
+				<text><![CDATA[Thank you for shopping with us.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement style="field-value" x="0" y="16" width="186" height="12" uuid="d5a6731b-5f18-4e8b-8498-11b7e335ef0c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{branchName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="field-value" x="0" y="47" width="186" height="11" uuid="70479855-313f-4023-88da-464d0a5e59a9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="7" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Designer: Khoders Tech. - 0574417585]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</summary>
+</jasperReport>

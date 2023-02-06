@@ -279,25 +279,9 @@ public class SalesController implements Serializable
         }
     }
     
-    public void processCreditSale(Sales sales, List<SaleItem> saleItemList){
-        CreditPayment creditPayment = new CreditPayment();
-        creditPayment.setValueDate(sales.getValueDate());
-        creditPayment.setTotalCredit(sales.getTotalAmount());
-        creditPayment.setSales(sales);
-        creditPayment.setCreditRemaining(sales.getTotalAmount());
-        creditPayment.setPaymentStatus(PaymentStatus.PENDING);
-        creditPayment.setCustomer(sales.getCustomer());
-        creditPayment.setDueDate(dueDate);
-        creditPayment.setDataSource("Credit sales with receipt # "+sales.getReceiptNumber());
-        creditPayment.setUserAccount(appSession.getCurrentUser());
-        creditPayment.setCompanyBranch(appSession.getCompanyBranch());
-        creditPayment.setLastModifiedBy(appSession.getCurrentUser().getFullname());
-        crudApi.save(creditPayment);
-    }
-    
     public void taxCalculation()
     {
-        System.out.println("Execting taxCalculation......");
+        System.out.println("Executing taxCalculation......");
         System.out.println("taxList......"+taxList.size());
         for (Tax tax : taxList)
         {

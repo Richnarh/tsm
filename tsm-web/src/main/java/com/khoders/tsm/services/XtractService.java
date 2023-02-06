@@ -8,11 +8,13 @@ import com.khoders.tsm.jbeans.dto.SalesReceipt;
 import com.khoders.tsm.jbeans.dto.SalesTaxDto;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
+import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
+import com.khoders.tsm.jbeans.dto.CashReceipt;
 import com.khoders.tsm.jbeans.dto.ProductDto;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -108,101 +110,7 @@ public class XtractService
         }
        return stockReceiptItemList;
     }
-// 
-//    public SalesReceipt extractToCashReceipt(Sales sales)
-//    {
-//        SalesReceipt receipt = new SalesReceipt();
-//        
-//        List<SalesTax> salesTaxesList  = salesService.getSalesTaxList(sales);
-//        
-//        double totalTax = salesTaxesList.stream().mapToDouble(SalesTax::getTaxAmount).sum();
-//        double invoiceValue = totalTax + sales.getTotalAmount();
-//        
-//        receipt.setBranchName(appSession.getCompanyBranch() != null ?  appSession.getCompanyBranch().getBranchName() : "");
-//        receipt.setCashier(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
-//        receipt.setReceiptNumber(sales.getReceiptNumber());
-//        receipt.setTotalTax(totalTax);
-//        receipt.setTotalAmount(sales.getTotalAmount());
-//        receipt.setDate(LocalDateTime.now());
-//        receipt.setTotalPayable(invoiceValue);
-//        try
-//        {
-//            receipt.setModeOfPayment(sales.getPaymentMethod().getLabel());
-//        } catch (Exception e)
-//        {
-//        }
-//        
-//        return receipt;
-//    }
-//    
-
     
-//    public ProformaInvoiceDto extractInvoice(List<SaleItem> itemList, Sales sales)
-//    {
-//        ProformaInvoiceDto invoiceDto = new ProformaInvoiceDto();
-//        List<SaleItemDto> saleItemList = new LinkedList<>();
-//        List<SalesTaxDto> salesTaxes = new LinkedList<>();
-//        
-//        List<SalesTax> salesTaxesList  = salesService.getSalesTaxList(sales);
-//        
-//        double totalAmount = itemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
-//        double sTaxAmount = salesTaxesList.stream().mapToDouble(SalesTax::getTaxAmount).sum();
-//        double invoiceValue = sTaxAmount + sales.getTotalAmount();
-//         
-//        invoiceDto.setTotalPayable(invoiceValue);
-//        invoiceDto.setIssueDate(sales.getValueDate());
-//        invoiceDto.setTelNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
-//        invoiceDto.setPaymentMethod(sales.getPaymentMethod() != null ? sales.getPaymentMethod().getLabel() : "");
-//        invoiceDto.setTotalAmount(totalAmount);
-//        invoiceDto.setReceiptNumber(sales.getReceiptNumber());
-//        invoiceDto.setCompanyAddress(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchAddress() : "");
-//        if(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null){
-//            invoiceDto.setWebsite(appSession.getCompanyBranch().getCompanyProfile().getWebsite());
-//        }
-//        
-//        if(sales.getCustomer() != null){
-//            invoiceDto.setCustomerName(sales.getCustomer().getCustomerName());
-//            invoiceDto.setAddress(sales.getCustomer().getAddress());
-//            invoiceDto.setPhoneNumber(sales.getCustomer().getPhone());
-//            invoiceDto.setEmailAddress(sales.getCustomer().getEmailAddress());
-//            invoiceDto.setCustomerId(sales.getCustomer().getRefNo());
-//        }
-//        System.out.println("salesTaxesList -- "+salesTaxesList.size());
-//        for (SalesTax salesTax : salesTaxesList)
-//        {
-//            SalesTaxDto taxItem = new SalesTaxDto();
-//            taxItem.setTaxName(salesTax.getTaxName());
-//            taxItem.setTaxRate(salesTax.getTaxRate());
-//            taxItem.setTaxAmount(salesTax.getTaxAmount());
-//
-//            salesTaxes.add(taxItem);
-//        }
-//        
-//        for (SaleItem saleItem : itemList)
-//        {
-//            SaleItemDto dto = new SaleItemDto();
-//            
-//            dto.setQuantity(saleItem.getQuantity());
-//            dto.setUnitPrice(saleItem.getUnitPrice());
-//            dto.setSubTotal(saleItem.getSubTotal());
-//            if(saleItem.getStockReceiptItem() != null && saleItem.getStockReceiptItem().getProduct() != null)
-//            {
-//                dto.setProduct(saleItem.getStockReceiptItem().getProduct().getProductName());
-//                if(saleItem.getStockReceiptItem().getProductPackage() != null && saleItem.getStockReceiptItem().getProductPackage().getUnitMeasurement() != null)
-//                {
-//                    dto.setProductPackage(saleItem.getStockReceiptItem().getProductPackage().getUnitMeasurement().getUnits());
-//                }
-//            }
-//            
-//            saleItemList.add(dto);
-//        }
-//       
-//        invoiceDto.setSaleItemList(saleItemList);
-//        invoiceDto.setTaxList(salesTaxes);
-//        
-//        return invoiceDto;
-//    }
-//    
     public List<ProductDto> extractProduct(){
         List<ProductDto> dtoList = new LinkedList<>();
          
@@ -246,4 +154,29 @@ public class XtractService
 //        }
 //        return viewStockList;
 //    }
+
+    public CashReceipt extractCashReceipt(CreditPayment creditPayment) {
+        CashReceipt cashReceipt = new CashReceipt();
+        if (appSession.getCurrentUser().getCompanyBranch() != null)
+        {
+            cashReceipt.setBranchName(appSession.getCurrentUser().getCompanyBranch() + "");
+        }
+        if (appSession.getCurrentUser().getCompanyBranch() != null)
+        {
+            cashReceipt.setWebsite(appSession.getCurrentUser().getCompanyBranch().getCompanyProfile().getWebsite());
+        }
+        cashReceipt.setReceiptNumber(creditPayment.getSales().getReceiptNumber());
+        cashReceipt.setAmountPaid(creditPayment.getAmountPaid());
+        cashReceipt.setAmountRem(creditPayment.getCreditRemaining());
+        cashReceipt.setInvoiceAmnt(creditPayment.getSales().getTotalAmount());
+        cashReceipt.setDate(LocalDateTime.now());
+        try
+        {
+            cashReceipt.setModeOfPayment(creditPayment.getPaymentMethod().getLabel());
+        } catch (Exception e)
+        {
+        }
+        
+        return cashReceipt;
+    }
 }

@@ -22,21 +22,29 @@
                         <div class="card-header">Inventory Transfer</div>
                         <div class="card-body shadow-sm">
                             <h:panelGroup rendered="#{batchTransferController.pageView.listView}">
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-12">
-                                        <h:form id="transferData" class="pt-3" style="margin-bottom: 5px;">
-                                            <h:commandButton id="reload" class="mx-2 btn btn-outline-primary btn-sm" value="Reload" action="#{batchTransferController.init()}">
-                                                <p:ajax update=":mainPanel"/>
-                                            </h:commandButton>
-                                            <div class="float-right">
-                                                <h:commandButton value="#{msg.new} #{msg.transfer}" class="btn btn-outline-primary btn-sm"
-                                                                 action="#{batchTransferController.initTransfer()}">
-                                                    <p:ajax update=":mainPanel"/>
-                                                </h:commandButton>
-                                            </div>
-                                        </h:form>
+                                <h:form class="m-2" id="transferData">
+                                    <span class="mr-2">From Date: </span>
+                                    <p:datePicker pattern="#{msg.formatted_date}" 
+                                                  monthNavigator="true" yearNavigator="true"/>
+
+                                    <span class="mr-2">To Date: </span>
+                                    <p:datePicker pattern="#{msg.formatted_date}" 
+                                                  monthNavigator="true" yearNavigator="true"/>
+
+                                    <h:commandButton id="filter" class="mx-2 btn btn-secondary shadow-sm btn-sm" value="Filter Table">
+                                        <p:ajax update=":mainPanel"/>
+                                    </h:commandButton>
+                                    <h:commandButton id="reload" class="mx-2 btn btn-outline-primary btn-sm" value="Refresh" action="#{batchTransferController.init()}">
+                                        <p:ajax update=":mainPanel"/>
+                                    </h:commandButton>
+                                                        
+                                    <div class="float-end">
+                                        <h:commandButton id="pos" value="#{msg.new} #{msg.transfer}" class="btn btn-outline-primary btn-sm"
+                                                         action="#{batchTransferController.initTransfer()}">
+                                            <p:ajax update=":mainPanel"/>
+                                        </h:commandButton>
                                     </div>
-                                </div>
+                                </h:form>
                                 <div class="col-md-12">
                                     <h:form id="batchTable">
                                         <p:dataTable value="#{batchTransferController.batchTransferList}" rowStyleClass="#{batchTransfer.transferStatus != 'ACCEPTED' ? null : 'accepted' }" var="batchTransfer" scrollable="true" scrollHeight="500">
@@ -91,23 +99,23 @@
                                 <div class="col-md-4 mx-auto">
                                     <h:form id="batchForm" class="spaced-form">
                                         <h:panelGrid columns="2">
-                                            <span>#{msg.transfer} Date</span>
-                                            <p:datePicker value="#{batchTransferController.batchTransfer.transferDate}" pattern="#{msg.formatted_date}" monthNavigator="true" yearNavigator="true"/>
+                                            <span>#{msg.transfer} Date <span class="text-danger">*</span></span>
+                                            <p:datePicker value="#{batchTransferController.batchTransfer.transferDate}" required="true" pattern="#{msg.formatted_date}" monthNavigator="true" yearNavigator="true"/>
                                             
-                                            <span>From</span>
-                                            <p:selectOneMenu value="#{batchTransferController.batchTransfer.fromLocation}" filter="true" filterMatchMode="contains">
+                                            <span>From <span class="text-danger">*</span></span>
+                                            <p:selectOneMenu value="#{batchTransferController.batchTransfer.fromLocation}" required="true" filter="true" filterMatchMode="contains">
                                                 <f:selectItem itemLabel="#{msg.choose}"/>
                                                 <f:selectItems value="#{usercommonBeans.locationList}"/>
                                             </p:selectOneMenu>
 
-                                            <span>To</span>
-                                            <p:selectOneMenu value="#{batchTransferController.batchTransfer.toLocation}" filter="true" filterMatchMode="contains">
+                                            <span>To <span class="text-danger">*</span></span>
+                                            <p:selectOneMenu value="#{batchTransferController.batchTransfer.toLocation}" required="true" filter="true" filterMatchMode="contains">
                                                 <f:selectItem itemLabel="#{msg.choose}"/>
                                                 <f:selectItems value="#{usercommonBeans.locationList}"/>
                                             </p:selectOneMenu>
 
-                                            <span>Status</span>
-                                            <p:selectOneMenu value="#{batchTransferController.batchTransfer.transferStatus}" filter="true" filterMatchMode="contains">
+                                            <span>Status <span class="text-danger">*</span></span>
+                                            <p:selectOneMenu value="#{batchTransferController.batchTransfer.transferStatus}" required="true" filter="true" filterMatchMode="contains">
                                                 <f:selectItem itemLabel="#{msg.choose}"/>
                                                 <f:selectItems value="#{commonClass.transferStatusList}"/>
                                             </p:selectOneMenu>
@@ -118,8 +126,8 @@
                                         </h:panelGrid>
                                         <hr/>
                                             <p:commandButton icon="#{msg.check_icon_circle}" class="kbtn-success mr-3" value="#{batchTransferController.optionText}" update="@form, :mainPanel" action="#{batchTransferController.saveBatchTransfer()}" />
-                                            <p:commandButton icon="#{msg.clear_icon}" class="kbtn-cancel" value="#{msg.clear}" immediate="true" action="#{batchTransferController.clearBatchTransfer()}" update="@form"/>
-                                            <p:commandButton icon="#{msg.close_icon}" class="kbtn-danger float-right" value="#{msg.close}" immediate="true" action="#{batchTransferController.closePage()}" update=":mainPanel"/>
+                                            <p:commandButton icon="#{msg.clear_icon}" class="kbtn-cancel mx-2" value="#{msg.clear}" immediate="true" action="#{batchTransferController.clearBatchTransfer()}" update="@form"/>
+                                            <p:commandButton icon="#{msg.close_icon}" class="kbtn-danger float-end" value="#{msg.close}" immediate="true" action="#{batchTransferController.closePage()}" update=":mainPanel"/>
                                     </h:form>
                                 </div>
                             </h:panelGroup>
@@ -129,20 +137,19 @@
                                     <div class="col-md-4">
                                         <h:form id="transferForm" class="spaced-form">
                                             <h:panelGrid columns="2">
-                                                <span>#{msg.product}</span>
-                                                <p:selectOneMenu value="#{batchTransferController.transferItem.stockReceiptItem}" filter="true" filterMatchMode="contains">
+                                                <span>#{msg.product} <span class="text-danger">*</span></span>
+                                                <p:selectOneMenu value="#{batchTransferController.transferItem.stockReceiptItem}" required="true" filter="true" filterMatchMode="contains">
                                                     <f:selectItem itemLabel="#{msg.choose}"/>
                                                     <f:selectItems value="#{usercommonBeans.stockReceiptItemList}"/>
                                                 </p:selectOneMenu>
 
-                                                <span>#{msg.quantity}</span>
+                                                <span>#{msg.quantity} <span class="text-danger">*</span></span>
                                                 <p:inputText value="#{batchTransferController.transferItem.qtyTransferred}" required="true"/>
-
                                             </h:panelGrid>
                                             <hr/>
                                             <p:commandButton rendered="#{batchTransferController.batchTransfer.transferStatus != 'ACCEPTED'}" icon="#{msg.check_icon_circle}" class="kbtn-success mr-3" value="#{batchTransferController.optionText}" update="@form, :transferTable" action="#{batchTransferController.saveTransfer()}" />
-                                                <p:commandButton icon="#{msg.clear_icon}" class="kbtn-default" value="#{msg.clear}" immediate="true" action="#{batchTransferController.clearTransfer()}" update="@form"/>
-                                                <p:commandButton icon="#{msg.close_icon}" class="kbtn-danger float-right" value="#{msg.close}" immediate="true" action="#{batchTransferController.closeItemPage()}" update=":mainPanel"/>
+                                                <p:commandButton icon="#{msg.clear_icon}" class="kbtn-default mx-2" value="#{msg.clear}" immediate="true" action="#{batchTransferController.clearTransfer()}" update="@form"/>
+                                                <p:commandButton icon="#{msg.close_icon}" class="kbtn-danger float-end" value="#{msg.close}" immediate="true" action="#{batchTransferController.closeItemPage()}" update=":mainPanel"/>
                                         </h:form>
                                     </div>
 

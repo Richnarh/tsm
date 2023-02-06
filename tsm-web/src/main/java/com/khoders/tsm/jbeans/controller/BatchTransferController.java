@@ -57,7 +57,7 @@ public class BatchTransferController implements Serializable{
     
     public void saveBatchTransfer(){
         try {
-            if(batchTransfer.getFromLocation().equals(batchTransfer.getToLocation())){
+            if(batchTransfer != null && batchTransfer.getFromLocation().equals(batchTransfer.getToLocation())){
                 Msg.error("Cannot make transfer within same location");
                 return;
             }

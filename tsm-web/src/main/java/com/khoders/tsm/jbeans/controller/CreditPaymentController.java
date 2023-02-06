@@ -9,13 +9,19 @@ import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
+import com.khoders.resource.reports.ReportManager;
 import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Customer;
+import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
+import com.khoders.tsm.jbeans.ReportFiles;
+import com.khoders.tsm.jbeans.dto.CashReceipt;
+import com.khoders.tsm.jbeans.dto.SalesReceipt;
 import com.khoders.tsm.services.SalesService;
+import com.khoders.tsm.services.XtractService;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +40,8 @@ public class CreditPaymentController implements Serializable{
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
     @Inject private SalesService salesService;
+    @Inject private ReportManager reportManager;
+    @Inject private XtractService xtractService;
     
     private String optionText;
     
@@ -121,8 +129,22 @@ public class CreditPaymentController implements Serializable{
         }
     }  
     
-    public void printReceipt(CreditPayment creditPayment){
-        
+    public void printReceipt(CreditPayment creditPayment)
+    {
+        try
+        {
+            List<CashReceipt> cashReceiptList = new LinkedList<>();
+
+            CashReceipt cashReceipt = xtractService.extractCashReceipt(creditPayment);
+
+            cashReceiptList.add(cashReceipt);
+            ReportManager.reportParams.put("logo", ReportFiles.LOGO);
+            reportManager.createReport(cashReceiptList, ReportFiles.CASH_RECEIPT_FILE, ReportManager.reportParams);
+
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
     public void editCreditPayment(CreditPayment creditPayment)
     {
