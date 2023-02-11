@@ -1,7 +1,6 @@
 package com.khoders.tsm.jbeans.controller;
 
 import com.khoders.resource.enums.PaymentMethod;
-import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
@@ -20,8 +19,8 @@ import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
-import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Inventory;
+import com.khoders.tsm.entities.system.CompanyProfile;
 import com.khoders.tsm.enums.SalesType;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -61,9 +60,8 @@ public class SalesController implements Serializable
     private DateRangeUtil dateRange = new DateRangeUtil();
     
     private FormView pageView = FormView.listForm();
-    private boolean enableType = false;
-    private String customerName,phoneNumber,address;
-    
+    private boolean enableTax;
+     
     double totalAmount,totalSaleAmount,totalPayable = 0.0;
     private Customer customer = null;
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
@@ -79,6 +77,10 @@ public class SalesController implements Serializable
     
     public void initNewSale()
     {
+        enableTax = false;
+        CompanyProfile cp = salesService.getProfile();
+        enableTax = cp.isEnableTax();
+        System.out.println("enableTax: "+enableTax);
         clearAll();
         pageView.restToCreateView();
     }
@@ -94,17 +96,6 @@ public class SalesController implements Serializable
       salesList = salesService.getSalesByDates(dateRange); 
     }
     
-    public void selectedCustomerType(){
-        customer = crudApi.find(Customer.class, sales.getCustomer().getId());
-        if(customer != null)
-        {
-            if(customer.getCustomerName().equals(CustomerType.WALK_IN_CUSTOMER.getLabel()) || customer.getCustomerName().equals(CustomerType.BACK_LOG_SUPPLIER.getLabel())){
-                enableType = true;
-            }else{
-                enableType = false;
-            }
-        }
-    }
     public void inventoryProperties(){
         System.out.println("Over here----");
         
@@ -176,15 +167,18 @@ public class SalesController implements Serializable
     {
 //        System.out.println("Sales item -- "+saleItem.getStockReceiptItem().getProduct().getProductName());
         saleItemList.remove(saleItem);
-        
-        System.out.println("Size on removing --- "+saleItemList.size());
     }
     
-    public void viewAsPosSale(Sales sales)
+    public void viewSales(Sales sales)
     {
         this.sales = sales;
+        enableTax = false;
+        
         pageView.restToCreateView();
         clearAll();
+        CompanyProfile cp = salesService.getProfile();
+        enableTax = cp.isEnableTax();
+        System.out.println("enableTax: "+enableTax);
         
         saleItemList = salesService.getSales(sales);
               
@@ -199,17 +193,6 @@ public class SalesController implements Serializable
         this.sales = sales;
         pageView.restToDetailView();
         clearAll();
-        
-        if(sales.getCustomer() != null)
-        {
-          System.out.println("cust Id --- "+sales.getCustomer().getId());
-          enableType=true;
-          customerName = sales.getCustomer().getCustomerName();
-          phoneNumber = sales.getCustomer().getPhone();
-          address = sales.getCustomer().getAddress();
-          
-          System.out.println("customerName -- "+customerName +"\t phoneNumber --- "+phoneNumber +"\t address"+address);
-        }
         
         saleItemList = salesService.getSales(sales);
               
@@ -230,9 +213,8 @@ public class SalesController implements Serializable
         double qtyBought = saleItemList.stream().mapToDouble(SaleItem::getQuantity).sum();
         try 
         {
-                if(sales.getCustomer().equals(customer)){
-                    customer = salesService.walkinCustomer();
-                    sales.setCustomer(customer);
+                if(sales.getCustomer() == null){
+                    sales.setCustomer(salesService.walkinCustomer());
                 }
                 sales.genCode();
                 sales.setPurchaseDate(LocalDateTime.now());
@@ -255,21 +237,24 @@ public class SalesController implements Serializable
                 {
                     for (SaleItem item : saleItemList)
                     {
-                         item.genCode();
-                         item.setSales(sales);
-                         item.setCompanyBranch(appSession.getCompanyBranch());
-                         item.setUserAccount(appSession.getCurrentUser());
-                         item.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
-                         item.setLastModifiedDate(LocalDateTime.now());
-                         crudApi.save(item);
+                        item.genCode();
+                        item.setSales(sales);
+                        item.setCompanyBranch(appSession.getCompanyBranch());
+                        item.setUserAccount(appSession.getCurrentUser());
+                        item.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
+                        item.setLastModifiedDate(LocalDateTime.now());
+                        crudApi.save(item);
                     }
                    
                 }
                 
                 salesList = CollectionList.washList(salesList, sales);
                 
-                System.out.println("Execting......");
-                taxCalculation();
+                System.out.println("Executing......");
+                if(enableTax){
+                    taxCalculation();
+                    System.out.println("taxCalculation.......");
+                }
                 
                 Msg.info("Transaction saved successfully!");
             
@@ -374,10 +359,8 @@ public class SalesController implements Serializable
         saleItemList = new LinkedList<>();
         saleItem.genCode();
         totalAmount = 0.0;
-        enableType=false;
         saleItem.setUserAccount(appSession.getCurrentUser());
         saleItem.setCompanyBranch(appSession.getCompanyBranch());
-        resetEnable();
         SystemUtils.resetJsfUI();
     }
     
@@ -391,17 +374,9 @@ public class SalesController implements Serializable
     {
        sales = new Sales();
        sales.setSalesType(SalesType.NORMAL_SALES);
-       enableType = false;
-       resetEnable();
        pageView.restToListView();
     }
     
-    public void resetEnable(){
-        customerName = null;
-        phoneNumber = null;
-        address = null;
-    }
-
     public List<Inventory> getInventoryList() {
         return inventoryList;
     }
@@ -475,47 +450,7 @@ public class SalesController implements Serializable
     {
         this.sales = sales;
     }
-
-    public boolean isEnableType()
-    {
-        return enableType;
-    }
-
-    public void setEnableType(boolean enableType)
-    {
-        this.enableType = enableType;
-    }
-
-    public String getCustomerName()
-    {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName)
-    {
-        this.customerName = customerName;
-    }
-
-    public String getPhoneNumber()
-    {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber)
-    {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getAddress()
-    {
-        return address;
-    }
-
-    public void setAddress(String address)
-    {
-        this.address = address;
-    }
-
+    
     public List<Tax> getTaxList()
     {
         return taxList;

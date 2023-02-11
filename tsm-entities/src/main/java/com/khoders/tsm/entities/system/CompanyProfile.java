@@ -34,6 +34,9 @@ public class CompanyProfile extends RefNo implements Serializable
     @Column(name = "tin_no")
     private String tinNo;
     
+    @Column(name = "enable_tax")
+    private boolean enableTax;
+    
     public Currency getCurrency()
     {
         return currency;
@@ -74,6 +77,14 @@ public class CompanyProfile extends RefNo implements Serializable
         this.tinNo = tinNo;
     }
 
+    public boolean isEnableTax() {
+        return enableTax;
+    }
+
+    public void setEnableTax(boolean enableTax) {
+        this.enableTax = enableTax;
+    }
+    
     @Override
     public String toString()
     {

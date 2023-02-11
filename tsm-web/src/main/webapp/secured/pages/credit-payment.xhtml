@@ -30,7 +30,8 @@
                                                 </p:selectOneMenu>
                                             </h:panelGrid>
                                             <div class="float-end">
-                                                <h:commandLink target="_blank" value="Print Payment" class="shadow-sm p-2 mx-2"/>
+                                                <span class="p-1 fw-bold shadow-sm text-white" style="background: #07a">GHS: #{creditPaymentController.totalAmount}</span>
+                                                <!--<h:commandLink target="_blank" value="Print Payment" class="shadow-sm p-2 mx-2"/>-->
 
                                                 <h:commandButton rendered="#{creditPaymentController.paymentStatus != 'FULLY_PAID'}" id="newProduct" value="#{msg.new} #{msg.credit_payment}" class="btn btn-outline-primary btn-sm"
                                                                  action="#{creditPaymentController.initCreditPayment()}">

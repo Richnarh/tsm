@@ -17,19 +17,18 @@
                             <p:ajax listener="#{salesController.selectSalesType()}" update="@form"/>
                         </p:selectOneMenu>
                     </h:panelGrid>
-                    <br/>
+                    <h:panelGrid columns="3">
+                        <span>#{msg.customer} <span class="text-danger">*</span></span>                                
+                        <p:selectOneMenu value="#{salesController.sales.customer}" required="true" filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="#{msg.choose} Customer"/>
+                            <f:selectItems value="#{usercommonBeans.customerList}"/>
+                        </p:selectOneMenu>
+                        <p:commandLink class="shadow-sm p-2" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
+                    </h:panelGrid>
                     <h:panelGroup rendered="#{salesController.selectedSalesType != 'NORMAL_SALES'}">
                         <div class="row">
                             <div class="col-md-12">
-                                <h:panelGrid columns="3">
-                                    <span>#{msg.customer} <span class="text-danger">*</span></span>                                
-                                    <p:selectOneMenu value="#{salesController.sales.customer}" required="true" filter="true" filterMatchMode="contains">
-                                        <f:selectItem itemLabel="#{msg.choose} Customer"/>
-                                        <f:selectItems value="#{usercommonBeans.customerList}"/>
-                                        <p:ajax listener="#{salesController.selectedCustomerType()}" update="@form"/>
-                                    </p:selectOneMenu>
-                                    <p:commandLink class="shadow-sm p-2 ptext-link" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
-                                </h:panelGrid>
+
 
                                 <h:panelGrid columns="2">
                                     <span>#{msg.payment_method}</span>                                

@@ -125,6 +125,7 @@ public class InventoryController implements Serializable
     {
         inventory = new Inventory();
         inventory.setUserAccount(appSession.getCurrentUser());
+        inventory.setCompanyBranch(appSession.getCompanyBranch());
         selectedStockReceiptItem = null;
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();

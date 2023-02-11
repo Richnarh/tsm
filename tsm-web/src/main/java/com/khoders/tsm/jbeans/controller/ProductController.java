@@ -114,6 +114,7 @@ public class ProductController implements Serializable{
     public void clearProduct() {
         product = new Product();
         product.setUserAccount(appSession.getCurrentUser());
+        product.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }

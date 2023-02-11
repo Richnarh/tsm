@@ -17,6 +17,7 @@ import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
+import com.khoders.tsm.entities.system.CompanyProfile;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -175,5 +176,9 @@ public class SalesService
         return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = ?1 ORDER BY e.paymentDate DESC", CreditPayment.class)
                     .setParameter(1, sales)
                     .getResultList();
+    }
+
+    public CompanyProfile getProfile() {
+        return crudApi.getEm().createQuery("SELECT e FROM CompanyProfile e", CompanyProfile.class).getResultStream().findFirst().orElse(null);
     }
 }

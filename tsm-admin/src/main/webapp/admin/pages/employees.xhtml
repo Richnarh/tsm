@@ -51,7 +51,7 @@
                                     </h:panelGrid>
                                     <hr/>
                                     <center>
-                                        <p:commandButton class="kbtn-success mx-2" value="#{userAccountController.optionText}" action="#{userAccountController.saveUserAccount()}" update="@form, :accountTable"/>
+                                        <p:commandButton icon="#{msg.check_icon}" class="kbtn-success mx-3" value="#{userAccountController.optionText}" action="#{userAccountController.saveUserAccount()}" update="@form, :accountTable"/>
                                         <p:commandButton class="kbtn-default" value="Clear" icon="#{msg.clear_icon}" action="#{userAccountController.clear()}" immediate="true" ajax="false"/>
                                     </center>
                                 </h:form>

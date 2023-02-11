@@ -47,7 +47,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="62" splitType="Stretch"/>
+		<band height="57" splitType="Stretch"/>
 	</title>
 	<pageHeader>
 		<band splitType="Stretch"/>
@@ -56,7 +56,7 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="156" splitType="Stretch">
+		<band height="151" splitType="Stretch">
 			<staticText>
 				<reportElement style="title" x="0" y="133" width="80" height="15" uuid="c2d55aed-cc42-481f-8ee7-1ced9e2582ab">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -68,30 +68,31 @@
 					<bottomPen lineWidth="1.25" lineColor="#FFFFFF"/>
 				</box>
 				<textElement>
+					<font fontName="Calibri"/>
 					<paragraph leftIndent="4" spacingBefore="2" spacingAfter="0"/>
 				</textElement>
 				<text><![CDATA[Mode of payment]]></text>
 			</staticText>
 			<frame>
-				<reportElement x="1" y="-60" width="185" height="55" uuid="f7f55cff-78b1-47ff-8640-8438fe283424"/>
+				<reportElement x="1" y="-56" width="185" height="50" uuid="f7f55cff-78b1-47ff-8640-8438fe283424"/>
 				<staticText>
-					<reportElement style="field-label" x="67" y="2" width="116" height="15" uuid="97d7fff1-6931-4ed9-806a-b0601b3da6f4">
+					<reportElement style="field-label" x="67" y="2" width="116" height="15" forecolor="#172D44" uuid="97d7fff1-6931-4ed9-806a-b0601b3da6f4">
 						<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center">
-						<font size="9"/>
+						<font fontName="Calibri" size="9"/>
 						<paragraph firstLineIndent="4" rightIndent="2"/>
 					</textElement>
 					<text><![CDATA[The Success Man Enterprise]]></text>
 				</staticText>
 				<staticText>
-					<reportElement style="field-label" x="67" y="22" width="116" height="15" uuid="abbef05a-00bb-4cde-937c-0bd1668e6471">
+					<reportElement style="field-label" x="67" y="22" width="116" height="15" forecolor="#172D44" uuid="abbef05a-00bb-4cde-937c-0bd1668e6471">
 						<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Center">
-						<font size="9"/>
+						<font fontName="Calibri" size="9"/>
 						<paragraph firstLineIndent="4" rightIndent="2"/>
 					</textElement>
 					<text><![CDATA[CASH RECEIPT]]></text>
@@ -106,12 +107,15 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{receiptNumber}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="field-label" x="0" y="6" width="60" height="15" uuid="05963211-5cb4-40d6-b038-7e50838e698d"/>
 				<textElement textAlignment="Left">
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Receipt No.]]></text>
@@ -125,6 +129,7 @@
 					<bottomPen lineWidth="0.6"/>
 				</box>
 				<textElement>
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Description]]></text>
@@ -135,13 +140,16 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement>
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Total Amount]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement style="field-value" x="70" y="23" width="116" height="15" uuid="feb55991-95fe-4125-b000-ce4da33530fb"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
+				</textElement>
 				<textFieldExpression><![CDATA[java.time.format.DateTimeFormatter.ofPattern("MMM d, yyyy hh:mm a").format($F{date})]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -150,6 +158,7 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left">
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Date]]></text>
@@ -160,6 +169,7 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement>
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="4" rightIndent="2"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -170,6 +180,7 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement>
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="4" rightIndent="2"/>
 				</textElement>
 				<text><![CDATA[:]]></text>
@@ -190,9 +201,10 @@
 					<bottomPen lineWidth="0.6"/>
 				</box>
 				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
-				<text><![CDATA[Amount]]></text>
+				<text><![CDATA[Amount (GHS)]]></text>
 			</staticText>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement style="title" x="93" y="76" width="93" height="15" uuid="3a5cb4d5-1e3b-4530-bd29-0aa9d4249d2c">
@@ -205,6 +217,7 @@
 					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
 				</box>
 				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
 					<paragraph leftIndent="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{invoiceAmnt}]]></textFieldExpression>
@@ -220,6 +233,7 @@
 					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
 				</box>
 				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
 					<paragraph leftIndent="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{amountPaid}]]></textFieldExpression>
@@ -230,6 +244,7 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement>
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Amount Paid]]></text>
@@ -240,6 +255,7 @@
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
 				<textElement>
+					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Amount Left]]></text>
@@ -255,6 +271,7 @@
 					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
 				</box>
 				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
 					<paragraph leftIndent="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{amountRem}]]></textFieldExpression>
@@ -270,6 +287,7 @@
 					<bottomPen lineWidth="1.25" lineColor="#FAF8F9"/>
 				</box>
 				<textElement textAlignment="Right">
+					<font fontName="Calibri"/>
 					<paragraph leftIndent="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{modeOfPayment}]]></textFieldExpression>
@@ -291,7 +309,9 @@
 				<reportElement style="detail-data" x="0" y="28" width="186" height="13" uuid="0d3bab37-646d-4b46-9a15-544ddf9598fd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{website}]]></textFieldExpression>
 			</textField>
 			<line>
@@ -311,7 +331,7 @@
 					<bottomPen lineWidth="1.25" lineColor="#FFFFFF"/>
 				</box>
 				<textElement textAlignment="Center">
-					<font size="8" isItalic="true"/>
+					<font fontName="Calibri" size="8" isItalic="true"/>
 					<paragraph leftIndent="4" spacingBefore="2" spacingAfter="0"/>
 				</textElement>
 				<text><![CDATA[Thank you for shopping with us.]]></text>
@@ -321,7 +341,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
-					<font size="8"/>
+					<font fontName="Calibri" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{branchName}]]></textFieldExpression>
 			</textField>
@@ -330,7 +350,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
-					<font fontName="Times New Roman" size="7" isItalic="true"/>
+					<font fontName="Calibri" size="7" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[Designer: Khoders Tech. - 0574417585]]></text>
 			</staticText>

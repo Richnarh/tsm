@@ -184,6 +184,7 @@ public class BatchTransferController implements Serializable{
     public void clearTransfer() {
         transferItem = new TransferItem();
         transferItem.setUserAccount(appSession.getCurrentUser());
+        transferItem.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }

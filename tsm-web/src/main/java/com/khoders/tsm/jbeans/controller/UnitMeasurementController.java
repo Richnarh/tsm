@@ -6,6 +6,7 @@ import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.UnitMeasurement;
+import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.InventoryService;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -26,6 +27,7 @@ import javax.inject.Named;
 public class UnitMeasurementController implements Serializable
 {
    @Inject private CrudApi crudApi;
+   @Inject private AppSession appSession;
    @Inject private InventoryService inventoryService;
    
    private UnitMeasurement unitMeasurement;
@@ -80,6 +82,9 @@ public class UnitMeasurementController implements Serializable
     public void clearUnitMeasurement()
     {
         unitMeasurement = new UnitMeasurement();
+        unitMeasurement.setUserAccount(appSession.getCurrentUser());
+        unitMeasurement.setCompanyBranch(appSession.getCompanyBranch());
+        unitMeasurement.genCode();
         optionText = "Save";
         SystemUtils.resetJsfUI();
     }

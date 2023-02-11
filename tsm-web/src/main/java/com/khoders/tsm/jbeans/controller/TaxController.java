@@ -91,6 +91,7 @@ public class TaxController implements Serializable{
     
     public void clearTax() {
         tax = new Tax();
+        tax.genCode();
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }

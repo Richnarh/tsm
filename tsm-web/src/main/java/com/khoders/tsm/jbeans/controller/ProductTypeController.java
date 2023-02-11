@@ -82,6 +82,7 @@ public class ProductTypeController implements Serializable {
     public void clearProductType() {
         productType = new ProductType();
         productType.setUserAccount(appSession.getCurrentUser());
+        productType.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }

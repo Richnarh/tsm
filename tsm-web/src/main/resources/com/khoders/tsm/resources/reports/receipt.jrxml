@@ -61,7 +61,7 @@
 	<title>
 		<band height="46" splitType="Stretch">
 			<staticText>
-				<reportElement x="91" y="0" width="95" height="15" forecolor="#172D44" uuid="0dfbe360-a4a2-4249-98fa-05ec7eb6e5e8">
+				<reportElement x="70" y="0" width="116" height="15" forecolor="#172D44" uuid="0dfbe360-a4a2-4249-98fa-05ec7eb6e5e8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -73,18 +73,18 @@
 				<text><![CDATA[RECEIPT]]></text>
 			</staticText>
 			<image>
-				<reportElement x="0" y="0" width="80" height="39" uuid="091b5dcb-ddaa-4249-8a72-12ac3372c892"/>
+				<reportElement x="0" y="0" width="70" height="39" uuid="091b5dcb-ddaa-4249-8a72-12ac3372c892"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField isBlankWhenNull="true">
-				<reportElement x="91" y="28" width="95" height="15" uuid="feb55991-95fe-4125-b000-ce4da33530fb"/>
+				<reportElement x="70" y="28" width="116" height="15" uuid="feb55991-95fe-4125-b000-ce4da33530fb"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial"/>
 				</textElement>
 				<textFieldExpression><![CDATA[java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a").format($F{date})]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="91" y="15" width="95" height="13" forecolor="#172D44" uuid="adec79da-c675-4df7-b090-d2b91f2267a1">
+				<reportElement x="70" y="15" width="116" height="13" forecolor="#172D44" uuid="adec79da-c675-4df7-b090-d2b91f2267a1">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -130,7 +130,7 @@
 				<textElement textAlignment="Left">
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
-				<text><![CDATA[Cashier]]></text>
+				<text><![CDATA[Sales Mgr.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="60" y="20" width="10" height="15" uuid="43dae759-0005-411d-84e1-1e18961eaf0c">
@@ -153,25 +153,21 @@
 				<text><![CDATA[:]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="39" width="186" height="1" forecolor="#172D44" uuid="8b1d8864-d40e-4f0d-99a6-3d80298931ce"/>
-				<graphicElement>
-					<pen lineStyle="Dashed"/>
-				</graphicElement>
-			</line>
-			<line>
 				<reportElement x="0" y="-1" width="186" height="1" forecolor="#172D44" uuid="9b210f46-b718-45c7-96de-1518e0374c34"/>
 				<graphicElement>
 					<pen lineStyle="Dashed" lineColor="#172D44"/>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement style="field-label" x="0" y="45" width="91" height="15" uuid="ce4e2810-336b-4fcd-9711-f79023fe278e">
+				<reportElement style="field-label" x="0" y="40" width="80" height="15" uuid="ce4e2810-336b-4fcd-9711-f79023fe278e">
 					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
+					<topPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
 				<textElement textAlignment="Left">
 					<paragraph firstLineIndent="2" rightIndent="0"/>
@@ -179,29 +175,35 @@
 				<text><![CDATA[Product]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="field-label" x="91" y="45" width="19" height="15" uuid="a52c55ed-af05-45ac-b1f0-baf53141c977">
+				<reportElement style="field-label" x="80" y="40" width="29" height="15" uuid="a52c55ed-af05-45ac-b1f0-baf53141c977">
 					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
-				<textElement textAlignment="Left">
+				<textElement textAlignment="Center">
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Qty]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="field-label" x="110" y="45" width="38" height="15" uuid="bf21d7be-afa0-49e2-bcf8-54f475187d23">
+				<reportElement style="field-label" x="109" y="40" width="38" height="15" uuid="bf21d7be-afa0-49e2-bcf8-54f475187d23">
 					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Center">
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
 				<text><![CDATA[Price]]></text>
@@ -223,7 +225,7 @@
 					</textElement>
 					<text><![CDATA[Total :]]></text>
 				</staticText>
-				<textField pattern="GH¢ #,##0.00" isBlankWhenNull="true">
+				<textField pattern="GHS #,##0.00" isBlankWhenNull="true">
 					<reportElement style="field-label" positionType="Float" x="100" y="42" width="86" height="15" uuid="64abf07c-82c1-4bd7-9f0a-eb1c71d9fe22">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -307,18 +309,21 @@
 				</componentElement>
 			</frame>
 			<componentElement>
-				<reportElement x="0" y="61" width="185" height="15" uuid="b86f050d-233f-402b-a7e2-d667b8836a1d"/>
+				<reportElement x="0" y="55" width="186" height="15" uuid="b86f050d-233f-402b-a7e2-d667b8836a1d"/>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="invoiceItemsList" uuid="91bdf238-2096-4e78-a214-0563fa2b6d08">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{saleItemList})]]></dataSourceExpression>
 					</datasetRun>
-					<jr:listContents height="15" width="185">
+					<jr:listContents height="15" width="186">
 						<textField isBlankWhenNull="true">
-							<reportElement x="0" y="0" width="90" height="15" uuid="470d6d18-bcb8-419d-bd7f-99c341bec80b">
+							<reportElement x="0" y="0" width="80" height="15" uuid="470d6d18-bcb8-419d-bd7f-99c341bec80b">
 								<property name="com.jaspersoft.studio.unit.y" value="px"/>
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
+							<box>
+								<bottomPen lineWidth="0.5"/>
+							</box>
 							<textElement>
 								<font fontName="Arial" size="9"/>
 							</textElement>
@@ -329,17 +334,25 @@
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
-							<textElement textAlignment="Right">
+							<box>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.5"/>
+							</box>
+							<textElement textAlignment="Center">
 								<font fontName="Arial" size="9"/>
 							</textElement>
 							<textFieldExpression><![CDATA[$F{unitPrice}]]></textFieldExpression>
 						</textField>
 						<textField isBlankWhenNull="true">
-							<reportElement x="90" y="0" width="19" height="15" uuid="bfb077e4-2b79-41f6-b540-58fa57c46d67">
+							<reportElement x="80" y="0" width="29" height="15" uuid="bfb077e4-2b79-41f6-b540-58fa57c46d67">
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
-							<textElement>
+							<box>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.5"/>
+							</box>
+							<textElement textAlignment="Center">
 								<font fontName="Arial" size="9"/>
 							</textElement>
 							<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
@@ -349,6 +362,10 @@
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
+							<box>
+								<leftPen lineWidth="0.75"/>
+								<bottomPen lineWidth="0.5"/>
+							</box>
 							<textElement textAlignment="Right">
 								<font fontName="Arial" size="9"/>
 							</textElement>
@@ -358,18 +375,21 @@
 				</jr:list>
 			</componentElement>
 			<staticText>
-				<reportElement style="field-label" x="148" y="45" width="38" height="15" uuid="dea0792b-8088-44b6-97c3-776eee4e5b5c">
+				<reportElement style="field-label" x="147" y="40" width="39" height="15" uuid="dea0792b-8088-44b6-97c3-776eee4e5b5c">
 					<property name="com.jaspersoft.studio.unit.firstLineIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
 					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right">
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
-				<text><![CDATA[Amount]]></text>
+				<text><![CDATA[Total]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="70" y="20" width="116" height="15" uuid="702ccb2a-7c99-4cc7-bfe9-992525db91d6">

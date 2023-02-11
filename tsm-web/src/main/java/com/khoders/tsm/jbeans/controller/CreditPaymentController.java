@@ -51,6 +51,7 @@ public class CreditPaymentController implements Serializable{
    
     private FormView pageView = FormView.listForm();
     private Sales selectedSale = null;
+    private double totalAmount = 0.0;
     private PaymentStatus paymentStatus = null;
     
     @PostConstruct
@@ -68,14 +69,24 @@ public class CreditPaymentController implements Serializable{
     }
     
    public void selectSale(){
+       paymentStatus = null;
+       totalAmount = 0.0;
        selectedSale = creditPayment.getSales();
+       totalAmount = selectedSale != null ? selectedSale.getTotalAmount() : 0.0;
        creditPaymentList = salesService.getCreditSales(selectedSale);
-       creditPaymentList.forEach(item ->{
-           if(item.getPaymentStatus().equals(PaymentStatus.FULLY_PAID))
+       for (CreditPayment item : creditPaymentList) {
+           if(item.getPaymentStatus().equals(PaymentStatus.FULLY_PAID)){
                paymentStatus = item.getPaymentStatus();
-       });
+               break;
+           }
+       }
        if(selectedSale == null)
            paymentStatus = null;
+       
+//       if(paymentStatus != null && paymentStatus.equals(PaymentStatus.FULLY_PAID) && creditPaymentList.size() < 1){
+//           paymentStatus = null;
+//       }
+       System.out.println("paymentStatus: "+paymentStatus);
    }
 
    public void saveCreditPayment()
@@ -239,6 +250,10 @@ public class CreditPaymentController implements Serializable{
 
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
     }
     
 }

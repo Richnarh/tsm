@@ -38,8 +38,8 @@
 
                             </h:panelGrid>
                             <div class="py-3">
-                                <p:commandButton class="kbtn-success mr-3" value="#{companyBranchController.optionText}" update="@form, :branchTable" action="#{companyBranchController.saveCompanyBranch()}"/>
-                                <p:commandButton class="kbtn-cancel" value="#{msg.clear}" update="@form" immediate="true" action="#{companyBranchController.clearBranch()}"/>
+                                <p:commandButton icon="#{msg.check_icon}" class="kbtn-success mx-3" value="#{companyBranchController.optionText}" update="@form, :branchTable" action="#{companyBranchController.saveCompanyBranch()}"/>
+                                <p:commandButton icon="#{msg.clear_icon}" class="kbtn-default" value="#{msg.clear}" update="@form" immediate="true" action="#{companyBranchController.clearBranch()}"/>
                             </div>
                         </h:form>
                         <h:form id="branchTable">

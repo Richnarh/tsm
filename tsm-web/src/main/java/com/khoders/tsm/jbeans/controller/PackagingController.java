@@ -7,6 +7,7 @@ import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Packaging;
+import com.khoders.tsm.listener.AppSession;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.inject.Named;
 @SessionScoped
 public class PackagingController implements Serializable
 {
+   @Inject private AppSession appSession;
    @Inject private CrudApi crudApi;
    @Inject private InventoryService inventoryService;
    
@@ -76,6 +78,8 @@ public class PackagingController implements Serializable
     public void clearPackaging()
     {
         packaging = new Packaging();
+        packaging.setUserAccount(appSession.getCurrentUser());
+        packaging.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }

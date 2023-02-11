@@ -7,6 +7,7 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.listener.AppSession;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.inject.Named;
 @SessionScoped
 public class LocationController implements Serializable{
    @Inject private CrudApi crudApi;
+   @Inject private AppSession appSession;
    @Inject private InventoryService inventoryService;
    
    private Location location = new Location();
@@ -73,6 +75,8 @@ public class LocationController implements Serializable{
     public void clearLocation()
     {
         location = new Location();
+        location.setUserAccount(appSession.getCurrentUser());
+        location.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }
