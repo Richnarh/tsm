@@ -183,7 +183,6 @@
 
                                                     <p:column headerText="#{msg.action}" exportable="false" style="width: 100px;">
                                                         <p:menuButton value="#{msg.choose}">
-                                                            <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" immediate="true" update=":transferForm" action="#{batchTransferController.editTransfer(transferItem)}"/>
                                                             <p:menuitem icon="#{msg.close_icon}" class="text-danger" value="#{msg.delete}" immediate="true" action="#{batchTransferController.deleteTransfer(transferItem)}" update="@form"/>
                                                         </p:menuButton>
                                                     </p:column>
@@ -196,7 +195,7 @@
                         </div>
                     </div>
                 </h:panelGroup>
-                <p:dialog resizable="false" widgetVar="transferStatusForm" closeOnEscape="true" modal="true" id="transferStatusModal" height="100"  width="450">
+                <p:dialog resizable="false" widgetVar="transferStatusForm" closeOnEscape="true" modal="true" id="transferStatusModal" height="100"  width="350">
                     <ui:include src="includes/transfer-status-update.xhtml"/>
                 </p:dialog>
             </ui:define>

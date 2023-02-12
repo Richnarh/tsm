@@ -99,18 +99,8 @@ public class BatchTransferController implements Serializable{
                 System.out.println("Product: "+receiptItem.getProduct().getProductName());
                 System.out.println("Quantity: "+receiptItem.getPkgQuantity());
                 System.out.println("transferItem Quantity: "+transferItem.getQtyTransferred());
-                double qtyLeft;
-                if(optionText.equals("Save Changes")){
-                    qtyLeft = receiptItem.getPkgQuantity() - transferItem.getQtyTransferred();
-                    receiptItem.setPkgQuantity(qtyLeft);
-                }else{
-                    TransferItem item = crudApi.find(TransferItem.class, transferItem.getId());
-                    System.out.println("Old Qty: "+item.getQtyTransferred());
-                    System.out.println("New Qty: "+transferItem.getQtyTransferred());
-                    qtyLeft = receiptItem.getPkgQuantity()+ (item.getQtyTransferred() - transferItem.getQtyTransferred());
-                    System.out.println("Qty Left: "+qtyLeft);
-                    receiptItem.setPkgQuantity(qtyLeft);
-                }
+                double qtyLeft = receiptItem.getPkgQuantity() - transferItem.getQtyTransferred();
+                receiptItem.setPkgQuantity(qtyLeft);
                 crudApi.save(receiptItem);
                 
                 Msg.info(Msg.SUCCESS_MESSAGE);
