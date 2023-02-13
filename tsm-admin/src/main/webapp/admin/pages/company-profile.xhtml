@@ -33,9 +33,6 @@
                                 <span>#{msg.tin_no}</span>
                                 <p:inputText value="#{companyProfileController.companyProfile.tinNo}"/>
                                 
-                                <span>Enable Tax</span>
-                                <p:selectBooleanCheckbox value="#{companyProfileController.companyProfile.enableTax}"/>
-
                             </h:panelGrid>
                             <br/>
                             <p:commandButton icon="#{msg.check_icon}" class="kbtn-success mx-3"  value="#{companyProfileController.optionText}" action="#{companyProfileController.saveCompanyProfile()}" update="@form"/>
@@ -69,9 +66,6 @@
                                     </p:column>
                                     <p:column headerText="#{msg.tin_no}" style="width: 100px;">
                                         #{companyProfile.tinNo}
-                                    </p:column>
-                                    <p:column headerText="Enable Tax" style="width: 100px;">
-                                        <span class="fw-bold">#{companyProfile.enableTax == true ? 'Yes' : 'No'}</span>
                                     </p:column>
                                     <p:column headerText="#{msg.action}" style="width:100px">
                                         <p:menuButton value="#{msg.choose}">

@@ -35,6 +35,9 @@ public class CompanyBranch extends RefNo implements Serializable
     @Column(name = "telephone_no")
     private String telephoneNo;
     
+    @Column(name = "enable_tax")
+    private boolean enableTax;
+    
     @JoinColumn(name = "company_profile", referencedColumnName = "id")
     @ManyToOne
     private CompanyProfile companyProfile;
@@ -97,6 +100,14 @@ public class CompanyBranch extends RefNo implements Serializable
     public void setBranchAddress(String branchAddress)
     {
         this.branchAddress = branchAddress;
+    }
+
+    public boolean isEnableTax() {
+        return enableTax;
+    }
+
+    public void setEnableTax(boolean enableTax) {
+        this.enableTax = enableTax;
     }
     
     

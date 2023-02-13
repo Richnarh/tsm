@@ -90,7 +90,7 @@
 
                                         <span>(#{transactionHistoryController.clientName} - #{transactionHistoryController.phoneNumber}) - <h:outputText value="#{transactionHistoryController.valueDate}">
                                                 <f:convertDateTime pattern="#{msg.formated_date_time_words}" type="localDateTime"/>
-                                            </h:outputText></span>
+                                            </h:outputText> By: #{transactionHistoryController.salesRep}</span>
                                     </h5>
                                     <div class="card-body">
                                         <p:dataTable value="#{transactionHistoryController.saleItemList}" var="saleItem" scrollable="true" scrollHeight="400">

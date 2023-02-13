@@ -23,9 +23,9 @@ import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Packaging;
+import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.enums.SalesType;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -323,5 +323,20 @@ public class InventoryService {
         }
         return Collections.emptyList();
     }
+    public List<StockReturn> getStockReturnList()
+    {
+        try
+        {
+            String qryString = "SELECT e FROM StockReturn e WHERE  e.companyBranch=?1";
+            TypedQuery<StockReturn> typedQuery = crudApi.getEm().createQuery(qryString, StockReturn.class);
+                                typedQuery.setParameter(1, appSession.getCompanyBranch());
+                            return typedQuery.getResultList();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
+        return Collections.emptyList();
+    }
 }

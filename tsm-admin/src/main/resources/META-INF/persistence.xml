@@ -29,5 +29,8 @@
     <class>com.khoders.tsm.entities.Packaging</class>
     <class>com.khoders.tsm.entities.ProductPackage</class>
     <class>com.khoders.tsm.entities.UnitMeasurement</class>
+    <class>com.khoders.tsm.entities.CreditPayment</class>
+    <class>com.khoders.tsm.entities.StockReturn</class>
+    <class>com.khoders.tsm.entities.system.LoginTrail</class>
   </persistence-unit>
 </persistence>

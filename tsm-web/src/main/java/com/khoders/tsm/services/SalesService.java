@@ -177,8 +177,4 @@ public class SalesService
                     .setParameter(1, sales)
                     .getResultList();
     }
-
-    public CompanyProfile getProfile() {
-        return crudApi.getEm().createQuery("SELECT e FROM CompanyProfile e", CompanyProfile.class).getResultStream().findFirst().orElse(null);
-    }
 }

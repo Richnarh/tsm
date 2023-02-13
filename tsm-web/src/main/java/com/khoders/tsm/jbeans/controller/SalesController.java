@@ -78,8 +78,7 @@ public class SalesController implements Serializable
     public void initNewSale()
     {
         enableTax = false;
-        CompanyProfile cp = salesService.getProfile();
-        enableTax = cp.isEnableTax();
+        enableTax = appSession.getCompanyBranch().isEnableTax();
         System.out.println("enableTax: "+enableTax);
         clearAll();
         pageView.restToCreateView();
@@ -176,8 +175,8 @@ public class SalesController implements Serializable
         
         pageView.restToCreateView();
         clearAll();
-        CompanyProfile cp = salesService.getProfile();
-        enableTax = cp.isEnableTax();
+        
+        enableTax = appSession.getCompanyBranch().isEnableTax();
         System.out.println("enableTax: "+enableTax);
         
         saleItemList = salesService.getSales(sales);

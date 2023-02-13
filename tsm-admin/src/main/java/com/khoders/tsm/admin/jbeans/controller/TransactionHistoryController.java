@@ -38,7 +38,7 @@ public class TransactionHistoryController implements Serializable
     
     private DateRangeUtil dateRange = new DateRangeUtil();
     private CompanyBranch selectedBranch = new CompanyBranch();
-    private String phoneNumber,clientName,receiptNumber;
+    private String phoneNumber,clientName,receiptNumber,salesRep;
     
     private LocalDateTime valueDate;
         
@@ -52,6 +52,7 @@ public class TransactionHistoryController implements Serializable
         if(sales.getCustomer() != null){
             clientName = sales.getCustomer().getCustomerName();
             phoneNumber = sales.getCustomer().getPhone();
+            salesRep = sales.getUserAccount().getFullname();
         }
       valueDate = sales.getPurchaseDate();
       
@@ -164,6 +165,10 @@ public class TransactionHistoryController implements Serializable
     public void setReceiptNumber(String receiptNumber)
     {
         this.receiptNumber = receiptNumber;
+    }
+
+    public String getSalesRep() {
+        return salesRep;
     }
     
 }
