@@ -7,9 +7,9 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
 
     <div class="container">
-        <div class="row">
-            <div class="mb-3">
-                <h:form id="invoiceItemForm" class="spaced-form">    
+        <h:form id="invoiceItemForm" class="spaced-form">    
+            <div class="row">
+                <div class="mb-3">
                     <h:panelGrid columns="2">
                         <span class="mx-2">Sales Type</span>
                         <p:selectOneMenu value="#{salesController.sales.salesType}">
@@ -44,16 +44,16 @@
                             </div>
                         </div>
                     </h:panelGroup>
-                </h:form>
-            </div>
-            <hr/>
-            <div class="col-lg-4">      
-                <h:form id="itemForm">
+                    <!--</h:form>-->
+                </div>
+                <hr/>
+                <div class="col-lg-4">      
+                    <!--<h:form id="itemForm">-->
                     <ui:include src="item-form.xhtml"/>
-                </h:form>
-            </div>
-            <div class="col-lg-8">
-                <h:form id="saleItemItemTable">
+                    <!--</h:form>-->
+                </div>
+                <div class="col-lg-8">
+                    <!--<h:form id="saleItemItemTable">-->
                     <table class="table">
                         <tr>
                             <th>Package</th>
@@ -94,12 +94,12 @@
                     <hr/>
                     <center>
                         <p:commandButton icon="#{msg.check_icon}" value="Process and Save Transaction" action="#{salesController.saveAll()}" class="kbtn-success mr-5" immediate="true" ajax="false" update="@form, :invoiceItemForm, "/>
-                        <p:commandButton value="#{msg.clear} All" class="kbtn-default mx-3" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form, :itemForm"/>
+                        <p:commandButton value="#{msg.clear} All" class="kbtn-default mx-3" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form"/>
                         <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{salesController.closePage()}"/>
                     </center>
-                </h:form>
+                </div>
             </div>
-        </div>
+        </h:form>
 
         <p:dialog header="Add Customer" resizable="false" widgetVar="customerForm" closeOnEscape="true" modal="true" id="customerModal" height="319" width="450">
             <ui:include src="customer-modal.xhtml"/>

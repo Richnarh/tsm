@@ -212,6 +212,7 @@ public class SalesController implements Serializable
         double qtyBought = saleItemList.stream().mapToDouble(SaleItem::getQuantity).sum();
         try 
         {
+                System.out.println("customer: "+sales.getCustomer());
                 if(sales.getCustomer() == null){
                     sales.setCustomer(salesService.walkinCustomer());
                 }
@@ -372,7 +373,7 @@ public class SalesController implements Serializable
     public void closePage()
     {
        sales = new Sales();
-       sales.setSalesType(SalesType.NORMAL_SALES);
+       sales.setSalesType(null);
        pageView.restToListView();
     }
     

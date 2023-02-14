@@ -23,16 +23,20 @@
                                         <h:form id="initForm" style="margin-bottom: 5px;">
                                             <h:panelGrid columns="2">
                                                 <span>Select Sale &nbsp;</span>
-                                                <p:selectOneMenu value="#{creditPaymentController.creditPayment.sales}">
+                                                <p:selectOneMenu value="#{creditPaymentController.creditPayment.sales}" filter="true" filterMatchMode="contains">
                                                     <f:selectItem itemLabel="#{msg.choose}"/>
                                                     <f:selectItems value="#{usercommonBeans.salesList}"/>
                                                     <p:ajax listener="#{creditPaymentController.selectSale()}" update="@form, :mainPanel, :creditPaymentTable"/>
                                                 </p:selectOneMenu>
                                             </h:panelGrid>
                                             <div class="float-end">
-                                                <span class="p-1 fw-bold shadow-sm text-white" style="background: #07a">GHS: #{creditPaymentController.totalAmount}</span>
+                                                <span class="p-1 fw-bold shadow-sm text-white" style="background: #07a">
+                                                    GHS: <h:outputText value="#{creditPaymentController.totalAmount}">
+                                                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                    </h:outputText>
+                                                </span>
                                                 <!--<h:commandLink target="_blank" value="Print Payment" class="shadow-sm p-2 mx-2"/>-->
-
+                                                 &nbsp;
                                                 <h:commandButton rendered="#{creditPaymentController.paymentStatus != 'FULLY_PAID'}" id="newProduct" value="#{msg.new} #{msg.credit_payment}" class="btn btn-outline-primary btn-sm"
                                                                  action="#{creditPaymentController.initCreditPayment()}">
                                                     <p:ajax update=":mainPanel"/>
@@ -132,7 +136,7 @@
                                     <h:panelGrid columns="2">
                                         <h:panelGrid columns="2">
                                             <span>Selected sale</span>
-                                            <h:outputText class="field-shade" value="#{creditPaymentController.selectedSale.customer} #{creditPaymentController.selectedSale.receiptNumber}"/>
+                                            <h:outputText class="field-shade" value="#{creditPaymentController.selectedSale.customer} - #{creditPaymentController.selectedSale.receiptNumber}"/>
 
                                             <span>#{msg.payment_method}</span>
                                             <h:selectOneMenu class="form-control" value="#{creditPaymentController.creditPayment.paymentMethod}">

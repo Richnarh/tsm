@@ -187,7 +187,6 @@ public class CreditPaymentController implements Serializable{
     public void closePage()
     {
        creditPayment = new CreditPayment();
-       selectedSale = null;
        optionText = "Save Changes";
        pageView.restToListView();
     }
@@ -195,6 +194,7 @@ public class CreditPaymentController implements Serializable{
     public void clearCreditPayment() {
         creditPayment = new CreditPayment();
         creditPayment.setUserAccount(appSession.getCurrentUser());
+        creditPayment.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }
