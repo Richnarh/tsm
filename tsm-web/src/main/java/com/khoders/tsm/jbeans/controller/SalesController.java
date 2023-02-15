@@ -96,24 +96,10 @@ public class SalesController implements Serializable
     }
     
     public void inventoryProperties(){
-        System.out.println("Over here----");
-        
-        inventoryList = new LinkedList<>();
-        double packagePrice = 0.0;
-        if (saleItem.getInventory() != null)
-        {
-            if (saleItem.getInventory() != null && saleItem.getInventory().getStockReceiptItem().getProduct() != null)
-            {
-                inventoryList = salesService.queryPackagePrice(saleItem.getInventory().getStockReceiptItem());
-            }
-
-            packagePrice = inventoryList.stream().findFirst().get().getPackagePrice();
-            saleItem.setUnitPrice(packagePrice);
-        }
+        saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
     }
     
     public void selectSalesType(){
-        System.out.println("selectedSalesType: "+sales.getSalesType());
         this.selectedSalesType = sales.getSalesType();
     }
         

@@ -23,6 +23,7 @@ import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Packaging;
+import com.khoders.tsm.entities.ReturnItem;
 import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.enums.SalesType;
@@ -284,7 +285,8 @@ public class InventoryService {
     
     public List<Inventory> getInventoryList() {
         try {
-            TypedQuery<Inventory> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Inventory e GROUP BY e.stockReceiptItem ORDER BY e.stockReceiptItem ASC", Inventory.class);
+//            TypedQuery<Inventory> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Inventory e GROUP BY e.stockReceiptItem ORDER BY e.stockReceiptItem ASC", Inventory.class);
+            TypedQuery<Inventory> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Inventory e ORDER BY e.stockReceiptItem ASC", Inventory.class);
             return typedQuery.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -338,5 +340,12 @@ public class InventoryService {
         }
 
         return Collections.emptyList();
+    }
+
+    public List<ReturnItem> getReturnItems(StockReturn stockReturn) {
+        String qryString = "SELECT e FROM ReturnItem e WHERE e.stockReturn=:stockReturn";
+        TypedQuery<ReturnItem> typedQuery = crudApi.getEm().createQuery(qryString, ReturnItem.class);
+                            typedQuery.setParameter("stockReturn", stockReturn);
+                        return typedQuery.getResultList();
     }
 }

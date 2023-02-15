@@ -22,19 +22,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "stock_return")
 public class StockReturn extends UserAccountRecord implements Serializable
-{
-   @Column(name = "quantity")
-   private int quantity;
-   
-   @Column(name = "return_date")
-   private LocalDate returnDate;
-   
-   @JoinColumn(name = "product", referencedColumnName = "id")
-   @ManyToOne
-   private Product product;
-   
-   @Column(name = "sale")
-   private boolean sale;
+{   
+    @Column(name = "return_date")
+    private LocalDate returnDate;
+
+    @Column(name = "receipt_number")
+    private String receiptNumber;
       
    @JoinColumn(name = "customer", referencedColumnName = "id")
    @ManyToOne
@@ -43,10 +36,6 @@ public class StockReturn extends UserAccountRecord implements Serializable
    @JoinColumn(name = "sales", referencedColumnName = "id")
    @ManyToOne
    private Sales sales;
-   
-   @JoinColumn(name = "location", referencedColumnName = "id")
-   @ManyToOne
-   private Location location;
    
    @Column(name = "description")
    @Lob
@@ -60,16 +49,6 @@ public class StockReturn extends UserAccountRecord implements Serializable
     public void setReturnDate(LocalDate returnDate)
     {
         this.returnDate = returnDate;
-    }
-
-    public int getQuantity()
-    {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity)
-    {
-        this.quantity = quantity;
     }
 
     public Customer getCustomer()
@@ -91,37 +70,21 @@ public class StockReturn extends UserAccountRecord implements Serializable
     {
         this.description = description;
     }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public boolean isSale() {
-        return sale;
-    }
-
-    public void setSale(boolean sale) {
-        this.sale = sale;
-    }
-
+    
     public Sales getSales() {
         return sales;
     }
 
     public void setSales(Sales sales) {
         this.sales = sales;
+    }
+
+    public String getReceiptNumber() {
+        return receiptNumber;
+    }
+
+    public void setReceiptNumber(String receiptNumber) {
+        this.receiptNumber = receiptNumber;
     }
     
 }

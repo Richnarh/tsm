@@ -31,6 +31,7 @@
     <class>com.khoders.tsm.entities.CreditPayment</class>
     <class>com.khoders.tsm.entities.StockReturn</class>
     <class>com.khoders.tsm.entities.system.LoginTrail</class>
+    <class>com.khoders.tsm.entities.ReturnItem</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

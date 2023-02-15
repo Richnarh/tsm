@@ -10,16 +10,17 @@ import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.entities.Inventory;
+import com.khoders.tsm.entities.ReturnItem;
 import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.InventoryService;
+import com.khoders.tsm.services.StockService;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -34,9 +35,14 @@ public class StockReturnController implements Serializable
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
     @Inject private InventoryService inventoryService;
+    @Inject private StockService stockService;
 
     private StockReturn stockReturn = new StockReturn();
+    private ReturnItem returnItem = new ReturnItem();
     private List<StockReturn> stockReturnList = new LinkedList<>();
+    private List<ReturnItem> returnItemList = new LinkedList<>();
+    
+    private Inventory selectedInventory = null;
 
     private FormView pageView = FormView.listForm();
     private String optionText;
@@ -48,33 +54,35 @@ public class StockReturnController implements Serializable
         stockReturnList = inventoryService.getStockReturnList();
     }
 
-    public void initCLient()
+    public void initStockReturn()
     {
         clearStockReturn();
         pageView.restToCreateView();
     }
     
-    public void updateInventory(StockReturn stockReturn)
+    public void selectInventory(){
+        selectedInventory = returnItem.getInventory();
+    }
+    
+    public void manageItem(StockReturn stockReturn)
     {
-
+        clearReturnItem();
+        returnItemList = inventoryService.getReturnItems(stockReturn);
+        pageView.restToDetailView();
     }
 
     public void saveStockReturn()
     {
         try
         {
-            stockReturn.setUserAccount(appSession.getCurrentUser());
-            stockReturn.setCompanyBranch(appSession.getCompanyBranch());
+            
             if (crudApi.save(stockReturn) != null)
             {
                 stockReturnList = CollectionList.washList(stockReturnList, stockReturn);
-
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, Msg.setMsg("Return good saved!"), null));
+                Msg.info("Return good saved!");
             } else
             {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, Msg.FAILED_MESSAGE, null));
+              Msg.info(Msg.FAILED_MESSAGE);
             }
             clearStockReturn();
             closePage();
@@ -92,28 +100,66 @@ public class StockReturnController implements Serializable
             {
                 stockReturnList.remove(stockReturn);
 
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, Msg.SUCCESS_MESSAGE, null));
+               Msg.info(Msg.SUCCESS_MESSAGE);
             } else
             {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, Msg.FAILED_MESSAGE, null));
+             Msg.info(Msg.FAILED_MESSAGE);
             }
         } catch (Exception e)
         {
             e.printStackTrace();
         }
     }
+    
+    public void saveReturnItem(){
+        try
+        {
+            if (crudApi.save(returnItem) != null)
+            {
+                returnItemList = CollectionList.washList(returnItemList, returnItem);
+                
+                Inventory newInventory = stockService.existProdctPackage(returnItem.getInventory().getStockReceiptItem(), returnItem.getInventory().getUnitMeasurement().getUnits());
+                double qtyInShop = newInventory.getQtyInShop();
+                newInventory.setQtyInShop(qtyInShop+returnItem.getQtyReturn());
+                crudApi.save(newInventory);
+                Msg.info("Return item saved!");
+            } else
+            {
+              Msg.info(Msg.FAILED_MESSAGE);
+            }
+            clearReturnItem();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public void editReturnItem(ReturnItem returnItem){
+        this.returnItem = returnItem;
+        optionText = "Update";
+    }
+    
+    public void clearReturnItem(){
+        returnItem = new ReturnItem();
+        returnItem.setUserAccount(appSession.getCurrentUser());
+        returnItem.setCompanyBranch(appSession.getCompanyBranch());
+        optionText = "Save Changes";
+        SystemUtils.resetJsfUI();
+    }
+    
+    public void closeItemPage(){
+        returnItemList = new LinkedList<>();   
+        clearReturnItem();
+        pageView.restToListView();
+    }
 
-    public void editStockReturn(StockReturn stockReturn)
-    {
+    public void editStockReturn(StockReturn stockReturn){
         pageView.restToCreateView();
         this.stockReturn = stockReturn;
         optionText = "Update";
     }
 
-    public void clearStockReturn()
-    {
+    public void clearStockReturn(){
         stockReturn = new StockReturn();
         stockReturn.setUserAccount(appSession.getCurrentUser());
         stockReturn.setCompanyBranch(appSession.getCompanyBranch());
@@ -121,8 +167,7 @@ public class StockReturnController implements Serializable
         SystemUtils.resetJsfUI();
     }
 
-    public void closePage()
-    {
+    public void closePage(){
         stockReturn = new StockReturn();
         optionText = "Save Changes";
         pageView.restToListView();
@@ -163,4 +208,20 @@ public class StockReturnController implements Serializable
         this.pageView = pageView;
     }
 
+    public List<ReturnItem> getReturnItemList() {
+        return returnItemList;
+    }
+
+    public ReturnItem getReturnItem() {
+        return returnItem;
+    }
+
+    public void setReturnItem(ReturnItem returnItem) {
+        this.returnItem = returnItem;
+    }
+
+    public Inventory getSelectedInventory() {
+        return selectedInventory;
+    }
+    
 }

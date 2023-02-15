@@ -1,7 +1,6 @@
 
 package com.khoders.tsm.jbeans.controller;
 
-import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.services.InventoryService;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.CollectionList;

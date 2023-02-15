@@ -11,17 +11,17 @@
         <p:selectOneMenu style="width: 100%" filter="true" value="#{salesController.saleItem.inventory}" filterMatchMode="contains" required="true">
             <f:selectItem itemLabel="#{msg.choose} Product"/>
             <f:selectItems value="#{usercommonBeans.inventoryList}"/>
-            <p:ajax listener="#{salesController.inventoryProperties()}" update="packagePanel" oncomplete="PF('prodPackage').show()" resetValues="true"/>
+            <p:ajax listener="#{salesController.inventoryProperties()}" update="sellingPrice"/>
         </p:selectOneMenu>
 
         <span>#{msg.quantity} <span class="text-danger">*</span> </span>
-        <p:inputText value="#{salesController.saleItem.quantity}" required="true"/>
+        <p:inputText style="width: 100%" value="#{salesController.saleItem.quantity}" required="true"/>
 
         <span>Unit Price <span class="text-danger">*</span> </span>
-        <p:inputText disabled="true" id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
+        <p:inputText style="width: 100%" disabled="true" id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
 
         <span>Qty Rem</span>
-        <h:inputText class="form-control" value="#{salesController.saleItem.quantity}" disabled="true" style="width: 100px"/>
+        <h:inputText class="form-control" value="#{salesController.saleItem.quantity}" disabled="true" style="width: 100%"/>
 
     </h:panelGrid>
 
@@ -30,6 +30,6 @@
 
         <p:commandButton value="#{msg.clear}" class="kbtn-default mx-3" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clear()}" update="@form"/>
     </div>
-    <ui:include src="prod-package.xhtml"/>
+    <!--<ui:include src="prod-package.xhtml"/>  oncomplete="PF('prodPackage').show()" resetValues="true" -->
 </html>
 
