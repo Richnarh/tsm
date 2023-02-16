@@ -34,6 +34,7 @@ public class Sales extends UserAccountRecord {
     @ManyToOne
     private Customer customer;
 
+    public static final String _receiptNumber = "receiptNumber";
     @Column(name = "receipt_number")
     private String receiptNumber;
 

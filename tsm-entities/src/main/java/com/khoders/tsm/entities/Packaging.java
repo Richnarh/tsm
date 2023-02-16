@@ -17,6 +17,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "packaging")
 public class Packaging extends UserAccountRecord{
+    public static final String _packagingName="packagingName";
     @Column(name = "packaging_name")
     private String packagingName;
 

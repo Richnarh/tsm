@@ -10,12 +10,15 @@ import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Product;
+import com.khoders.tsm.entities.ProductType;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
+import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.jbeans.dto.CashReceipt;
 import com.khoders.tsm.jbeans.dto.ProductDto;
+import com.khoders.tsm.jbeans.dto.StockDetails;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -178,5 +181,46 @@ public class XtractService
         }
         
         return cashReceipt;
+    }
+    
+    public boolean saveUpload(List<StockDetails> stockDetailList) {
+        try {
+            for (StockDetails details : stockDetailList) {
+                ProductType productType = stockService.getProductType(details.getProductType());
+                if (productType == null) {
+                    productType = new ProductType();
+                    productType.genCode();
+                    productType.setProductTypeName(details.getProductType());
+                    productType.setUserAccount(appSession.getCurrentUser());
+                    productType.setCompanyBranch(appSession.getCompanyBranch());
+                    productType.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                    crudApi.save(productType);
+                }
+                Product product = stockService.getProduct(details.getProductName());
+                if (product == null) {
+                    product = new Product();
+                    product.setProductName(details.getProductName().trim());
+                    product.setProductType(productType);
+                    product.setUserAccount(appSession.getCurrentUser());
+                    product.setCompanyBranch(appSession.getCompanyBranch());
+                    product.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                    crudApi.save(product);
+                }
+
+                UnitMeasurement unitMeasurement = stockService.getUnits(details.getUnitsMeasurement());
+                if (unitMeasurement == null) {
+                    unitMeasurement = new UnitMeasurement();
+                    unitMeasurement.setCompanyBranch(appSession.getCompanyBranch());
+                    unitMeasurement.setUnits(details.getUnitsMeasurement());
+                    unitMeasurement.genCode();
+                    unitMeasurement.setUserAccount(appSession.getCurrentUser());
+                    crudApi.save(unitMeasurement);
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

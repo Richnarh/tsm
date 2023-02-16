@@ -12,6 +12,7 @@ import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.ReturnItem;
+import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.InventoryService;
@@ -75,7 +76,16 @@ public class StockReturnController implements Serializable
     {
         try
         {
-            
+            if(stockReturn.getReceiptNumber() != null){
+                Sales sales = stockService.getSales(stockReturn.getReceiptNumber());
+                if(sales == null){
+                    Msg.error("There are no records matching the receipt No.");
+                    return;
+                }else{
+                    stockReturn.setSales(sales);
+                }
+                
+            }
             if (crudApi.save(stockReturn) != null)
             {
                 stockReturnList = CollectionList.washList(stockReturnList, stockReturn);

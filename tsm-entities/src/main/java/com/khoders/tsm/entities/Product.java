@@ -23,6 +23,7 @@ import javax.persistence.Table;
 @Table(name = "product")
 public class Product extends UserAccountRecord implements Serializable
 {
+    public static final String _productName = "productName";
     @Column(name = "product_name")
     private String productName;
 

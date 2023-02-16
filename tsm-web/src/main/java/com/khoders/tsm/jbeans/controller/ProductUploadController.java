@@ -128,7 +128,7 @@ public class ProductUploadController implements Serializable
                     crudApi.save(type);
                 }
                 
-                Packaging packages = stockService.getObj(Packaging.class, details.getPackaging());
+                Packaging packages = stockService.getPackage(details.getPackaging());
                 if (packages == null)
                 {
                     Packaging pack = new Packaging();
@@ -145,7 +145,7 @@ public class ProductUploadController implements Serializable
                 prod.setProductType(productType);
                 prod.setPackaging(packages);
                 prod.setProductName(details.getProductName().trim());
-                Product oldProduct = stockService.getObj(Product.class, prod.getProductName());
+                Product oldProduct = stockService.getProduct(prod.getProductName());
                 if(oldProduct == null){
                     Product newProduct = new Product();
                     newProduct.genCode();

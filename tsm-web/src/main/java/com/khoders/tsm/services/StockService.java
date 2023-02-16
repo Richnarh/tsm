@@ -9,12 +9,12 @@ import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.ProductType;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.StockReceipt;
-import com.khoders.tsm.jbeans.dto.StockDetails;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Packaging;
+import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.enums.CustomerType;
@@ -110,52 +110,17 @@ public class StockService {
         return typedQuery.getResultStream().findFirst().orElse(null);
     }
     
-    public <T> T getObj(Class clazz, String fieldName) {
-        T obj = (T) crudApi.getEm().createQuery("SELECT e FROM " + clazz.getClass().getSimpleName() + " e WHERE e." + fieldName + "=:fieldName", clazz)
-                .setParameter("fieldName", fieldName)
+    public <T> T getObj(Class<T> clazz, String fName, String fValue) {
+        T obj = (T) crudApi.getEm().createQuery("SELECT e FROM " + clazz.getSimpleName() + " e WHERE e." + fName + "=:"+fValue, clazz)
+                .setParameter(fName, fValue)
                 .getResultStream().findFirst().orElse(null);
 
         return obj;
     }
     
-    public boolean saveUpload(List<StockDetails> stockDetailList) {
-        try {
-            for (StockDetails details : stockDetailList) {
-                ProductType productType = getProductType(details.getProductType());
-                if (productType == null) {
-                    productType = new ProductType();
-                    productType.genCode();
-                    productType.setProductTypeName(details.getProductType());
-                    productType.setUserAccount(appSession.getCurrentUser());
-                    productType.setCompanyBranch(appSession.getCompanyBranch());
-                    productType.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                    crudApi.save(productType);
-                }
-                Product product = getProduct(details.getProductName());
-                if (product == null) {
-                    product = new Product();
-                    product.setProductName(details.getProductName().trim());
-                    product.setProductType(productType);
-                    product.setUserAccount(appSession.getCurrentUser());
-                    product.setCompanyBranch(appSession.getCompanyBranch());
-                    product.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                    crudApi.save(product);
-                }
-                
-                UnitMeasurement unitMeasurement = getUnits(details.getUnitsMeasurement());
-                if(unitMeasurement == null){
-                    unitMeasurement = new UnitMeasurement();
-                    unitMeasurement.setCompanyBranch(appSession.getCompanyBranch());
-                    unitMeasurement.setUnits(details.getUnitsMeasurement());
-                    unitMeasurement.genCode();
-                    unitMeasurement.setUserAccount(appSession.getCurrentUser());
-                    crudApi.save(unitMeasurement);
-                }
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    public Sales getSales(String receiptNumber) {
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber=:receiptNumber", Sales.class)
+                .setParameter("receiptNumber", receiptNumber)
+                .getResultStream().findFirst().orElse(null);
     }
 }

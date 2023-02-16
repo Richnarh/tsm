@@ -5,7 +5,6 @@
  */
 package com.khoders.tsm.jbeans.controller;
 
-import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
 import com.khoders.tsm.listener.AppSession;
@@ -16,18 +15,13 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.BeansUtil;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
-import com.khoders.tsm.entities.BatchTransfer;
-import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Location;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
-import com.khoders.tsm.entities.TransferItem;
-import com.khoders.tsm.enums.CustomerType;
 import com.khoders.tsm.enums.ReceiptStatus;
-import com.khoders.tsm.enums.TransferStatus;
 import com.khoders.tsm.jbeans.dto.StockDetails;
-import com.khoders.tsm.services.InventoryService;
+import com.khoders.tsm.services.XtractService;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -53,8 +47,7 @@ public class StockUploadController implements Serializable
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
     @Inject private StockService stockService;
-    @Inject private InventoryService inventoryService;
-    @Inject private SalesService salesService;
+    @Inject private XtractService xtractService;
         
     private StockDetails stockDetails = new StockDetails();
     private List<StockDetails> stockDetailList = new LinkedList<>();
@@ -163,7 +156,7 @@ public class StockUploadController implements Serializable
                 Msg.error("Please select warehouse");
                 return;
             }
-            boolean uploads = stockService.saveUpload(stockDetailList);
+            boolean uploads = xtractService.saveUpload(stockDetailList);
             if(uploads){
                 if(prepareOrder){
                     purchaseOrder = new PurchaseOrder();
