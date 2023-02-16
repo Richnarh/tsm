@@ -32,7 +32,6 @@ import javax.persistence.TypedQuery;
 public class StockService {
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
-    @Inject private TsmService tsmService;
 
     public List<Object[]> getStockReceiptItems()
     {
