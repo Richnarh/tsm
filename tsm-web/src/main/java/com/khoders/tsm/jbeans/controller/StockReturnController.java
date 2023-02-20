@@ -44,6 +44,7 @@ public class StockReturnController implements Serializable
     private List<ReturnItem> returnItemList = new LinkedList<>();
     
     private Inventory selectedInventory = null;
+    private StockReturn selectedStockReturn = null;
 
     private FormView pageView = FormView.listForm();
     private String optionText;
@@ -68,7 +69,9 @@ public class StockReturnController implements Serializable
     public void manageItem(StockReturn stockReturn)
     {
         clearReturnItem();
+        selectedStockReturn = stockReturn;
         returnItemList = inventoryService.getReturnItems(stockReturn);
+        System.out.println("");
         pageView.restToDetailView();
     }
 
@@ -124,6 +127,7 @@ public class StockReturnController implements Serializable
     public void saveReturnItem(){
         try
         {
+            returnItem.setStockReturn(selectedStockReturn);
             if (crudApi.save(returnItem) != null)
             {
                 returnItemList = CollectionList.washList(returnItemList, returnItem);

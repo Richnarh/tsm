@@ -14,12 +14,11 @@ import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.entities.CompoundSale;
 import com.khoders.tsm.entities.Customer;
-import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.jbeans.ReportFiles;
 import com.khoders.tsm.jbeans.dto.CashReceipt;
-import com.khoders.tsm.jbeans.dto.SalesReceipt;
 import com.khoders.tsm.services.SalesService;
 import com.khoders.tsm.services.XtractService;
 import java.io.Serializable;
@@ -47,6 +46,7 @@ public class CreditPaymentController implements Serializable{
     
     private CreditPayment creditPayment = new CreditPayment();
     private List<CreditPayment> creditPaymentList = new LinkedList<>();
+    private List<Sales> compoundSalesList = new LinkedList<>();
     private Customer selectedCustomer = null;
    
     private FormView pageView = FormView.listForm();
@@ -57,6 +57,74 @@ public class CreditPaymentController implements Serializable{
     @PostConstruct
     public void init(){
         clearCreditPayment();
+    }
+    
+    public void initialiseDbbf(){
+        if(selectedSale != null)
+            compoundSalesList = salesService.getCompoundSales(selectedSale.getCustomer());
+        
+        if(compoundSalesList.isEmpty())
+            Msg.error("There are no records for Dept Balance Brought Forward");
+    }
+    
+    public void saveDbbf(){
+        if(compoundSalesList.isEmpty()){
+            Msg.error("There are no previous pending/partially paid credit sales for ("+selectedSale.getCustomer()+")");
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        CompoundSale cs = new CompoundSale();
+        double csAmount = selectedSale.getTotalAmount();
+        
+        for (Sales sales : compoundSalesList) {
+            if(sales.getCompoundSale() != null){
+                continue;
+            }
+            String receiptCode = sales.getReceiptNumber().replaceAll(".*/", "");
+            sb.append(receiptCode).append("/");
+            csAmount += sales.getTotalAmount();
+        }
+        String receiptCode = selectedSale.getReceiptNumber().replaceAll(".*/", "");
+        sb.append(receiptCode);
+        System.out.println("receiptCode__....... "+receiptCode);
+        CompoundSale cSale = salesService.getCompoundSale(selectedSale.getCustomer());
+        if(cSale != null){
+            StringBuilder builder = new StringBuilder();
+            builder.append(cSale.getRefNo());
+            builder.insert(cSale.getRefNo().length(), "/"+receiptCode);
+            csAmount += cSale.getCompoundAmount();
+            cSale.setCompoundAmount(csAmount);
+            System.out.println("Ref No. (cSale) : "+builder.toString());
+            cSale.setRefNo(builder.toString());
+            if (crudApi.save(cSale) != null) {
+                selectedSale.setCompound(true);
+                selectedSale.setCompoundSale(cSale);
+                crudApi.save(selectedSale);
+            }
+             Msg.info("DBBF Created Successfully!");
+             return;
+        }
+        
+        String[] str = SystemUtils.generateRefNo().split("/");
+        sb.insert(0, str[0]+"/");
+        System.out.println("Ref No: "+sb.toString());
+        cs.setRefNo(sb.toString());
+        cs.setCompoundAmount(csAmount);
+        cs.setCustomer(selectedSale.getCustomer());
+        cs.setPaymentStatus(PaymentStatus.PENDING);
+        cs.setUserAccount(appSession.getCurrentUser());
+        cs.setCompanyBranch(appSession.getCompanyBranch());
+        
+        if(crudApi.save(cs) != null){
+            for (Sales sales : compoundSalesList) {
+                sales.setCompoundSale(cs);
+                crudApi.save(sales);
+            }
+            selectedSale.setCompound(true);
+            selectedSale.setCompoundSale(cs);
+            crudApi.save(selectedSale);
+        }
+        Msg.info("DBBF Created Successfully!");
     }
     
     public void initCreditPayment(){
@@ -82,11 +150,6 @@ public class CreditPaymentController implements Serializable{
        }
        if(selectedSale == null)
            paymentStatus = null;
-       
-//       if(paymentStatus != null && paymentStatus.equals(PaymentStatus.FULLY_PAID) && creditPaymentList.size() < 1){
-//           paymentStatus = null;
-//       }
-       System.out.println("paymentStatus: "+paymentStatus);
    }
 
    public void saveCreditPayment()
@@ -187,6 +250,9 @@ public class CreditPaymentController implements Serializable{
     public void closePage()
     {
        creditPayment = new CreditPayment();
+       compoundSalesList = new LinkedList<>();
+       selectedSale = null;
+       totalAmount = 0.0;
        optionText = "Save Changes";
        pageView.restToListView();
     }
@@ -254,6 +320,10 @@ public class CreditPaymentController implements Serializable{
 
     public double getTotalAmount() {
         return totalAmount;
+    }
+
+    public List<Sales> getCompoundSalesList() {
+        return compoundSalesList;
     }
     
 }

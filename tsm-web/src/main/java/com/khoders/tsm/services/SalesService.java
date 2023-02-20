@@ -4,6 +4,7 @@
  */
 package com.khoders.tsm.services;
 
+import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
@@ -13,6 +14,7 @@ import com.khoders.tsm.enums.CustomerType;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
+import com.khoders.tsm.entities.CompoundSale;
 import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.StockReceiptItem;
@@ -176,5 +178,35 @@ public class SalesService
         return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = ?1 ORDER BY e.paymentDate DESC", CreditPayment.class)
                     .setParameter(1, sales)
                     .getResultList();
+    }
+
+    public List<Sales> getCompoundSales(Customer customer) {
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.compound = :compound AND e.customer = :customer AND e.paymentStatus <> :paymentStatus", Sales.class)
+                    .setParameter("compound", true)
+                    .setParameter("customer", customer)
+                    .setParameter("paymentStatus", PaymentStatus.FULLY_PAID)
+                    .getResultList();
+    }
+    
+    public CompoundSale getCompoundSale(Customer customer) {
+        return crudApi.getEm().createQuery("SELECT e FROM CompoundSale e WHERE e.customer = :customer AND e.paymentStatus <> :paymentStatus", CompoundSale.class)
+                    .setParameter("customer", customer)
+                    .setParameter("paymentStatus", PaymentStatus.FULLY_PAID)
+                    .getResultStream().findFirst().orElse(null);
+    }
+
+    public Sales checkCustomerCredit(Customer customer) {
+        Sales sales = crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.paymentStatus = :paymentStatus", Sales.class)
+                    .setParameter("customer", customer)
+                    .setParameter("paymentStatus", PaymentStatus.PENDING)
+                    .getResultStream().findFirst().orElse(null);
+        
+        if(sales == null){
+            crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.paymentStatus = :paymentStatus", Sales.class)
+                    .setParameter("customer", customer)
+                    .setParameter("paymentStatus", PaymentStatus.PARTIALLY_PAID)
+                    .getResultStream().findFirst().orElse(null);
+        }
+        return sales;
     }
 }

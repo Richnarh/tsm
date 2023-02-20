@@ -1,6 +1,7 @@
 package com.khoders.tsm.jbeans.controller;
 
 import com.khoders.resource.enums.PaymentMethod;
+import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
@@ -202,7 +203,18 @@ public class SalesController implements Serializable
                 if(sales.getCustomer() == null){
                     sales.setCustomer(salesService.walkinCustomer());
                 }
+                if(sales.getSalesType() == SalesType.CREDIT_SALES){
+                    System.out.println("Credit selling....");
+                    Sales creditSale = salesService.checkCustomerCredit(sales.getCustomer());
+                    if(creditSale != null){
+                        creditSale.setCompound(true);
+                        crudApi.save(creditSale);
+                        System.out.println("Credit selling....True");
+                    }
+                }
                 sales.genCode();
+                sales.setPaymentStatus(PaymentStatus.PENDING);
+                sales.setCompound(false);
                 sales.setPurchaseDate(LocalDateTime.now());
                 sales.setTotalAmount(totalAmount);
                 sales.genReceipt();

@@ -45,7 +45,7 @@ public class UsercommonBeans implements Serializable
     private List<Inventory> inventoryList = new LinkedList<>();
     private List<Packaging> packagingList = new LinkedList<>();
     private List<UnitMeasurement> unitMeasurementList = new LinkedList<>();
-    private List<Sales> salesList = new LinkedList<>();
+    private List<Sales> creditSalesList = new LinkedList<>();
     
     @PostConstruct
     public void init(){
@@ -61,7 +61,7 @@ public class UsercommonBeans implements Serializable
         inventoryList = inventoryService.getInventoryList();
         packagingList = inventoryService.getPackagingList();
         unitMeasurementList = inventoryService.getUnitMeasurementList();
-        salesList = inventoryService.getCreditSales();
+        creditSalesList = inventoryService.getCreditSales();
     }
 
     public List<Product> getProductList()
@@ -118,8 +118,8 @@ public class UsercommonBeans implements Serializable
         return unitMeasurementList;
     }
 
-    public List<Sales> getSalesList() {
-        return salesList;
+    public List<Sales> getCreditSalesList() {
+        return creditSalesList;
     }
     
 }

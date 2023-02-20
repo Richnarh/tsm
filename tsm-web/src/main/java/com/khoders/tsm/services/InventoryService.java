@@ -5,6 +5,7 @@
  */
 package com.khoders.tsm.services;
 
+import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.BatchTransfer;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.Inventory;
@@ -198,8 +199,10 @@ public class InventoryService {
     
     public List<Sales> getCreditSales() {
         try {
-            return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.salesType=:creditSale", Sales.class)
+            return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.salesType = :creditSale AND e.paymentStatus <> :paymentStatus  AND e.compound = :compound", Sales.class)
                     .setParameter("creditSale", SalesType.CREDIT_SALES)
+                    .setParameter("paymentStatus", PaymentStatus.FULLY_PAID)
+                    .setParameter("compound", false)
                     .getResultList();
         } catch (Exception e) {
             e.printStackTrace();

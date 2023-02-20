@@ -7,6 +7,7 @@ package com.khoders.tsm.entities;
 
 import com.khoders.tsm.entities.system.UserAccountRecord;
 import com.khoders.resource.enums.PaymentMethod;
+import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.enums.SalesType;
 import java.time.LocalDate;
@@ -54,6 +55,17 @@ public class Sales extends UserAccountRecord {
     @Column(name = "sales_type")
     @Enumerated(EnumType.STRING)
     private SalesType salesType = SalesType.NORMAL_SALES;
+     
+    @Column(name = "payment_status")
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+        
+    @Column(name = "compound")
+    private boolean compound;
+    
+    @JoinColumn(name = "compound_sale")
+    @ManyToOne
+    private CompoundSale compoundSale;
 
     public LocalDateTime getPurchaseDate() {
         return purchaseDate;
@@ -117,6 +129,30 @@ public class Sales extends UserAccountRecord {
 
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public CompoundSale getCompoundSale() {
+        return compoundSale;
+    }
+
+    public void setCompoundSale(CompoundSale compoundSale) {
+        this.compoundSale = compoundSale;
+    }
+
+    public boolean isCompound() {
+        return compound;
+    }
+
+    public void setCompound(boolean compound) {
+        this.compound = compound;
+    }
+
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
     
     public void genReceipt() {

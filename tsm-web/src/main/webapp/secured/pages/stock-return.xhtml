@@ -71,7 +71,6 @@
                                             <p:menuButton value="#{msg.choose}">
                                                 <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{stockReturnController.editStockReturn(stockReturn)}" immediate="true" update=":mainPanel"/>
                                                 <p:menuitem icon="#{msg.check_icon}" class="text-info" value="Add Item" immediate="true" action="#{stockReturnController.manageItem(stockReturn)}" update=":mainPanel"/>
-                                                <p:menuitem icon="#{msg.delete_icon}" class="text-danger" action="#{stockReturnController.deleteStockReturn(stockReturn)}" value="#{msg.delete}" immediate="true" update=":mainPanel"/>
                                             </p:menuButton>
 
                                         </p:column>
@@ -184,7 +183,6 @@
                                                 <p:column headerText="#{msg.action}" exportable="false" style="width: 100px;">
                                                     <p:menuButton value="#{msg.choose}">
                                                         <p:menuitem icon="#{msg.edit_icon}" class="text-danger" value="#{msg.edit}" immediate="true" action="#{stockReturnController.editReturnItem(returnItem)}" update="@form, :transferForm"/>
-                                                        <p:menuitem icon="#{msg.close_icon}" class="text-danger" value="#{msg.delete}" immediate="true" action="#{stockReturnController.deleteStockReturn(stockReturn)}" update="@form"/>
                                                     </p:menuButton>
                                                 </p:column>
                                             </p:dataTable>

@@ -32,5 +32,7 @@
     <class>com.khoders.tsm.entities.CreditPayment</class>
     <class>com.khoders.tsm.entities.StockReturn</class>
     <class>com.khoders.tsm.entities.system.LoginTrail</class>
+    <class>com.khoders.tsm.entities.CompoundSale</class>
+    <class>com.khoders.tsm.entities.ReturnItem</class>
   </persistence-unit>
 </persistence>

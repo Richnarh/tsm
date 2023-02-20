@@ -5,7 +5,6 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">  
-
     <h:body>
         <ui:composition template="../templatesUI.xhtml">
             <ui:define name="pageTitle">
@@ -22,10 +21,10 @@
                                     <div class="col-12 col-sm-12 col-lg-12 py-2">
                                         <h:form id="initForm" style="margin-bottom: 5px;">
                                             <h:panelGrid columns="2">
-                                                <span>Select Sale &nbsp;</span>
+                                                <span>Select Credit Sale &nbsp;</span>
                                                 <p:selectOneMenu value="#{creditPaymentController.creditPayment.sales}" filter="true" filterMatchMode="contains">
                                                     <f:selectItem itemLabel="#{msg.choose}"/>
-                                                    <f:selectItems value="#{usercommonBeans.salesList}"/>
+                                                    <f:selectItems value="#{usercommonBeans.creditSalesList}"/>
                                                     <p:ajax listener="#{creditPaymentController.selectSale()}" update="@form, :mainPanel, :creditPaymentTable"/>
                                                 </p:selectOneMenu>
                                             </h:panelGrid>
@@ -36,7 +35,7 @@
                                                     </h:outputText>
                                                 </span>
                                                 <!--<h:commandLink target="_blank" value="Print Payment" class="shadow-sm p-2 mx-2"/>-->
-                                                 &nbsp;
+                                                &nbsp;
                                                 <h:commandButton rendered="#{creditPaymentController.paymentStatus != 'FULLY_PAID'}" id="newProduct" value="#{msg.new} #{msg.credit_payment}" class="btn btn-outline-primary btn-sm"
                                                                  action="#{creditPaymentController.initCreditPayment()}">
                                                     <p:ajax update=":mainPanel"/>
@@ -131,40 +130,77 @@
                         </div>
 
                         <h:panelGroup id="creditPaymentForm" rendered="#{creditPaymentController.pageView.createView}">
-                            <center>
-                                <h:form class="spaced-form">
-                                    <h:panelGrid columns="2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h:form class="spaced-form">
                                         <h:panelGrid columns="2">
-                                            <span>Selected sale</span>
-                                            <h:outputText class="field-shade" value="#{creditPaymentController.selectedSale.customer} - #{creditPaymentController.selectedSale.receiptNumber}"/>
+                                            <h:panelGrid columns="2">
+                                                <span>Selected sale</span>
+                                                <h:outputText class="field-shade" value="#{creditPaymentController.selectedSale.customer} - #{creditPaymentController.selectedSale.receiptNumber}"/>
 
-                                            <span>#{msg.payment_method}</span>
-                                            <h:selectOneMenu class="form-control" value="#{creditPaymentController.creditPayment.paymentMethod}">
-                                                <f:selectItem itemLabel="#{msg.choose}"/>
-                                                <f:selectItems value="#{commonClass.paymentMethodList}"/>
-                                            </h:selectOneMenu>
+                                                <span>#{msg.payment_method}</span>
+                                                <h:selectOneMenu class="form-control" value="#{creditPaymentController.creditPayment.paymentMethod}">
+                                                    <f:selectItem itemLabel="#{msg.choose}"/>
+                                                    <f:selectItems value="#{commonClass.paymentMethodList}"/>
+                                                </h:selectOneMenu>
 
-                                            <span>#{msg.date} <span class="text-danger">*</span></span>
-                                            <p:datePicker pattern="#{msg.formatted_date}" value="#{creditPaymentController.creditPayment.paymentDate}" yearNavigator="true" monthNavigator="true" required="true"/>
+                                                <span>#{msg.date} <span class="text-danger">*</span></span>
+                                                <p:datePicker pattern="#{msg.formatted_date}" value="#{creditPaymentController.creditPayment.paymentDate}" yearNavigator="true" monthNavigator="true" required="true"/>
 
-                                            <span>#{msg.amount} paid <span class="text-danger">*</span></span>
-                                            <p:inputText value="#{creditPaymentController.creditPayment.amountPaid}" required="true"/>
+                                                <span>#{msg.amount} paid <span class="text-danger">*</span></span>
+                                                <p:inputText value="#{creditPaymentController.creditPayment.amountPaid}" required="true"/>
 
-                                            <span>#{msg.description}</span>
-                                            <p:inputText value="#{creditPaymentController.creditPayment.description}"/>
+                                                <span>#{msg.description}</span>
+                                                <p:inputText value="#{creditPaymentController.creditPayment.description}"/>
+                                            </h:panelGrid>
+
                                         </h:panelGrid>
-
-                                    </h:panelGrid>
-                                    <hr/>
-                                    <center>
+                                        <br/>
                                         <p:commandButton icon="#{msg.check_icon_circle}" class="kbtn-success mx-2" value="#{creditPaymentController.optionText}" action="#{creditPaymentController.saveCreditPayment()}" update="@form, :mainPanel"/>
                                         <p:commandButton icon="#{msg.clear_icon}" class="kbtn-default" value="#{msg.clear}" immediate="true" action="#{creditPaymentController.clearCreditPayment()}" update="@form"/>
-                                    </center>
-                                    <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{creditPaymentController.closePage()}">
-                                        <p:ajax update="@form,:mainPanel"/>
-                                    </h:commandButton>
-                                </h:form>
-                            </center>
+                                    </h:form>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <h:form>
+                                        <p:commandButton class="float-end shadow-sm my-2" id="content" icon="fa fa-question-circle">
+                                            <p:tooltip style="max-width: 400px;" for="content">
+                                                <ui:include src="includes/dbbf-info-tooltip.xhtml" />
+                                            </p:tooltip>
+                                        </p:commandButton>
+
+                                        <div class="py-2">
+                                            <p:commandButton icon="#{msg.check_icon}" action="#{creditPaymentController.initialiseDbbf()}" update="@form" class="kbtn-default shadow-sm" value="Initialise DBBF"/>
+                                        </div>
+                                        <p:dataTable value="#{creditPaymentController.compoundSalesList}" var="sales">
+                                            <p:column headerText="#{msg.date}">
+                                                <h:outputText value="#{sales.createdDate}">
+                                                    <f:convertDateTime pattern="#{msg.formated_date_words_short}" type="localDate"/>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="#{msg.receipt_no}">
+                                                #{sales.receiptNumber}
+                                            </p:column>
+
+                                            <p:column headerText="#{msg.total_amount}" class="text-end">
+                                                <h:outputText value="#{sales.totalAmount}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                        <center class="py-2">
+                                            <p:commandButton icon="#{msg.check_icon}" action="#{creditPaymentController.saveDbbf()}" update="@form" class="kbtn-success shadow-sm" value="Create DBBF"/>
+                                        </center>
+                                    </h:form>
+                                </div>
+                            </div>
+                            <hr/>
+                            <h:form>
+                                <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{creditPaymentController.closePage()}">
+                                    <p:ajax update="@form,:mainPanel"/>
+                                </h:commandButton>
+                            </h:form>
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
