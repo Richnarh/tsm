@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <h:form id="creditTable">
+        <p:dataTable value="#{dbbfController.creditPaymentList}" var="creditPayment">
+            <p:column style="width: 30px;">
+                <p:rowToggler/>
+            </p:column>
+
+            <p:rowExpansion>
+                <h:panelGrid columns="2">
+                    <span>Id</span>
+                    <h:outputText value="#{creditPayment.id}"/>
+
+                    <span>#{msg.created_date}</span>
+                    <h:outputText value="#{creditPayment.createdDate}">
+                        <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                    </h:outputText>
+
+                    <span>Ref. No</span>
+                    <h:outputText value="#{creditPayment.refNo}"/>
+
+                    <span>#{msg.description}</span>
+                    <h:outputText value="#{creditPayment.description}"/>
+
+                </h:panelGrid>
+            </p:rowExpansion>
+
+            <p:column headerText="#{msg.date}">
+                <h:outputText value="#{creditPayment.paymentDate}">
+                    <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="#{msg.payment_method}">
+                <h:outputText value="#{creditPayment.paymentMethod}"/>
+            </p:column>
+
+            <p:column headerText="#{msg.payment_status}" style="background: #07a" class="text-white">
+                <h:panelGroup rendered="#{creditPayment.paymentStatus != 'FULLY_PAID'}">
+                    <span class="text-warning fw-bold">#{creditPayment.paymentStatus}</span>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{creditPayment.paymentStatus == 'FULLY_PAID'}">
+                    <span class="text-white fw-bold bg-success p-2">#{creditPayment.paymentStatus}</span>
+                </h:panelGroup>
+            </p:column>
+
+            <p:column headerText="#{msg.total} #{msg.amount}" class="text-end">
+                <h:outputText value="#{creditPayment.totalCredit}">
+                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="#{msg.amount} paid" class="text-end">
+                <h:outputText value="#{creditPayment.amountPaid}">
+                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="#{msg.amount} Rem" style="background: #07a" class="text-end text-white">
+                <h:panelGroup rendered="#{creditPayment.paymentStatus != 'FULLY_PAID'}">
+                    <h:outputText class="text-warning fw-bold" value="#{creditPayment.creditRemaining}">
+                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                    </h:outputText>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{creditPayment.paymentStatus == 'FULLY_PAID'}">
+                    <h:outputText class="text-white fw-bold bg-success p-2" value="#{creditPayment.creditRemaining}">
+                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                    </h:outputText>
+                </h:panelGroup>
+            </p:column>
+
+            <p:column headerText="#{msg.action}" style="width: 100px;">
+                <p:menuButton value="#{msg.choose}">
+                    <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{dbbfController.printReceipt(creditPayment)}" ajax="false"/>
+                </p:menuButton>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</html>
+

@@ -38,6 +38,9 @@ public class CompanyBranch extends RefNo implements Serializable
     @Column(name = "enable_tax")
     private boolean enableTax;
     
+    @Column(name = "credit_limit")
+    private double creditLimit;
+    
     @JoinColumn(name = "company_profile", referencedColumnName = "id")
     @ManyToOne
     private CompanyProfile companyProfile;
@@ -108,6 +111,14 @@ public class CompanyBranch extends RefNo implements Serializable
 
     public void setEnableTax(boolean enableTax) {
         this.enableTax = enableTax;
+    }
+
+    public double getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(double creditLimit) {
+        this.creditLimit = creditLimit;
     }
     
     

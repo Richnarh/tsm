@@ -27,10 +27,12 @@ public class CompoundSale extends UserAccountRecord implements Serializable{
     @Column(name = "compound_amount")
     private double compoundAmount;
     
+    public static final String _customer = "customer";
     @JoinColumn(name = "customer", referencedColumnName = "id")
     @ManyToOne
     private Customer customer;
     
+    public static final String _paymentStatus = "paymentStatus";
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;

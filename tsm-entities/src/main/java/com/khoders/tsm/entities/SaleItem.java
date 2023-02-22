@@ -29,15 +29,18 @@ public class SaleItem extends UserAccountRecord implements Serializable{
     
     @Column(name = "sub_total")
     private double subTotal;
-
+    
+    public static final String _customer = "customer";
     @JoinColumn(name = "customer")
     @ManyToOne
     private Customer customer;
     
+    public static final String _sales = "sales";
     @JoinColumn(name = "sales", referencedColumnName = "id")
     @ManyToOne
     private Sales sales;
     
+    public static final String _inventory = "inventory";
     @JoinColumn(name = "inventory")
     @ManyToOne
     private Inventory inventory;

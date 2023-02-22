@@ -13,6 +13,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class RefNo extends BaseModel implements Serializable
 {
+    public static final String _refNo = "refNo";
     @Column(name = "ref_no")
     private String refNo;
 

@@ -25,6 +25,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "credit_payment")
 public class CreditPayment extends UserAccountRecord{
+    
+    public static final String _customer = "customer";
     @JoinColumn(name = "customer", referencedColumnName = "id")
     @ManyToOne
     private Customer customer;
@@ -33,6 +35,7 @@ public class CreditPayment extends UserAccountRecord{
     @Lob
     private String description;
     
+    public static final String _sales = "sales";
     @JoinColumn(name = "sales", referencedColumnName = "id")
     @ManyToOne
     private Sales sales;
@@ -52,10 +55,12 @@ public class CreditPayment extends UserAccountRecord{
     @Column(name = "due_date")
     private LocalDate dueDate;
     
+    public static final String _paymentStatus = "paymentStatus";
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     
+    public static final String _paymentMethod = "paymentMethod";
     @Column(name = "payment_method")
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CASH;

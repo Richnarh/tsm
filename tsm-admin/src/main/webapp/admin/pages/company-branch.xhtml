@@ -39,6 +39,9 @@
                                 <span>Enable Tax</span>
                                 <p:selectBooleanCheckbox value="#{companyBranchController.companyBranch.enableTax}"/>
 
+                                <span>Credit Limit</span>
+                                <p:selectBooleanCheckbox value="#{companyBranchController.companyBranch.creditLimit}"/>
+
                             </h:panelGrid>
                             <div class="py-3">
                                 <p:commandButton icon="#{msg.check_icon}" class="kbtn-success mx-3" value="#{companyBranchController.optionText}" update="@form, :branchTable" action="#{companyBranchController.saveCompanyBranch()}"/>
@@ -82,6 +85,9 @@
 
                                 <p:column headerText="Enable Tax" style="width: 100px;">
                                     <span class="fw-bold">#{companyBranch.enableTax == true ? 'Yes' : 'No'}</span>
+                                </p:column>
+                                <p:column headerText="Credit Limit">
+                                    #{companyBranch.creditLimit}
                                 </p:column>
                                 <p:column headerText="#{msg.action}" style="width:100px">
                                     <p:menuButton value="#{msg.choose}">

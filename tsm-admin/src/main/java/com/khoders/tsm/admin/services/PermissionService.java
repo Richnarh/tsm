@@ -43,7 +43,7 @@ public class PermissionService
     }
     public List<AppPage> appPageList()
     {
-       return crudApi.getEm().createQuery("SELECT e FROM AppPage e WHERE e.pageStatus=:pageStatus ORDER BY e.reorder ASC", AppPage.class)
+       return crudApi.getEm().createQuery("SELECT e FROM AppPage e WHERE e.pageStatus=:pageStatus ORDER BY e.pageName ASC", AppPage.class)
                .setParameter("pageStatus", Status.ACTIVE)
                .getResultList();  
     }

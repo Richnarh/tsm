@@ -17,10 +17,12 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public class UserAccountRecord extends RefNo{
+    public static final String _userAccount = "userAccount";
     @JoinColumn(name = "user_account", referencedColumnName = "id")
     @ManyToOne
     private UserAccount userAccount;
     
+    public static final String _companyBranch = "companyBranch";
     @ManyToOne
     @JoinColumn(name = "company_branch", referencedColumnName = "id")
     private CompanyBranch companyBranch;

@@ -12,6 +12,7 @@ import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.listener.AppSession;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,10 +31,9 @@ import javax.inject.Named;
 @SessionScoped
 public class CustomerController implements Serializable
 {
-    @Inject
-    private CrudApi crudApi;
-    @Inject
-    private InventoryService inventoryService;
+    @Inject private CrudApi crudApi;
+    @Inject private AppSession appSession;
+    @Inject private InventoryService inventoryService;
 
     private Customer customer = new Customer();
     private List<Customer> customerList = new LinkedList<>();
@@ -75,13 +75,10 @@ public class CustomerController implements Serializable
             if (crudApi.save(customer) != null)
             {
                 customerList = CollectionList.washList(customerList, customer);
-
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, Msg.SUCCESS_MESSAGE, null));
+                Msg.info(Msg.SUCCESS_MESSAGE);
             } else
             {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, Msg.FAILED_MESSAGE, null));
+              Msg.error(Msg.FAILED_MESSAGE);
             }
             clearCustomer();
             closePage();
@@ -98,13 +95,10 @@ public class CustomerController implements Serializable
             if (crudApi.delete(customer))
             {
                 customerList.remove(customer);
-
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, Msg.SUCCESS_MESSAGE, null));
+                Msg.info(Msg.SUCCESS_MESSAGE);
             } else
             {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, Msg.FAILED_MESSAGE, null));
+               Msg.error(Msg.FAILED_MESSAGE);
             }
         } catch (Exception e)
         {
@@ -122,6 +116,8 @@ public class CustomerController implements Serializable
     public void clearCustomer()
     {
         customer = new Customer();
+        customer.setUserAccount(appSession.getCurrentUser());
+        customer.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }
@@ -129,6 +125,8 @@ public class CustomerController implements Serializable
     public void closePage()
     {
         customer = new Customer();
+        customer.setUserAccount(appSession.getCurrentUser());
+        customer.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
         pageView.restToListView();
     }

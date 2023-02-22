@@ -25,7 +25,7 @@
                                     </p:selectOneMenu>
                                 </div>
                                 <div class="card-body">
-                                    <p:dataTable class="mt-2" value="#{permissionController.appPageList}" var="appPage" scrollable="true" scrollHeight="300">
+                                    <p:dataTable class="mt-2" value="#{permissionController.appPageList}" var="appPage" scrollable="true" scrollHeight="380">
                                         <p:column headerText="#{msg.page}s" filterBy="#{appPage.pageName}" filterMatchMode="contains">
                                             <h:outputText value="#{appPage.pageName}"/>
                                         </p:column>

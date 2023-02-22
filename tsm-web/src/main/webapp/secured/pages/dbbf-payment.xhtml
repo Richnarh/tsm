@@ -13,8 +13,80 @@
             </ui:define>
 
             <ui:define name="pageContent">
-                <h1>Re-Useable</h1>
-                <p>re-user the credit payment page here, you can make it an include</p>
+                <h:panelGroup id="mainPanel">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h:form id="dbbfTable">
+                                    <br/>
+                                    <p:dataTable value="#{dbbfController.compoundSaleList}" var="dbbf" scrollable="true" scrollHeight="400">
+                                        <p:column headerText="DBBF Credits">
+                                            <h:commandLink styleClass="ptext-link" value="#{dbbf.refNo}" immediate="true" action="#{dbbfController.selectDbbf(dbbf)}">
+                                                <p:ajax update=":salesTable, :creditTable,:initForm"/>
+                                            </h:commandLink>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </div>
+                            <div class="col-md-8">
+                                <h:form id="salesTable">
+                                    <small class="text-white p-1" style="background: #07a"><i class="fa fa-info"></i> Sales under the Dept Balance Brought Forward</small>
+                                    <p:dataTable value="#{dbbfController.salesList}" var="sales" scrollable="true" scrollHeight="400">
+                                        <p:column headerText="#{msg.date}" style="width: 100px;">
+                                            <h:outputText value="#{sales.purchaseDate}">
+                                                <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.receipt} No.">
+                                            <h:outputText value="#{sales.receiptNumber}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Sales Type">
+                                            <h:outputText value="#{sales.salesType.label}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.total_amount}" class="text-end">
+                                            <h:outputText value="#{sales.totalAmount}">
+                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.action}">
+                                            <h:panelGroup rendered="#{sales.paymentStatus != 'FULLY_PAID'}">
+                                                <p:commandButton icon="#{msg.check_icon}" action="#{dbbfController.makePayment(sales)}" value="Make Payment" update=":mainPanel"/>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup rendered="#{sales.paymentStatus == 'FULLY_PAID'}">
+                                                <span class="text-success fw-bold">FULLY_PAID</span>
+                                            </h:panelGroup>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:form>
+                            </div>
+                        </div>
+                        <hr/>
+                        <h:panelGroup rendered="#{dbbfController.pageView.listView}">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-lg-12 py-2">
+                                    <h:form id="initForm" style="margin-bottom: 5px;">
+                                        <div class="float-end">
+                                            <span class="p-1 fw-bold shadow-sm text-white" style="background: #07a">
+                                                GHS: <h:outputText value="#{dbbfController.totalAmount}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </span>
+                                        </div>
+                                    </h:form>
+                                </div>
+                            </div>
+                            <ui:include src="includes/credit-payment-table.xhtml"/>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{dbbfController.pageView.createView}">
+                            <ui:include src="includes/credit-payment-form.xhtml"/>
+                        </h:panelGroup>
+                    </div>
+                </h:panelGroup>
             </ui:define>
         </ui:composition>
     </h:body>

@@ -25,12 +25,14 @@ public class SalesTax extends UserAccountRecord implements Serializable
     @Column(name = "sales_tax_id")
     private String salesTaxId;
 
+    public static final String _taxName= "taxName";
     @Column(name = "tax_name")
     private String taxName;
 
     @Column(name = "tax_rate")
     private double taxRate;
   
+    public static final String _sales = "sales";
     @JoinColumn(name = "sales", referencedColumnName = "id")
     @ManyToOne
     private Sales sales;

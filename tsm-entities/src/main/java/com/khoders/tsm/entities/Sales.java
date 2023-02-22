@@ -30,7 +30,8 @@ public class Sales extends UserAccountRecord {
 
     @Column(name = "purchase_date")
     private LocalDateTime purchaseDate;
-
+    
+    public static final String _customer = "customer";
     @JoinColumn(name = "customer", referencedColumnName = "id")
     @ManyToOne
     private Customer customer;
@@ -52,17 +53,21 @@ public class Sales extends UserAccountRecord {
     @Column(name = "due_date")
     private LocalDate dueDate;
     
+    public static final String _salesType = "salesType";
     @Column(name = "sales_type")
     @Enumerated(EnumType.STRING)
     private SalesType salesType = SalesType.NORMAL_SALES;
      
+    public static final String _paymentStatus = "paymentStatus"; 
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
-        
+    
+    public static final String _compound = "compound";    
     @Column(name = "compound")
     private boolean compound;
     
+    public static final String _compoundSale = "compoundSale";    
     @JoinColumn(name = "compound_sale")
     @ManyToOne
     private CompoundSale compoundSale;

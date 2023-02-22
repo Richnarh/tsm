@@ -21,10 +21,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "inventory") // Shop
 public class Inventory extends UserAccountRecord implements Serializable{
+    
+    public static final String _stockReceiptItem = "stockReceiptItem";
     @JoinColumn(name = "stock_receipt_item")
     @ManyToOne
     private StockReceiptItem stockReceiptItem;
     
+    public static final String _location = "location";
     @JoinColumn(name = "location") // shop name
     @ManyToOne
     private Location location;
@@ -42,6 +45,7 @@ public class Inventory extends UserAccountRecord implements Serializable{
     @Column(name = "qty_in_shop")
     private double qtyInShop;
     
+    public static final String _unitMeasurement = "unitMeasurement";
     @JoinColumn(name = "units_measurement", referencedColumnName = "id")
     @ManyToOne
     private UnitMeasurement unitMeasurement;
