@@ -40,7 +40,7 @@
                                     
                                     <ui:remove>
                                         <div class="float-end mx-2">
-                                            <h:commandButton id="invoice" value="#{msg.new} Invoice" class="btn btn-outline-primary btn-sm"
+                                            <h:commandButton id="invoice" value="Make #{msg.new} Invoice" class="btn btn-outline-primary btn-sm"
                                                              action="#{salesController.initInvoiceSales()}">
                                                 <p:ajax update=":mainPanel"/>
                                             </h:commandButton>
@@ -48,7 +48,7 @@
                                    </ui:remove>
 
                                     <div class="float-end">
-                                        <h:commandButton id="pos" value="#{msg.new} Sale" class="btn btn-outline-primary btn-sm"
+                                        <h:commandButton id="pos" value="Make #{msg.new} Sale" class="btn btn-outline-primary btn-sm"
                                                          action="#{salesController.initNewSale()}">
                                             <p:ajax update=":mainPanel"/>
                                         </h:commandButton>

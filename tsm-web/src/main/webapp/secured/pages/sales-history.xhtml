@@ -23,7 +23,7 @@
                                     <p:dataTable value="#{salesHistoryController.customerList}" var="customer" scrollable="true" scrollHeight="400">
                                         <p:column headerText="#{msg.customer}" filterBy="#{customer.customerName}" filterMatchMode="contains">
                                             <h:commandLink value="#{customer.customerName} - #{customer.phone}" action="#{salesHistoryController.loadCustomerSales(customer)}" styleClass="ptext-link" immediate="true">
-                                                <p:ajax update=":mainPanel, :salesTable"/>
+                                                <p:ajax update=":mainPanel, :salesTable, :creditPaymentTable"/>
                                             </h:commandLink>
                                         </p:column>
                                     </p:dataTable>
@@ -81,48 +81,131 @@
                             </div>
                         </div>
                         <br/>
-                        <h:panelGroup rendered="#{salesHistoryController.saleItemList.size() > 0}">
-                            <h:form id="saleItemTable">
-                                <p:dataTable value="#{salesHistoryController.saleItemList}" var="saleItem">
-                                    <f:facet name="header">Sales Items purchased by - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
-                                    <p:column style="width: 15px;">
-                                        <p:rowToggler/>
-                                    </p:column>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h:panelGroup rendered="#{salesHistoryController.saleItemList.size() > 0}">
+                                    <h:form id="saleItemTable">
+                                        <p:dataTable value="#{salesHistoryController.saleItemList}" var="saleItem">
+                                            <f:facet name="header">Sales Items purchased by - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
+                                            <p:column headerText="#{msg.product}">
+                                                #{saleItem.inventory.stockReceiptItem}
+                                            </p:column>
+                                            <p:column headerText="#{msg.package}" style="width: 50px">
+                                                #{saleItem.inventory.unitMeasurement}
+                                            </p:column>
+                                            <p:column headerText="#{msg.qty}" style="width: 30px" class="text-end">
+                                                #{saleItem.quantity}
+                                            </p:column>
 
-                                    <p:rowExpansion>
-                                        <h:panelGrid columns="2">
-                                            <span>Id</span>
-                                            <h:outputText value="#{saleItem.id}"/>
-                                            <span>#{msg.created_date}</span>
-                                            <h:outputText value="#{saleItem.createdDate}">
-                                                <f:convertDateTime type="localDateTime" pattern="#{msg.formated_date_time_words_short}"/>
-                                            </h:outputText>
-                                        </h:panelGrid>
-                                    </p:rowExpansion>
-                                    <p:column headerText="#{msg.product}">
-                                        #{saleItem.inventory.stockReceiptItem}
-                                    </p:column>
-                                    <p:column headerText="#{msg.package}">
-                                        #{saleItem.inventory.unitMeasurement}
-                                    </p:column>
-                                    <p:column headerText="#{msg.qty}" class="text-end">
-                                        #{saleItem.quantity}
-                                    </p:column>
+                                            <p:column headerText="Price" style="width: 40px" class="text-end">
+                                                <h:outputText value="#{saleItem.unitPrice}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="#{msg.total}" style="width: 50px" class="text-end">
+                                                <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </p:column>
 
-                                    <p:column headerText="Unit Price" class="text-end">
-                                        <h:outputText value="#{saleItem.unitPrice}">
-                                            <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                        </h:outputText>
-                                    </p:column>
-                                    <p:column headerText="#{msg.total}" class="text-end">
-                                        <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
-                                            <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                        </h:outputText>
-                                    </p:column>
+                                        </p:dataTable>
+                                    </h:form>
+                                </h:panelGroup>
+                            </div>
+                            <div class="col-md-8">
+                                <h:panelGroup rendered="#{salesHistoryController.creditPaymentList.size() > 0}">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-lg-12 py-2">
+                                            <h:form id="initForm" style="margin-bottom: 5px;">
+                                                <div class="float-end">
+                                                    <span class="p-1 fw-bold shadow-sm text-white" style="background: #07a">
+                                                        GHS: <h:outputText value="#{salesHistoryController.totalAmount}">
+                                                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                        </h:outputText>
+                                                    </span>
+                                                </div>
+                                            </h:form>
+                                        </div>
+                                    </div>
+                                    <h:form id="creditPaymentTable">
+                                        <p:dataTable value="#{salesHistoryController.creditPaymentList}" var="creditPayment">
+                                            <f:facet name="header">Payment Records - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
+                                            <p:column style="width: 15px;">
+                                                <p:rowToggler/>
+                                            </p:column>
 
-                                </p:dataTable>
-                            </h:form>
-                        </h:panelGroup>
+                                            <p:rowExpansion>
+                                                <h:panelGrid columns="2">
+                                                    <span>Id</span>
+                                                    <h:outputText value="#{creditPayment.id}"/>
+
+                                                    <span>#{msg.created_date}</span>
+                                                    <h:outputText value="#{creditPayment.createdDate}">
+                                                        <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                                                    </h:outputText>
+
+                                                    <span>Ref. No</span>
+                                                    <h:outputText value="#{creditPayment.refNo}"/>
+
+                                                    <span>#{msg.description}</span>
+                                                    <h:outputText value="#{creditPayment.description}"/>
+
+                                                </h:panelGrid>
+                                            </p:rowExpansion>
+                                            <p:column headerText="#{msg.date}" style="width: 60px">
+                                                <h:outputText value="#{creditPayment.paymentDate}">
+                                                    <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                                                </h:outputText>
+                                            </p:column>
+
+                                            <p:column headerText="Method" style="width: 80px">
+                                                <h:outputText value="#{creditPayment.paymentMethod.label}"/>
+                                            </p:column>
+
+                                            <p:column headerText="#{msg.status}" style="background: #07a; width: 100px" class="text-white">
+                                                <h:panelGroup rendered="#{creditPayment.paymentStatus != 'FULLY_PAID'}">
+                                                    <span class="text-warning fw-bold">#{creditPayment.paymentStatus}</span>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{creditPayment.paymentStatus == 'FULLY_PAID'}">
+                                                    <span class="text-white fw-bold bg-success p-2">#{creditPayment.paymentStatus}</span>
+                                                </h:panelGroup>
+                                            </p:column>
+
+                                            <p:column headerText="#{msg.total} #{msg.amount}" class="text-end">
+                                                <h:outputText value="#{creditPayment.totalCredit}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </p:column>
+
+                                            <p:column headerText="#{msg.amount} paid" class="text-end">
+                                                <h:outputText value="#{creditPayment.amountPaid}">
+                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                </h:outputText>
+                                            </p:column>
+
+                                            <p:column headerText="#{msg.amount} Rem" style="background: #07a" class="text-end text-white">
+                                                <h:panelGroup rendered="#{creditPayment.paymentStatus != 'FULLY_PAID'}">
+                                                    <h:outputText class="text-warning fw-bold" value="#{creditPayment.creditRemaining}">
+                                                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                    </h:outputText>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{creditPayment.paymentStatus == 'FULLY_PAID'}">
+                                                    <h:outputText class="text-white fw-bold bg-success p-2" value="#{creditPayment.creditRemaining}">
+                                                        <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                                    </h:outputText>
+                                                </h:panelGroup>
+                                            </p:column>
+
+                                            <p:column headerText="#{msg.action}" style="width: 80px;">
+                                                <p:menuButton value="#{msg.choose}">
+                                                    <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{dbbfController.printReceipt(creditPayment)}" ajax="false"/>
+                                                </p:menuButton>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </h:form>
+                                </h:panelGroup>
+                            </div>
+                        </div>
                     </div>
                 </h:panelGroup>
             </ui:define>

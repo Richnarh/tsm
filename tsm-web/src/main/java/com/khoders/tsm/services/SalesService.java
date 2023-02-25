@@ -213,4 +213,11 @@ public class SalesService
                     .getResultList();
     }
 
+    public List<CreditPayment> getCreditPayments(Customer customer) {
+        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.customer = :customer AND  e.companyBranch = :companyBranch", CreditPayment.class)
+                    .setParameter(CreditPayment._customer, customer)
+                    .setParameter(CreditPayment._companyBranch, appSession.getCompanyBranch())
+                    .getResultList();
+    }
+
 }

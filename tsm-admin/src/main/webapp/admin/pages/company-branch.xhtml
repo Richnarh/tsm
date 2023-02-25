@@ -40,7 +40,7 @@
                                 <p:selectBooleanCheckbox value="#{companyBranchController.companyBranch.enableTax}"/>
 
                                 <span>Credit Limit</span>
-                                <p:selectBooleanCheckbox value="#{companyBranchController.companyBranch.creditLimit}"/>
+                                <p:inputText value="#{companyBranchController.companyBranch.creditLimit}"/>
 
                             </h:panelGrid>
                             <div class="py-3">
@@ -49,7 +49,6 @@
                             </div>
                         </h:form>
                         <h:form id="branchTable">
-
                             <p:dataTable value="#{companyBranchController.companyBranchList}" var="companyBranch">
                                 <p:column style="width: 37px;">
                                     <p:rowToggler/>

@@ -181,7 +181,6 @@ public class DbbfController implements Serializable{
     {
        creditPayment = new CreditPayment();
        selectedSale = null;
-       totalAmount = 0.0;
        optionText = "Save Changes";
        pageView.restToListView();
     }
