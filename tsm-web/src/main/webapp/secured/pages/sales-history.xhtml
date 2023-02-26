@@ -171,19 +171,19 @@
                                                 </h:panelGroup>
                                             </p:column>
 
-                                            <p:column headerText="#{msg.total} #{msg.amount}" class="text-end">
+                                            <p:column headerText="#{msg.total} Amt" class="text-end">
                                                 <h:outputText value="#{creditPayment.totalCredit}">
                                                     <f:convertNumber pattern="#{msg.money_pattern}"/>
                                                 </h:outputText>
                                             </p:column>
 
-                                            <p:column headerText="#{msg.amount} paid" class="text-end">
+                                            <p:column headerText="Amt paid" class="text-end">
                                                 <h:outputText value="#{creditPayment.amountPaid}">
                                                     <f:convertNumber pattern="#{msg.money_pattern}"/>
                                                 </h:outputText>
                                             </p:column>
 
-                                            <p:column headerText="#{msg.amount} Rem" style="background: #07a" class="text-end text-white">
+                                            <p:column headerText="Amt Rem" style="background: #07a" class="text-end text-white">
                                                 <h:panelGroup rendered="#{creditPayment.paymentStatus != 'FULLY_PAID'}">
                                                     <h:outputText class="text-warning fw-bold" value="#{creditPayment.creditRemaining}">
                                                         <f:convertNumber pattern="#{msg.money_pattern}"/>

@@ -72,6 +72,7 @@ public class SalesHistoryController implements Serializable{
         saleItemList = new LinkedList<>();
         salesList = new LinkedList<>();
         customerList = new LinkedList<>();
+        creditPaymentList = new LinkedList<>();
     }
 
     public List<Customer> getCustomerList() {
