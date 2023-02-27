@@ -140,8 +140,7 @@ public class StockUploadController implements Serializable
            e.printStackTrace();
         }
     }
-        
-    @SuppressWarnings("null")
+
     public void saveUpload()
     {
         try

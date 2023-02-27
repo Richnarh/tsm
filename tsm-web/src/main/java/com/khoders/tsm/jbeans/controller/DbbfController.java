@@ -24,7 +24,6 @@ import com.khoders.tsm.services.XtractService;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,8 +55,7 @@ public class DbbfController implements Serializable{
     private List<CompoundSale> compoundSaleList = new LinkedList<>();
     private List<Sales> salesList = new LinkedList<>();
     
-    @PostConstruct
-    private void init(){
+    public void loadCompoundSales(){
         compoundSaleList = salesService.getCompoundSales();
     }
     
