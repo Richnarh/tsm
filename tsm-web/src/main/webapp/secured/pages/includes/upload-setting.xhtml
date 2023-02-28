@@ -6,49 +6,69 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
 
-    <p:dialog showEffect="fade" hideEffect="fade" responsive="true"  resizable="false" header="Settings" closable="false" widgetVar="settingWindow" closeOnEscape="true" modal="true" height="180"  width="380">
+    <p:dialog showEffect="fade" hideEffect="fade" responsive="true"  resizable="false" header="Configuration" closable="false" widgetVar="settingWindow" closeOnEscape="true" modal="true" height="280"  width="480">
         <h:form id="settingForm" class="spaced-form">
 
-            <h:panelGrid columns="2">
-                <ui:remove>
-                    <h:outputLabel class="mx-2" value="Create Inventory"/>
-                    <p:selectBooleanCheckbox immediate="true" value="#{stockUploadController.postToInventory}">
-                        <p:ajax update="settingForm"/>
-                    </p:selectBooleanCheckbox>
+            <div class="card-block">
 
-                    <h:panelGroup rendered="#{stockUploadController.postToInventory == true}">
-                        <h:panelGrid columns="2">
-                            <span>#{msg.from} Warehouse<span class="text-danger">*</span></span>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Create Purchase Order</label>
+                    <div class="col-md-8">
+                        <p:selectBooleanCheckbox value="#{stockUploadController.prepareOrder}"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Create Stock Receipt</label>
+                    <div class="col-md-8">
+                        <p:selectBooleanCheckbox value="#{stockUploadController.recieveOrder}"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label">Receive to warehouse<span class="text-danger">*</span></label>
+                    <div class="col-md-8">
+                        <p:selectOneMenu style="width: 18rem" immediate="true" value="#{stockUploadController.location}" required="true">
+                            <f:selectItem itemLabel="#{msg.choose}"/>
+                            <f:selectItems value="#{usercommonBeans.locationList}"/>
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+                <div class="form-group row py-2">
+                    <label class="col-sm-4 col-form-label">Create Inventory<span class="text-danger">*</span> </label>
+                    <div class="col-md-8">
+                        <p:selectBooleanCheckbox immediate="true" value="#{stockUploadController.postToInventory}">
+                            <p:ajax update="settingForm"/>
+                        </p:selectBooleanCheckbox>
+                    </div>
+                </div>
+                
+                <h:panelGroup rendered="#{stockUploadController.postToInventory == true}">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">#{msg.from} Warehouse<span class="text-danger">*</span></label>
+                        <div class="col-md-8">
                             <p:selectOneMenu style="width: 16rem" immediate="true" value="#{stockUploadController.fromLocation}">
                                 <f:selectItem itemLabel="#{msg.choose}"/>
                                 <f:selectItems value="#{usercommonBeans.locationList}"/>
                             </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label">#{msg.to} Shop</label>
+                        <div class="col-md-8">
 
-                            <span>#{msg.to} Shop</span>
                             <p:selectOneMenu style="width: 16rem" immediate="true" value="#{stockUploadController.toLocation}">
                                 <f:selectItem itemLabel="#{msg.choose}"/>
                                 <f:selectItems value="#{usercommonBeans.locationList}"/>
                             </p:selectOneMenu>
-                        </h:panelGrid>
-                    </h:panelGroup>
-                </ui:remove>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </div>
 
-                <h:outputLabel class="mx-2" value="Purchase Order"/>
-                <p:selectBooleanCheckbox value="#{stockUploadController.prepareOrder}"/>
-
-                <h:outputLabel class="mx-2" value="Stock Receipt"/>
-                <p:selectBooleanCheckbox value="#{stockUploadController.recieveOrder}"/>
-
-                <span>#{msg.warehouse}<span class="text-danger">*</span></span>
-                <p:selectOneMenu style="width: 18rem" immediate="true" value="#{stockUploadController.location}" required="true">
-                    <f:selectItem itemLabel="#{msg.choose}"/>
-                    <f:selectItems value="#{usercommonBeans.locationList}"/>
-                </p:selectOneMenu>
-            </h:panelGrid>
             <br/>
             <center>
                 <p:commandButton icon="#{msg.check_icon_circle}" class="kbtn-success" value="Apply" oncomplete="PF('settingWindow').hide();"/>
             </center>
+
         </h:form>
     </p:dialog>
 </html>
