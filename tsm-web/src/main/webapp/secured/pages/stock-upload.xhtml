@@ -38,7 +38,7 @@
                                     <p:dataTable value="#{stockUploadController.stockDetailList}" reflow="true" var="stockDetail"
                                                  scrollable="true" scrollHeight="400">
 
-                                        <p:column headerText="#{msg.product}" style="width: 250px">
+                                        <p:column headerText="#{msg.product}" style="width: 200px">
                                             #{stockDetail.productName}
                                         </p:column>
 
@@ -71,8 +71,14 @@
                                             </h:outputText>
                                         </p:column>
 
-                                        <p:column headerText="Selling Price" class="text-end">
-                                            <h:outputText value="#{stockDetail.sellingPrice}">
+                                        <p:column headerText="R. Price" class="text-end">
+                                            <h:outputText value="#{stockDetail.retailPrice}">
+                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="W. Price" class="text-end">
+                                            <h:outputText value="#{stockDetail.wprice}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
                                             </h:outputText>
                                         </p:column>

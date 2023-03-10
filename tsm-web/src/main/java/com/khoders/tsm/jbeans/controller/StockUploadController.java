@@ -8,7 +8,6 @@ package com.khoders.tsm.jbeans.controller;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
 import com.khoders.tsm.listener.AppSession;
-import com.khoders.tsm.services.SalesService;
 import com.khoders.tsm.services.StockService;
 import com.khoders.resource.enums.DeliveryMethod;
 import com.khoders.resource.jpa.CrudApi;
@@ -115,19 +114,25 @@ public class StockUploadController implements Serializable
                 if(costPrice != null && !costPrice.isEmpty()){
                     stockDetails.setCostPrice(BeansUtil.objToDouble(costPrice));
                 }
-                String sellPrice = BeansUtil.objToString(currentRow.getCell(6));
-                if(sellPrice != null && !sellPrice.isEmpty()){
-                    stockDetails.setSellingPrice(BeansUtil.objToDouble(sellPrice));
+                String wprice = BeansUtil.objToString(currentRow.getCell(6));
+                if(wprice != null && !wprice.isEmpty()){
+                    stockDetails.setWprice(BeansUtil.objToDouble(wprice));
                 }
-                String packaging = BeansUtil.objToString(currentRow.getCell(7));
+                
+                String retailPrice = BeansUtil.objToString(currentRow.getCell(7));
+                if(retailPrice != null && !retailPrice.isEmpty()){
+                    stockDetails.setRetailPrice(BeansUtil.objToDouble(retailPrice));
+                }
+                
+                String packaging = BeansUtil.objToString(currentRow.getCell(8));
                 if(packaging != null && !packaging.isEmpty()){
                     stockDetails.setPackaging(BeansUtil.objToString(packaging));
                 }
-                String units = BeansUtil.objToString(currentRow.getCell(8));
+                String units = BeansUtil.objToString(currentRow.getCell(9));
                 if(units != null && !units.isEmpty()){
                     stockDetails.setUnitsMeasurement(units);
                 }
-                String unitsInPkg = BeansUtil.objToString(currentRow.getCell(9));
+                String unitsInPkg = BeansUtil.objToString(currentRow.getCell(10));
                 if(unitsInPkg != null && !unitsInPkg.isEmpty()){
                     stockDetails.setUnitsInPackage(BeansUtil.objToDouble(unitsInPkg));
                 }
@@ -209,6 +214,7 @@ public class StockUploadController implements Serializable
                         receiptItem.setCostPrice(stockData.getCostPrice());
                         receiptItem.setProduct(stockService.getProduct(stockData.getProductName()));
                         receiptItem.setPkgQuantity(stockData.getQtyInWarehouse());
+                        receiptItem.setWprice(stockData.getWprice());
                         receiptItem.setUserAccount(appSession.getCurrentUser());
                         receiptItem.setCompanyBranch(appSession.getCompanyBranch());
                         receiptItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
@@ -222,9 +228,11 @@ public class StockUploadController implements Serializable
                             inventory = new Inventory();
                             inventory.setStockReceiptItem(receiptItem);
                             inventory.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
-                            inventory.setPackagePrice(stockData.getSellingPrice());
+                            inventory.setPackagePrice(stockData.getRetailPrice());
                             inventory.setUnitsInPackage(stockData.getUnitsInPackage());
                             inventory.setUserAccount(appSession.getCurrentUser());
+                            inventory.setCompanyBranch(appSession.getCompanyBranch());
+                            inventory.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                             inventory.setLocation(toLocation);
                             inventory.setQtyInShop(stockData.getQtyInShop());
                             inventory.setDescription("Inventory Upload on: "+LocalDate.now());

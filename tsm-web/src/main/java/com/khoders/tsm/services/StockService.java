@@ -79,8 +79,8 @@ public class StockService {
                                             .getResultStream().findFirst().orElse(null);
     }
     public UnitMeasurement getUnits(String units) {
-        return crudApi.getEm().createQuery("SELECT e FROM UnitMeasurement e WHERE e.units=?1", UnitMeasurement.class)
-                .setParameter(1, units)
+        return crudApi.getEm().createQuery("SELECT e FROM UnitMeasurement e WHERE e.units = :units", UnitMeasurement.class)
+                .setParameter(UnitMeasurement._units, units)
                 .getResultStream().findFirst().orElse(null);
     }
 

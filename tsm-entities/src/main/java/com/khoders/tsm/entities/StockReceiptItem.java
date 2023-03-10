@@ -51,8 +51,8 @@ public class StockReceiptItem extends UserAccountRecord implements Serializable{
     @Column(name = "pkg_factor")
     private double pkgFactor;
     
-    @Column(name = "selling_price")
-    private double sellingPrice;
+    @Column(name = "wprice")
+    private double wprice;
     
     @Column(name = "qty_sold")
     private double qtySold;
@@ -143,12 +143,12 @@ public class StockReceiptItem extends UserAccountRecord implements Serializable{
         this.pkgFactor = pkgFactor;
     }
     
-    public double getSellingPrice() {
-        return sellingPrice;
+    public double getWprice() {
+        return wprice;
     }
 
-    public void setSellingPrice(double sellingPrice) {
-        this.sellingPrice = sellingPrice;
+    public void setWprice(double wprice) {
+        this.wprice = wprice;
     }
 
     public UnitMeasurement getUnitMeasurement() {

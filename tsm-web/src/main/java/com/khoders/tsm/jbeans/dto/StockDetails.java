@@ -16,7 +16,8 @@ public class StockDetails {
     private String location;
     private String packaging;
     private String unitsMeasurement;
-    private double sellingPrice;
+    private double wprice;
+    private double retailPrice;
     private double qtyInShop;
     private double qtyInWarehouse;
     private double costPrice;
@@ -78,14 +79,22 @@ public class StockDetails {
         this.location = location;
     }
 
-    public double getSellingPrice() {
-        return sellingPrice;
+    public double getWprice() {
+        return wprice;
     }
 
-    public void setSellingPrice(double sellingPrice) {
-        this.sellingPrice = sellingPrice;
+    public void setWprice(double wprice) {
+        this.wprice = wprice;
     }
 
+    public double getRetailPrice() {
+        return retailPrice;
+    }
+
+    public void setRetailPrice(double retailPrice) {
+        this.retailPrice = retailPrice;
+    }
+    
     public double getQtyInShop() {
         return qtyInShop;
     }

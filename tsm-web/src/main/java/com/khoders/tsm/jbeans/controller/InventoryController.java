@@ -56,6 +56,7 @@ public class InventoryController implements Serializable
    public void selectProduct(StockReceiptItem stockReceiptItem){
        selectedStockReceiptItem=stockReceiptItem;
        segmentedList = stockService.inventoryProduct(selectedStockReceiptItem);
+       inventory.setWprice(stockReceiptItem.getWprice());
    }
    
    public void updateUnit(){
@@ -72,8 +73,7 @@ public class InventoryController implements Serializable
        {
            if(optionText.equals("Save Changes")){
               Inventory newPackage = stockService.existProdctPackage(selectedStockReceiptItem, inventory.getUnitMeasurement().getUnits());
-              if (newPackage != null)
-              {
+              if (newPackage != null){
                   Msg.error("product and the package already exist");
                   return;
               }

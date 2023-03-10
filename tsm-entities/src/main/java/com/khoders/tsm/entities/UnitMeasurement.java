@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Table(name = "unit_measurement")
 public class UnitMeasurement extends UserAccountRecord implements Serializable
 {
+    public static final String _units = "units";
     @Column(name = "units")
     private String units;
 

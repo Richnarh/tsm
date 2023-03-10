@@ -99,7 +99,7 @@ public class XtractService
        for (PurchaseOrderItem item : orderItemList) {
             StockReceiptItem receiptItem = new StockReceiptItem();
             receiptItem.setCostPrice(item.getCostPrice());
-            receiptItem.setSellingPrice(0.0);
+            receiptItem.setWprice(0.0);
             receiptItem.setProduct(item.getProduct());
             receiptItem.setPurchaseOrderItem(item);
             receiptItem.setUnitMeasurement(item.getUnitMeasurement());
@@ -186,35 +186,42 @@ public class XtractService
     public boolean saveUpload(List<StockDetails> stockDetailList) {
         try {
             for (StockDetails details : stockDetailList) {
-                ProductType productType = stockService.getProductType(details.getProductType());
-                if (productType == null) {
-                    productType = new ProductType();
-                    productType.genCode();
-                    productType.setProductTypeName(details.getProductType());
-                    productType.setUserAccount(appSession.getCurrentUser());
-                    productType.setCompanyBranch(appSession.getCompanyBranch());
-                    productType.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                    crudApi.save(productType);
+                ProductType productType = null;
+                if (details.getProductType() != null) {
+                     productType = stockService.getProductType(details.getProductType());
+                    if (productType == null) {
+                        productType = new ProductType();
+                        productType.genCode();
+                        productType.setProductTypeName(details.getProductType());
+                        productType.setUserAccount(appSession.getCurrentUser());
+                        productType.setCompanyBranch(appSession.getCompanyBranch());
+                        productType.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                        crudApi.save(productType);
+                    }
                 }
-                Product product = stockService.getProduct(details.getProductName());
-                if (product == null) {
-                    product = new Product();
-                    product.setProductName(details.getProductName().trim());
-                    product.setProductType(productType);
-                    product.setUserAccount(appSession.getCurrentUser());
-                    product.setCompanyBranch(appSession.getCompanyBranch());
-                    product.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                    crudApi.save(product);
+                if (details.getProductName() != null) {
+                    Product product = stockService.getProduct(details.getProductName());
+                    if (product == null) {
+                        product = new Product();
+                        product.setProductName(details.getProductName().trim());
+                        product.setProductType(productType != null ? productType : null);
+                        product.setUserAccount(appSession.getCurrentUser());
+                        product.setCompanyBranch(appSession.getCompanyBranch());
+                        product.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                        crudApi.save(product);
+                    }
                 }
-
-                UnitMeasurement unitMeasurement = stockService.getUnits(details.getUnitsMeasurement());
-                if (unitMeasurement == null) {
-                    unitMeasurement = new UnitMeasurement();
-                    unitMeasurement.setCompanyBranch(appSession.getCompanyBranch());
-                    unitMeasurement.setUnits(details.getUnitsMeasurement());
-                    unitMeasurement.genCode();
-                    unitMeasurement.setUserAccount(appSession.getCurrentUser());
-                    crudApi.save(unitMeasurement);
+                
+                if (details.getUnitsMeasurement() != null) {
+                    UnitMeasurement unitMeasurement = stockService.getUnits(details.getUnitsMeasurement());
+                    if (unitMeasurement == null) {
+                        unitMeasurement = new UnitMeasurement();
+                        unitMeasurement.setCompanyBranch(appSession.getCompanyBranch());
+                        unitMeasurement.setUnits(details.getUnitsMeasurement());
+                        unitMeasurement.genCode();
+                        unitMeasurement.setUserAccount(appSession.getCurrentUser());
+                        crudApi.save(unitMeasurement);
+                    }
                 }
             }
             return true;

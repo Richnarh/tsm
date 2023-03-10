@@ -89,6 +89,10 @@
                                             <p:column headerText="#{msg.cost_price}" style="width: 90px;">
                                                 <p:inputText style="width: 90px;" value="#{receiptItem.costPrice}"/>
                                             </p:column>
+                                            
+                                            <p:column headerText="W. Price" style="width: 90px;">
+                                                <p:inputText style="width: 90px;" value="#{receiptItem.wprice}"/>
+                                            </p:column>
 
                                             <p:column style="width: 80px;">
                                                 <h:panelGroup rendered="#{receiptItem.receiptStatus == 'PENDING'}">

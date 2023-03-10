@@ -35,8 +35,13 @@ public class Inventory extends UserAccountRecord implements Serializable{
     @Column(name = "units_in_package")
     private double unitsInPackage;
     
+    public static final String _packagePrice = "packagePrice";
     @Column(name = "package_price")
-    private double packagePrice; //selling price
+    private double packagePrice; //selling price, retail price
+    
+    public static final String _wprice = "wprice";
+    @Column(name = "wprice")
+    private double wprice; //whole sale price
     
     @Column(name = "description")
     @Lob
@@ -104,6 +109,14 @@ public class Inventory extends UserAccountRecord implements Serializable{
 
     public void setQtyInShop(double qtyInShop) {
         this.qtyInShop = qtyInShop;
+    }
+
+    public double getWprice() {
+        return wprice;
+    }
+
+    public void setWprice(double wprice) {
+        this.wprice = wprice;
     }
     
     @Override
