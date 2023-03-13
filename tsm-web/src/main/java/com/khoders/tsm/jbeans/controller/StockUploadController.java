@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -43,6 +44,8 @@ import org.primefaces.model.file.UploadedFile;
 @SessionScoped
 public class StockUploadController implements Serializable
 {
+     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(StockUploadController.class.getName());
+     
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
     @Inject private StockService stockService;
@@ -75,7 +78,7 @@ public class StockUploadController implements Serializable
         try
         {
             String extension = getFileExtension(file.getFileName());
-            System.out.println("type ==> " + extension);
+            logger.log(Level.INFO, "type ==> {0}", extension);
 
             InputStream inputStream = file.getInputStream();
             XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
@@ -138,6 +141,7 @@ public class StockUploadController implements Serializable
                 }
                 
                 stockDetailList.add(stockDetails);
+                appSession.logEvent("Stock Upload", "Stocks", "Inventory Uploads");
                 System.out.println("Iteration "+c+" done!");
             }
         } catch (Exception e)
@@ -243,6 +247,7 @@ public class StockUploadController implements Serializable
                     
                 }
                 Msg.info("Upload saved successfully!");
+                appSession.logEvent("Create Stocks", "Stocks", "Save Stock Uploads");
             }
         } catch (Exception e)
         {

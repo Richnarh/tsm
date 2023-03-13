@@ -34,5 +34,7 @@
     <class>com.khoders.tsm.entities.system.LoginTrail</class>
     <class>com.khoders.tsm.entities.CompoundSale</class>
     <class>com.khoders.tsm.entities.ReturnItem</class>
+    <class>com.khoders.tsm.entities.system.EventLog</class>
+    <class>com.khoders.tsm.entities.system.EventModule</class>
   </persistence-unit>
 </persistence>

@@ -43,7 +43,7 @@ public class LoginController implements Serializable
             }
 
             initLogin(account);
-            
+            appSession.logEvent("Login", "user_account", "User Login");
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -76,6 +76,7 @@ public class LoginController implements Serializable
     {
         try
         {
+            appSession.logEvent("Logout", "user_account", "User Logout");
             Faces.invalidateSession();
             Faces.logout();
 

@@ -7,6 +7,7 @@ package com.khoders.tsm.admin.commons;
 
 import com.khoders.resource.enums.AccessLevel;
 import com.khoders.resource.enums.Status;
+import com.khoders.tsm.enums.EventType;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -26,5 +27,8 @@ public class CommonClass implements Serializable
     }
     public List<AccessLevel> getAccessLevelList(){
         return Arrays.asList(AccessLevel.values());
+    }
+    public List<EventType> getEventTypeList(){
+        return Arrays.asList(EventType.values());
     }
 }

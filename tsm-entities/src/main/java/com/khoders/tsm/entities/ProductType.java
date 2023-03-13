@@ -19,6 +19,7 @@ import javax.persistence.Table;
 @Table(name = "product_type")
 public class ProductType extends UserAccountRecord implements Serializable
 {
+    public static final String _productTypeName = "productTypeName";
     @Column(name = "product_type")
     private String productTypeName;
 

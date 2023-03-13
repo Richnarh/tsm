@@ -14,6 +14,7 @@ import com.khoders.resource.utilities.BeansUtil;
 import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
+import com.khoders.resource.utilities.Stringz;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.CompoundSale;
 import com.khoders.tsm.entities.Customer;
@@ -81,11 +82,11 @@ public class CreditPaymentController implements Serializable{
             if(sales.getCompoundSale() != null){
                 continue;
             }
-            String receiptCode = BeansUtil.removeCharBefore(sales.getReceiptNumber(), "/");
+            String receiptCode = Stringz.removeCharBefore(sales.getReceiptNumber(), "/");
             sb.append(receiptCode).append("/");
             csAmount += sales.getTotalAmount();
         }
-        String receiptCode = BeansUtil.removeCharBefore(selectedSale.getReceiptNumber(), "/");
+        String receiptCode = Stringz.removeCharBefore(selectedSale.getReceiptNumber(), "/");
         sb.append(receiptCode);
         System.out.println("receiptCode__....... "+receiptCode);
         CompoundSale cSale = salesService.getCompoundSale(selectedSale.getCustomer());
@@ -106,7 +107,7 @@ public class CreditPaymentController implements Serializable{
              return;
         }
         
-        String[] str = BeansUtil.splitStr(SystemUtils.generateRefNo(), "/");
+        String[] str = Stringz.splitStr(SystemUtils.generateRefNo(), "/");
         sb.insert(0, str[0]+"/");
         System.out.println("Ref No: "+sb.toString());
         cs.setRefNo(sb.toString());

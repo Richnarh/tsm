@@ -33,6 +33,8 @@
     <class>com.khoders.tsm.entities.system.LoginTrail</class>
     <class>com.khoders.tsm.entities.ReturnItem</class>
     <class>com.khoders.tsm.entities.CompoundSale</class>
+    <class>com.khoders.tsm.entities.system.EventLog</class>
+    <class>com.khoders.tsm.entities.system.EventModule</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

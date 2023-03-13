@@ -74,8 +74,8 @@ public class StockService {
                 .getResultStream().findFirst().orElse(null);
     }
     public ProductType getProductType(String prdtType){
-       return crudApi.getEm().createQuery("SELECT e FROM ProductType e WHERE e.productTypeName=?1", ProductType.class)
-                                            .setParameter(1, prdtType)
+       return crudApi.getEm().createQuery("SELECT e FROM ProductType e WHERE e.productTypeName = :productTypeName", ProductType.class)
+                                            .setParameter(ProductType._productTypeName, prdtType)
                                             .getResultStream().findFirst().orElse(null);
     }
     public UnitMeasurement getUnits(String units) {
