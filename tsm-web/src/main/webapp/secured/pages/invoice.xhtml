@@ -101,6 +101,7 @@
                                             <p:menuButton value="#{msg.choose}">
                                                 <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}" ajax="false"/>
                                                 <p:menuitem icon="#{msg.check_icon_circle}" value="View Sales" immediate="true" action="#{salesController.viewSales(sales)}" ajax="false"/>
+                                                <p:menuitem icon="#{msg.add_icon_circle}" value="Additional Info" immediate="true" action="#{salesController.viewSales(sales)}" oncomplete="PF('additionalInfo').show()" resetValues="true"/>
                                             </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
@@ -128,11 +129,7 @@
                                 </div>
                             </h:panelGroup>
 
-<!--                            <h:panelGroup rendered="{salesController.pageView.detailView}">
-                                <div class="py-3">
-                                    <ui:include src="includes/invoice-sale-item.xhtml"/>
-                                </div>
-                            </h:panelGroup>-->
+                            <ui:include src="includes/sales-additional-info.xhtml"/>
                         </div>
                     </div>
                 </h:panelGroup>

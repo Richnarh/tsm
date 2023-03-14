@@ -21,14 +21,17 @@ import javax.persistence.Table;
 @Table(name = "return_item")
 public class ReturnItem extends UserAccountRecord implements Serializable {
     
+    public static final String _stockReturn = "stockReturn";
     @JoinColumn(name = "stock_return", referencedColumnName = "id")
     @ManyToOne
     private StockReturn stockReturn;
     
+    public static final String _inventory = "inventory";
     @JoinColumn(name = "inventory", referencedColumnName = "id")
     @ManyToOne
     private Inventory inventory;
-
+    
+    public static final String _qtyReturn = "qtyReturn";
     @Column(name = "qty_return")
     private double qtyReturn;
 

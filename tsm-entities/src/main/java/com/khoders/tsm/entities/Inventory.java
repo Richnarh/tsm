@@ -121,6 +121,14 @@ public class Inventory extends UserAccountRecord implements Serializable{
     
     @Override
     public String toString() {
-        return stockReceiptItem+" ("+unitMeasurement.getUnits() +" - "+(int)unitsInPackage+")";
+        if(unitMeasurement != null && unitsInPackage != 0.0)
+           return stockReceiptItem+" ("+unitMeasurement.getUnits()+" - "+(int)unitsInPackage+")";
+        else if(unitMeasurement == null && unitsInPackage != 0)
+            return stockReceiptItem+" ("+(int)unitsInPackage+")";
+        else if(unitMeasurement != null && unitsInPackage == 0.0)
+            return stockReceiptItem+" ("+unitMeasurement.getUnits()+")";
+        else
+            return stockReceiptItem+"";
+        
     }
 }

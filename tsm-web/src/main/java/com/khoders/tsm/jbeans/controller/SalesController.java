@@ -21,7 +21,6 @@ import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
-import com.khoders.tsm.entities.system.CompanyProfile;
 import com.khoders.tsm.enums.SalesType;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -57,7 +56,6 @@ public class SalesController implements Serializable
     private List<SalesTax> salesTaxList = new LinkedList<>();
     
     private Sales sales = new Sales();
-    private List<Inventory> inventoryList = new LinkedList<>();
     private DateRangeUtil dateRange = new DateRangeUtil();
     
     private FormView pageView = FormView.listForm();
@@ -357,6 +355,7 @@ public class SalesController implements Serializable
         saleItemList = new LinkedList<>();
         saleItem.genCode();
         totalAmount = 0.0;
+        sales.setCustomer(salesService.defaultCustomer(CustomerType.WALK_IN_CUSTOMER));
         saleItem.setUserAccount(appSession.getCurrentUser());
         saleItem.setCompanyBranch(appSession.getCompanyBranch());
         SystemUtils.resetJsfUI();
@@ -373,10 +372,6 @@ public class SalesController implements Serializable
        sales = new Sales();
        sales.setSalesType(null);
        pageView.restToListView();
-    }
-    
-    public List<Inventory> getInventoryList() {
-        return inventoryList;
     }
     
     public SaleItem getSaleItem()

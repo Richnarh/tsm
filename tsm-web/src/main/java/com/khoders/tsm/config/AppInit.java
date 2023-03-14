@@ -16,6 +16,7 @@ import com.khoders.tsm.enums.CustomerType;
 import com.khoders.tsm.services.UserAccountService;
 import com.khoders.resource.enums.AccessLevel;
 import com.khoders.resource.enums.ClientType;
+import com.khoders.tsm.services.SalesService;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -36,6 +36,7 @@ public class AppInit
 
     @Inject private CrudApi crudApi;
     @Inject private UserAccountService userAccountService;
+    @Inject private SalesService salesService;
     private List<AppPage> appPageList = new LinkedList<>();
     private UserModel userModel = new UserModel();
 
@@ -103,7 +104,7 @@ public class AppInit
     
     public void initCustomer()
     {
-        Customer c = defaultCustomer(CustomerType.WALK_IN_CUSTOMER);
+        Customer c = salesService.defaultCustomer(CustomerType.WALK_IN_CUSTOMER);
         if(c != null)return;
         
         Customer customer = new Customer();
@@ -113,7 +114,7 @@ public class AppInit
         
         crudApi.save(customer);
 
-        Customer back = defaultCustomer(CustomerType.BACK_LOG_SUPPLIER);
+        Customer back = salesService.defaultCustomer(CustomerType.BACK_LOG_SUPPLIER);
         if(back != null)return;
         
         Customer cc = new Customer();
@@ -122,13 +123,5 @@ public class AppInit
         cc.setPhone("");
         
         crudApi.save(cc);
-    }
-    
-    public Customer defaultCustomer(CustomerType customerType)
-    {
-        String qryString = "SELECT e FROM Customer e WHERE e.customerName=?1";
-        TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
-                .setParameter(1, customerType.getLabel());
-        return typedQuery.getResultStream().findFirst().orElse(null);
     }
 }

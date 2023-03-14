@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+
+    <p:dialog resizable="false" widgetVar="additionalInfo" closeOnEscape="true" modal="true" height="500"  width="450">
+        <h:form id="locationForm" class="spaced-form">
+            <h:panelGrid columns="4">
+                <span>#{msg.delivery_status}</span>
+                <p:selectOneMenu value="#{addionalInfoController.salesAdditionalInfo.deliveryStatus}" required="true" filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="#{msg.choose} Customer"/>
+                    <f:selectItems value="#{commonClass.deliveryStatusList}"/>
+                </p:selectOneMenu>
+                <span>#{msg.payment_staus}</span>
+                <p:selectOneMenu value="#{addionalInfoController.salesAdditionalInfo.paymentStatus}" required="true" filter="true" filterMatchMode="contains">
+                    <f:selectItem itemLabel="#{msg.choose} Customer"/>
+                    <f:selectItems value="#{commonClass.paymentStatusList}"/>
+                </p:selectOneMenu>
+                
+                <span>Delivery Date</span>
+                <p:datePicker value="#{addionalInfoController.salesAdditionalInfo.deliveryDate}"/>
+                
+                <span>Additional Note</span>
+                <h:inputTextarea value="#{addionalInfoController.salesAdditionalInfo.additionalNotes}" class="form-control"/>
+                
+                <p:commandButton action="#{addionalInfoController.saveSalesAdditionalInfo()}" class="kbtn-success" value="#{msg.save}" update="@form"/>
+            </h:panelGrid>                                        
+            </h:form>
+    </p:dialog>
+</html>
+

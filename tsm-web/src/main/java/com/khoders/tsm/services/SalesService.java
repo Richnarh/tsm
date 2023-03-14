@@ -19,7 +19,6 @@ import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
-import com.khoders.tsm.entities.system.CompanyProfile;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -219,5 +218,10 @@ public class SalesService
                     .setParameter(CreditPayment._companyBranch, appSession.getCompanyBranch())
                     .getResultList();
     }
-
+    
+    public Customer defaultCustomer(CustomerType customerType){
+        return crudApi.getEm().createQuery("SELECT e FROM Customer e WHERE e.customerName= :customerName", Customer.class)
+                .setParameter(Customer._customerName, customerType.getLabel())
+                .getResultStream().findFirst().orElse(null);
+    }
 }
