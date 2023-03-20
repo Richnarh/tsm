@@ -71,14 +71,9 @@ public class EventModuleController implements Serializable{
     }
     
     private EventModule initModule(String module){
-        List<EventType> eventTypeList = Arrays.asList(EventType.values());     
-        EventModule evtModule = null;
-        for (EventType eventType : eventTypeList) {
-            if(companyService.moduleExist(module, eventType)){
-                break;
-            }
+        EventModule evtModule = companyService.moduleExist(module);
+        if (evtModule == null) {
             evtModule = new EventModule();
-            evtModule.setEventType(eventType);
             evtModule.setModuleName(module);
             evtModule.setDescription("Initialised");
             crudApi.save(evtModule);

@@ -28,8 +28,6 @@
                     <h:panelGroup rendered="#{salesController.selectedSalesType != 'NORMAL_SALES'}">
                         <div class="row">
                             <div class="col-md-12">
-
-
                                 <h:panelGrid columns="2">
                                     <span>#{msg.payment_method}</span>                                
                                     <p:selectOneMenu value="#{salesController.sales.paymentMethod}">
@@ -44,16 +42,12 @@
                             </div>
                         </div>
                     </h:panelGroup>
-                    <!--</h:form>-->
                 </div>
                 <hr/>
                 <div class="col-lg-4">      
-                    <!--<h:form id="itemForm">-->
                     <ui:include src="item-form.xhtml"/>
-                    <!--</h:form>-->
                 </div>
                 <div class="col-lg-8">
-                    <!--<h:form id="saleItemItemTable">-->
                     <table class="table">
                         <tr>
                             <th>Product</th>

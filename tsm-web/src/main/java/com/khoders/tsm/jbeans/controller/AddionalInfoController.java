@@ -8,14 +8,11 @@ package com.khoders.tsm.jbeans.controller;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.InventoryService;
 import com.khoders.resource.jpa.CrudApi;
-import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.SalesAdditionalInfo;
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,24 +29,24 @@ public class AddionalInfoController implements Serializable {
     @Inject private InventoryService inventoryService;
 
     private SalesAdditionalInfo salesAdditionalInfo = new SalesAdditionalInfo();
-    private List<SalesAdditionalInfo> salesAddionalInfoList = new LinkedList<>();
         
     public void popInfo(Sales sales){
         salesAdditionalInfo = null;
         salesAdditionalInfo = inventoryService.getAdditionalInfo(sales);
-        if(salesAdditionalInfo == null)
+        if(salesAdditionalInfo == null){
             clearSalesAdditionalInfo();
+            salesAdditionalInfo.setSales(sales);
+            salesAdditionalInfo.genCode();
+        }
     }
 
     public void saveSalesAdditionalInfo() {
         try {
             if (crudApi.save(salesAdditionalInfo) != null) {
-                salesAddionalInfoList = CollectionList.washList(salesAddionalInfoList, salesAdditionalInfo);
                 Msg.info(Msg.SUCCESS_MESSAGE);
             } else {
                 Msg.error(Msg.FAILED_MESSAGE);
             }
-            clearSalesAdditionalInfo();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,9 +67,4 @@ public class AddionalInfoController implements Serializable {
     public void setSalesAdditionalInfo(SalesAdditionalInfo salesAdditionalInfo) {
         this.salesAdditionalInfo = salesAdditionalInfo;
     }
-    
-    public List<SalesAdditionalInfo> getSalesAdditionalInfoList() {
-        return salesAddionalInfoList;
-    }
-
 }

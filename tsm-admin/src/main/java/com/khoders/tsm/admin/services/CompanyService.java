@@ -108,13 +108,12 @@ public class CompanyService
        return tableList;
     }
     
-    public boolean moduleExist(String moduleName, EventType eventType){
-        EventModule em = crudApi.getEm().createQuery("SELECT e FROM EventModule e WHERE e.moduleName = :moduleName AND e.eventType = :eventType", EventModule.class)
+    public EventModule moduleExist(String moduleName){
+        EventModule em = crudApi.getEm().createQuery("SELECT e FROM EventModule e WHERE e.moduleName = :moduleName", EventModule.class)
                  .setParameter(EventModule._moduleName, moduleName)
-                 .setParameter(EventModule._eventType, eventType)
                  .getResultStream().findFirst().orElse(null);
         
-        return em != null;
+        return em;
     }
 
 }

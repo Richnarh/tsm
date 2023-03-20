@@ -46,7 +46,6 @@ public class SalesController implements Serializable
     @Inject private XtractService xtractService;
     @Inject private ReportManager reportManager;
         
-//    @Inject private InventoryService salesService;
     private SaleItem saleItem = new SaleItem();
     private List<SaleItem> saleItemList = new LinkedList<>();
     private List<Sales> salesList = new LinkedList<>();
@@ -62,6 +61,7 @@ public class SalesController implements Serializable
     private boolean enableTax;
      
     double totalAmount,totalSaleAmount,totalPayable = 0.0;
+    private int qtyRem = 0;
     private Customer customer = null;
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
     private LocalDate dueDate;
@@ -80,6 +80,7 @@ public class SalesController implements Serializable
         enableTax = appSession.getCompanyBranch().isEnableTax();
         System.out.println("enableTax: "+enableTax);
         clearAll();
+        appSession.logEvent("Click New Sale", "sales", "New Sale");
         pageView.restToCreateView();
     }
     
@@ -92,10 +93,12 @@ public class SalesController implements Serializable
     public void filterSales()
     {
       salesList = salesService.getSalesByDates(dateRange); 
+      appSession.logEvent("Filter Sales", "sales", "Filter Sales");
     }
     
     public void inventoryProperties(){
         saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+        qtyRem = (int) saleItem.getInventory().getQtyInShop();
     }
     
     public void selectSalesType(){
@@ -253,7 +256,7 @@ public class SalesController implements Serializable
                 }
                 
                 Msg.info("Transaction saved successfully!");
-            
+                appSession.logEvent("Save Sales", "sales", "Complete Sales");
         } catch (Exception e) 
         {
             e.printStackTrace();
@@ -495,5 +498,8 @@ public class SalesController implements Serializable
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
-    
+
+    public int getQtyRem() {
+        return qtyRem;
+    }
 }

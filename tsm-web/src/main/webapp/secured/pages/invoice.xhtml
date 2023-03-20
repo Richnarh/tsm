@@ -101,7 +101,7 @@
                                             <p:menuButton value="#{msg.choose}">
                                                 <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}" ajax="false"/>
                                                 <p:menuitem icon="#{msg.check_icon_circle}" value="View Sales" immediate="true" action="#{salesController.viewSales(sales)}" ajax="false"/>
-                                                <p:menuitem icon="#{msg.add_icon_circle}" value="Additional Info" immediate="true" action="#{salesController.viewSales(sales)}" oncomplete="PF('additionalInfo').show()" resetValues="true"/>
+                                                <p:menuitem icon="#{msg.add_icon_circle}" value="Additional Info" immediate="true" update=":additionInfoForm" action="#{addionalInfoController.popInfo(sales)}" oncomplete="PF('additionalInfo').show()" resetValues="true"/>
                                             </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
