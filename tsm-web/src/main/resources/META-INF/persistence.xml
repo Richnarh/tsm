@@ -34,8 +34,7 @@
     <class>com.khoders.tsm.entities.ReturnItem</class>
     <class>com.khoders.tsm.entities.CompoundSale</class>
     <class>com.khoders.tsm.entities.system.EventLog</class>
-    <class>com.khoders.tsm.entities.system.EventModule</class>
-    <class>com.khoders.tsm.entities.SalesAdditionalInfo</class>
+    <class>com.khoders.tsm.entities.DeliveryInfo</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

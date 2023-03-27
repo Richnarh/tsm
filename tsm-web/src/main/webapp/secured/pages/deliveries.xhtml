@@ -9,108 +9,58 @@
     <h:body>
         <ui:composition template="../templatesUI.xhtml">
             <ui:define name="pageTitle">
-                Deliveries
+                Deliverables
             </ui:define>
 
             <ui:define name="pageContent">
                 <h:panelGroup id="mainPanel">
                     <div class="col-md-12">
                         <div class="row">
-                            <div class="col-md-4">
-                                <h:form id="customerTable">
-                                    <p:commandButton id="reloadCustomer" value="Reload" class="my-2" icon="#{msg.refresh_icon}" action="#{salesHistoryController.loadCustomer()}" update="@form"/>
-                                    <p:commandButton rendered="#{salesHistoryController.customerList.size() > 0}" value="Reset Page" class="kbtn-danger float-end" icon="#{msg.close_icon}" action="#{salesHistoryController.resetPage()}" update=":mainPanel"/>
-                                    <p:dataTable value="#{salesHistoryController.customerList}" var="customer" scrollable="true" scrollHeight="400">
-                                        <p:column headerText="#{msg.customer}" filterBy="#{customer.customerName}" filterMatchMode="contains">
-                                            <h:commandLink value="#{customer.customerName} - #{customer.phone}" action="#{salesHistoryController.loadCustomerSales(customer)}" styleClass="ptext-link" immediate="true">
-                                                <p:ajax update=":mainPanel, :salesTable"/>
-                                            </h:commandLink>
+                            <div>
+                                <h:form id="deliveriesTable">
+                                    <div>
+                                        <p:inputText value="#{deliveriesController.receiptNumber}" placeholder="Enter Receipt No."/>
+                                        <p:commandButton id="searchDeliveries" value="Search" class="my-2 mx-2" icon="#{msg.refresh_icon}" action="#{deliveriesController.loadDeliveries()}" update="@form"/>
+                                        <h:commandLink rendered="#{deliveriesController.saleItemList.size() > 0}" target="_blank" value="Print Waybill" class="btn btn-outline-primary" action="#{deliveriesController.printWaybill()}"/>
+                                    </div>
+                                    <p:dataTable value="#{deliveriesController.saleItemList}" var="saleItem">
+                                        <p:column headerText="#{msg.product}">
+                                            #{saleItem.inventory.stockReceiptItem}
                                         </p:column>
+                                        <p:column headerText="#{msg.package}" style="width: 150px">
+                                            #{saleItem.inventory.unitMeasurement}
+                                        </p:column>
+                                        <p:column headerText="#{msg.qty}" style="width: 50px" class="text-end">
+                                            #{saleItem.quantity}
+                                        </p:column>
+
+                                        <p:column headerText="Price" style="width: 100px" class="text-end">
+                                            <h:outputText value="#{saleItem.unitPrice}">
+                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="#{msg.total}" style="width: 100px" class="text-end">
+                                            <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
+                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        
+                                        <p:column headerText="#{msg.status}" style="width: 120px">
+                                            <h:panelGroup rendered="#{saleItem.deliveryStatus == null}">
+                                                <p:commandButton id="deliveryBtn" action="#{deliveriesController.saveDeliveryInfo(saleItem)}" value="Set to Delivered" update="@form"/>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup rendered="#{saleItem.deliveryStatus == 'DELIVERED'}">
+                                                <span class="text-success fw-bold">DELIVERED</span>
+                                            </h:panelGroup>
+                                        </p:column>
+
                                     </p:dataTable>
-                                    <p:blockUI block="customerTable" trigger="reloadCustomer">
+                                    <p:blockUI block="deliveriesTable" trigger="searchDeliveries">
                                         <img src="#{application.contextPath}/assets/img/loading.gif" height="75px"/>
                                         <p><small>Please wait...</small></p>
                                     </p:blockUI>
                                 </h:form>
-                            </div>
-                            <div class="col-md-8">
-                                <h:panelGroup rendered="#{salesHistoryController.salesList.size() > 0}">
-                                    <h:form id="salesTable">
-                                        <p:dataTable value="#{salesHistoryController.salesList}" var="sales" scrollable="true" scrollHeight="450">
-                                            <f:facet name="header">Transactions/Sales for customer - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
-                                            <p:column style="width: 15px;">
-                                                <p:rowToggler/>
-                                            </p:column>
-
-                                            <p:rowExpansion>
-                                                <h:panelGrid columns="2">
-                                                    <span>Id</span>
-                                                    <h:outputText value="#{sales.id}"/>
-                                                    <span>#{msg.created_date}</span>
-                                                    <h:outputText value="#{sales.createdDate}">
-                                                        <f:convertDateTime type="localDateTime" pattern="#{msg.formated_date_time_words_short}"/>
-                                                    </h:outputText>
-                                                </h:panelGrid>
-                                            </p:rowExpansion>
-                                            <p:column headerText="#{msg.date}" style="width: 100px;">
-                                                <h:outputText value="#{sales.purchaseDate}">
-                                                    <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
-                                                </h:outputText>
-                                            </p:column>
-
-                                            <p:column headerText="#{msg.receipt} No.">
-                                                <h:outputText value="#{sales.receiptNumber}"/>
-                                            </p:column>
-
-                                            <p:column headerText="Sales Type">
-                                                <h:outputText value="#{sales.salesType.label}"/>
-                                            </p:column>
-
-                                            <p:column headerText="#{msg.total_amount}" class="text-end">
-                                                <h:outputText value="#{sales.totalAmount}">
-                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                                </h:outputText>
-                                            </p:column>
-
-                                            <p:column headerText="#{msg.action}">
-                                                <p:commandButton icon="#{msg.check_icon}" action="#{salesHistoryController.loadSaleItem(sales)}" value="View Items" update=":mainPanel, :saleItemTable"/>
-                                            </p:column>
-                                        </p:dataTable>
-                                    </h:form>
-                                </h:panelGroup>
-                            </div>
-                        </div>
-                        <br/>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h:panelGroup rendered="#{salesHistoryController.saleItemList.size() > 0}">
-                                    <h:form id="saleItemTable">
-                                        <p:dataTable value="#{salesHistoryController.saleItemList}" var="saleItem">
-                                            <f:facet name="header">Sales Items purchased by - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
-                                            <p:column headerText="#{msg.product}">
-                                                #{saleItem.inventory.stockReceiptItem}
-                                            </p:column>
-                                            <p:column headerText="#{msg.package}" style="width: 50px">
-                                                #{saleItem.inventory.unitMeasurement}
-                                            </p:column>
-                                            <p:column headerText="#{msg.qty}" style="width: 30px" class="text-end">
-                                                #{saleItem.quantity}
-                                            </p:column>
-
-                                            <p:column headerText="Price" style="width: 40px" class="text-end">
-                                                <h:outputText value="#{saleItem.unitPrice}">
-                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                                </h:outputText>
-                                            </p:column>
-                                            <p:column headerText="#{msg.total}" style="width: 50px" class="text-end">
-                                                <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
-                                                    <f:convertNumber pattern="#{msg.money_pattern}"/>
-                                                </h:outputText>
-                                            </p:column>
-
-                                        </p:dataTable>
-                                    </h:form>
-                                </h:panelGroup>
                             </div>
                         </div>
                     </div>

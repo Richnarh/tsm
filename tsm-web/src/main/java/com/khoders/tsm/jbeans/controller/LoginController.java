@@ -7,6 +7,7 @@ import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.UserAccountService;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.Msg;
+import com.khoders.tsm.enums.EventModule;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -43,7 +44,7 @@ public class LoginController implements Serializable
             }
 
             initLogin(account);
-            appSession.logEvent("Login", "user_account", "User Login");
+            appSession.logEvent("Login", EventModule.USER_ACCOUNT, "User Login");
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -76,7 +77,7 @@ public class LoginController implements Serializable
     {
         try
         {
-            appSession.logEvent("Logout", "user_account", "User Logout");
+            appSession.logEvent("Logout", EventModule.USER_ACCOUNT, "User Logout");
             Faces.invalidateSession();
             Faces.logout();
 

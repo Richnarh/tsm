@@ -21,6 +21,7 @@ import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
+import com.khoders.tsm.enums.EventModule;
 import com.khoders.tsm.enums.SalesType;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -47,7 +48,7 @@ public class SalesController implements Serializable
     @Inject private ReportManager reportManager;
         
     private SaleItem saleItem = new SaleItem();
-    private List<SaleItem> saleItemList = new LinkedList<>();
+    private List<SaleItem> saleItemList,itemList = new LinkedList<>();
     private List<Sales> salesList = new LinkedList<>();
     private SalesType selectedSalesType = SalesType.NORMAL_SALES;
     
@@ -80,7 +81,7 @@ public class SalesController implements Serializable
         enableTax = appSession.getCompanyBranch().isEnableTax();
         System.out.println("enableTax: "+enableTax);
         clearAll();
-        appSession.logEvent("Click New Sale", "sales", "New Sale");
+        appSession.logEvent("Click New Sale", EventModule.SALES, "New Sale");
         pageView.restToCreateView();
     }
     
@@ -93,7 +94,7 @@ public class SalesController implements Serializable
     public void filterSales()
     {
       salesList = salesService.getSalesByDates(dateRange); 
-      appSession.logEvent("Filter Sales", "sales", "Filter Sales");
+      appSession.logEvent("Filter Sales", EventModule.SALES, "Filter Sales");
     }
     
     public void inventoryProperties(){
@@ -139,7 +140,8 @@ public class SalesController implements Serializable
                 
                 saleItem.genCode();
                 saleItem.setSubTotal(salesAmount);
-                saleItemList.add(saleItem);
+                saleItem.setId(crudApi.genId());
+                saleItemList.add(saleItem);                
                 saleItemList = CollectionList.washList(saleItemList, saleItem);
                 
                 Msg.info("One item added to cart");
@@ -152,7 +154,6 @@ public class SalesController implements Serializable
     
     public void removeCartItem(SaleItem saleItem)
     {
-//        System.out.println("Sales item -- "+saleItem.getStockReceiptItem().getProduct().getProductName());
         saleItemList.remove(saleItem);
     }
     
@@ -256,7 +257,7 @@ public class SalesController implements Serializable
                 }
                 
                 Msg.info("Transaction saved successfully!");
-                appSession.logEvent("Save Sales", "sales", "Complete Sales");
+                appSession.logEvent("Save Sales", EventModule.SALES, "Complete Sales");
         } catch (Exception e) 
         {
             e.printStackTrace();

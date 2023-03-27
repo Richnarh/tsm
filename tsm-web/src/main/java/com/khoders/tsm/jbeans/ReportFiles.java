@@ -11,6 +11,7 @@ public class ReportFiles
   
   public static final String LOGO = LOGO_DIR+"logo.png";
   public static final String RECEIPT_FILE = BASE_DIR+"receipt.jasper";
+  public static final String WAYBILL_FILE = BASE_DIR+"waybill.jasper";
   public static final String CASH_RECEIPT_FILE = BASE_DIR+"cash_receipt.jasper";
   public static final String PROFORMA_INVOICE = BASE_DIR+"proforma_invoice.jasper";
   public static final String INVOICE = BASE_DIR+"invoice.jasper";

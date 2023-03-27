@@ -15,6 +15,7 @@ public class BaseDto
     private String companyName;
     private String telNumber;
     private String website;
+    private String ref;
 
     public String getCompanyAddress()
     {
@@ -54,6 +55,14 @@ public class BaseDto
     public void setWebsite(String website)
     {
         this.website = website;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
     }
     
 }

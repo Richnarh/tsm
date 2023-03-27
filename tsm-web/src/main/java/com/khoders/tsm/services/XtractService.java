@@ -9,6 +9,7 @@ import com.khoders.tsm.jbeans.dto.SalesTaxDto;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.tsm.entities.CreditPayment;
+import com.khoders.tsm.entities.DeliveryInfo;
 import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.ProductType;
 import com.khoders.tsm.entities.PurchaseOrder;
@@ -19,6 +20,7 @@ import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.jbeans.dto.CashReceipt;
 import com.khoders.tsm.jbeans.dto.ProductDto;
 import com.khoders.tsm.jbeans.dto.StockDetails;
+import com.khoders.tsm.jbeans.dto.Waybill;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -229,5 +231,39 @@ public class XtractService
             e.printStackTrace();
         }
         return false;
+    }
+
+    public SalesReceipt extractWaybill(List<DeliveryInfo> deliveryInfos,Sales sales) {
+       Waybill waybill = new Waybill();
+       List<SaleItemDto> saleItems = new LinkedList<>();
+       
+       waybill.setCustomer(sales.getCustomer().getCustomerName());
+       waybill.setAddress(sales.getCustomer().getAddress());
+       waybill.setPhoneNumber(sales.getCustomer().getPhone());
+       waybill.setRef(sales.getRefNo());
+       waybill.setBranchName(appSession.getCompanyBranch().getBranchName());
+       waybill.setTelNumber(appSession.getCompanyBranch().getTelephoneNo());
+       waybill.setCompanyAddress(appSession.getCompanyBranch().getBranchAddress());
+       waybill.setWebsite(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null ? appSession.getCompanyBranch().getCompanyProfile().getWebsite() : "");
+       
+        double sum = 0.0;
+        for (DeliveryInfo info : deliveryInfos) {
+            SaleItemDto item = new SaleItemDto();
+            if(info.getSaleItem() != null && info.getSaleItem().getInventory() != null){
+                item.setProduct(info.getSaleItem().getInventory().getStockReceiptItem().getProduct().getProductName());
+                item.setProductPackage(info.getSaleItem().getInventory().getUnitMeasurement().getUnits());
+            }
+            item.setQuantity(info.getSaleItem().getQuantity());
+            item.setUnitPrice(info.getSaleItem().getUnitPrice());
+            
+            saleItems.add(item);
+            
+            sum += (info.getSaleItem().getQuantity() * info.getSaleItem().getUnitPrice());
+        }
+        
+        waybill.setSaleItemList(saleItems);
+        waybill.setTotalAmount(sum);
+        waybill.setDeliveryDate(deliveryInfos.get(0).getDeliveryDate());
+        return waybill;
     }
 }

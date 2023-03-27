@@ -8,11 +8,10 @@ import java.util.List;
  *
  * @author pascal
  */
-public class SalesReceipt
+public class SalesReceipt extends BaseDto
 {
     private String receiptNumber;
     private LocalDateTime date;
-    private String website;
     private String modeOfPayment;
     private String branchName;
     
@@ -93,16 +92,6 @@ public class SalesReceipt
     public void setDate(LocalDateTime date)
     {
         this.date = date;
-    }
-
-    public String getWebsite()
-    {
-        return website;
-    }
-
-    public void setWebsite(String website)
-    {
-        this.website = website;
     }
 
     public String getModeOfPayment()

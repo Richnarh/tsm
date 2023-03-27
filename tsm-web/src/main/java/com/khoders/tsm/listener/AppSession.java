@@ -10,8 +10,8 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.entities.system.EventLog;
-import com.khoders.tsm.entities.system.EventModule;
 import com.khoders.tsm.entities.system.UserAccount;
+import com.khoders.tsm.enums.EventModule;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
@@ -64,21 +64,16 @@ public class AppSession implements Serializable{
     public void setCompanyBranch(CompanyBranch companyBranch){
         this.companyBranch = companyBranch;
     }
-    
-    public EventModule getModule(String moduleName){
-        return crudApi.getEm().createQuery("SELECT e FROM EventModule e WHERE e.moduleName = :moduleName", EventModule.class)
-                 .setParameter(EventModule._moduleName, moduleName)
-                 .getResultStream().findFirst().orElse(null);
-    }
-    
-    public void logEvent(String eventName,String module, String evtIdentifier){
+        
+    public void logEvent(String eventName,EventModule module, String evtIdentifier){
+        System.out.println("IP Log: "+SystemUtils.getPcIP());
         EventLog evtLog = new EventLog();
         evtLog.setEventName(eventName);
-        evtLog.setEventModule(getModule(module));
+        evtLog.setEventModule(module);
         evtLog.setEventDate(LocalDateTime.now());
         evtLog.setEventIdentifier(evtIdentifier);
         evtLog.setUserBrowser(SystemUtils.getBrowser());
-        evtLog.setUserIpAddress(SystemUtils.getIP());
+        evtLog.setUserIpAddress(SystemUtils.getPcIP());
         evtLog.setCompanyBranch(companyBranch);
         evtLog.setUserAccount(currentUser);
         evtLog.setLastModifiedBy(currentUser != null ? currentUser.getFullname() : null);

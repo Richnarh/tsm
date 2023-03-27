@@ -6,7 +6,6 @@
 package com.khoders.tsm.entities;
 
 import com.khoders.resource.enums.DeliveryStatus;
-import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.system.UserAccountRecord;
 import java.time.LocalDate;
 import javax.persistence.Column;
@@ -14,7 +13,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -23,36 +21,26 @@ import javax.persistence.Table;
  * @author Pascal
  */
 @Entity
-@Table(name = "sales_additional_info")
-public class SalesAdditionalInfo extends UserAccountRecord {
-    public static final String _sales = "sales";
-    @JoinColumn(name = "sales", referencedColumnName = "id")
+@Table(name = "delivery_info")
+public class DeliveryInfo extends UserAccountRecord {
+    public static final String _saleItem = "saleItem";
+    @JoinColumn(name = "sale_item", referencedColumnName = "id")
     @ManyToOne
-    private Sales sales;
+    private SaleItem saleItem;
     
+    public static final String _receiptNumber = "receiptNumber";
+    @Column(name = "receipt_number")
+    private String receiptNumber;
+    
+    public static final String _deliveryStatus = "deliveryStatus";
     @Column(name = "delivery_status")
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
     
-    @Column(name = "payment_status")
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus;
-    
+    public static final String _deliveryDate = "deliveryDate";
     @Column(name = "delivery_date")
     private LocalDate deliveryDate;
     
-    @Column(name = "additional_notes")
-    @Lob
-    private String additionalNotes;
-
-    public Sales getSales() {
-        return sales;
-    }
-
-    public void setSales(Sales sales) {
-        this.sales = sales;
-    }
-
     public DeliveryStatus getDeliveryStatus() {
         return deliveryStatus;
     }
@@ -60,30 +48,29 @@ public class SalesAdditionalInfo extends UserAccountRecord {
     public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
     }
-
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
+    
     public LocalDate getDeliveryDate() {
         return deliveryDate;
     }
 
     public void setDeliveryDate(LocalDate deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }    
+
+    public SaleItem getSaleItem() {
+        return saleItem;
     }
 
-    public String getAdditionalNotes() {
-        return additionalNotes;
+    public void setSaleItem(SaleItem saleItem) {
+        this.saleItem = saleItem;
     }
 
-    public void setAdditionalNotes(String additionalNotes) {
-        this.additionalNotes = additionalNotes;
+    public String getReceiptNumber() {
+        return receiptNumber;
     }
-    
+
+    public void setReceiptNumber(String receiptNumber) {
+        this.receiptNumber = receiptNumber;
+    }
     
 }

@@ -5,10 +5,13 @@
  */
 package com.khoders.tsm.entities;
 
+import com.khoders.resource.enums.DeliveryStatus;
 import com.khoders.tsm.entities.system.UserAccountRecord;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -45,9 +48,14 @@ public class SaleItem extends UserAccountRecord implements Serializable{
     @ManyToOne
     private Inventory inventory;
     
+    public static final String _deliveryStatus = "deliveryStatus";
+    @Column(name = "delivery_status")
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus deliveryStatus;
+    
     @Column(name = "description")
     private String description;
-
+    
     public double getQuantity()
     {
         return quantity;
@@ -115,4 +123,13 @@ public class SaleItem extends UserAccountRecord implements Serializable{
     {
         this.sales = sales;
     }
+
+    public DeliveryStatus getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
+    
 }

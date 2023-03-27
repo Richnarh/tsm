@@ -54,14 +54,19 @@
                             <th>Package</th>
                             <th>Qty</th>
                             <th>Unit Price</th>
-                            <th>Total</th>
+                            <th>Sub Total</th>
+                            <th>#</th>
                         </tr>
                         <tbody>
                             <ui:repeat value="#{salesController.saleItemList}" var="saleItem" >
                                 <tr>
                                     <td>#{saleItem.inventory.stockReceiptItem}</td>
                                     <td>#{saleItem.inventory.unitMeasurement}</td>
-                                    <td>#{saleItem.quantity}</td>
+                                    <td>
+                                        <h:outputText value="#{saleItem.quantity}">
+                                            <f:convertNumber pattern="#"/>
+                                        </h:outputText>
+                                    </td>
                                     <td>
                                         <h:outputText value="#{saleItem.unitPrice}">
                                             <f:convertNumber pattern="#{msg.money_pattern}"/>
@@ -72,12 +77,15 @@
                                             <f:convertNumber pattern="#{msg.money_pattern}"/>
                                         </h:outputText>
                                     </td>
+                                    <td>
+                                        <p:commandButton class="kbtn-default" icon="#{msg.clear_icon}" action="#{salesController.removeCartItem(saleItem)}" immediate="true" process="@this" update="@form"/>
+                                    </td>
                                 </tr>
                             </ui:repeat>
                         </tbody>
                     </table>
 
-                    <center class="py-3 mt-2">
+                    <center class="py-3 mt-2    ">
                         <h:panelGrid columns="2">
                             <span>Total Amount</span>
                             <h:outputText value="#{salesController.totalAmount}" class="field-shade">

@@ -20,7 +20,7 @@ public class Customer extends UserAccountRecord
     public static final String _clientType = "clientType";
     @Column(name = "client_type")
     @Enumerated(EnumType.STRING)
-    private ClientType clientType;
+    private ClientType clientType = ClientType.CUSTOMER;
     
     public static final String _customerName = "customerName";
     @Column(name = "customer_name")

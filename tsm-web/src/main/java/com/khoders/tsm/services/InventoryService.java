@@ -25,10 +25,8 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Packaging;
 import com.khoders.tsm.entities.ReturnItem;
-import com.khoders.tsm.entities.SalesAdditionalInfo;
 import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.entities.UnitMeasurement;
-import com.khoders.tsm.enums.CustomerType;
 import com.khoders.tsm.enums.SalesType;
 import java.util.Collections;
 import java.util.List;
@@ -343,10 +341,5 @@ public class InventoryService {
         return crudApi.getEm().createQuery("SELECT e FROM ReturnItem e WHERE e.stockReturn=:stockReturn", ReturnItem.class)
                         .setParameter(ReturnItem._stockReturn, stockReturn)
                         .getResultList();
-    }
-
-    public SalesAdditionalInfo getAdditionalInfo(Sales sales) {
-      return crudApi.getEm().createQuery("SELECT e FROM SalesAdditionalInfo e WHERE e.sales = :sales", SalesAdditionalInfo.class)
-                        .setParameter(SalesAdditionalInfo._sales, sales).getResultStream().findFirst().orElse(null);
     }
 }

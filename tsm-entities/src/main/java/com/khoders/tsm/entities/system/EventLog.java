@@ -5,12 +5,13 @@
  */
 package com.khoders.tsm.entities.system;
 
+import com.khoders.tsm.enums.EventModule;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 /**
@@ -20,23 +21,29 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "event_log")
 public class EventLog extends UserAccountRecord implements Serializable{
+    public static final String _eventName = "eventName";
     @Column(name = "event_name")
     private String eventName;
     
+    public static final String _eventIdentifier = "eventIdentifier";
     @Column(name = "event_identifier")
     private String eventIdentifier;
     
+    public static final String _eventDate = "eventDate";
     @Column(name = "event_date")
     private LocalDateTime eventDate;
     
+    public static final String _userBrowser = "userBrowser";
     @Column(name = "user_browser")
     private String userBrowser;
     
+    public static final String _userIpAddress = "userIpAddress";
     @Column(name = "user_ip_address")
     private String userIpAddress;
     
-    @JoinColumn(name = "event_module", referencedColumnName = "id")
-    @ManyToOne
+    public static final String _eventModule = "eventModule";
+    @Column(name = "event_module")
+    @Enumerated(EnumType.STRING)
     private EventModule eventModule;
 
     public String getEventName() {
@@ -78,7 +85,7 @@ public class EventLog extends UserAccountRecord implements Serializable{
     public void setUserIpAddress(String userIpAddress) {
         this.userIpAddress = userIpAddress;
     }
-    
+
     public EventModule getEventModule() {
         return eventModule;
     }

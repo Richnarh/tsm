@@ -16,11 +16,13 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.CompoundSale;
 import com.khoders.tsm.entities.CreditPayment;
+import com.khoders.tsm.entities.DeliveryInfo;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -74,36 +76,23 @@ public class SalesService
         return typedQuery.getResultStream().findFirst().orElse(null);
     }
     
-    public List<SaleItem> getSales(Sales sales)
-    {
-        try
-        {
-           TypedQuery<SaleItem> typedQuery = crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales", SaleItem.class);
-                        typedQuery.setParameter(SaleItem._sales, sales);
-                       return typedQuery.getResultList();
-           
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+    public List<SaleItem> getSales(Sales sales){
+        return crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales", SaleItem.class)
+                        .setParameter(SaleItem._sales, sales)
+                        .getResultList();
+    }
+    public Sales getSale(String receiptNumber){
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber = :receiptNumber", Sales.class)
+                        .setParameter(Sales._receiptNumber, receiptNumber)
+                        .getResultStream().findFirst().orElse(null);
     }
     
     public List<Sales> getSales()
     {
-        try
-        {
-           TypedQuery<Sales> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2", Sales.class)
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2", Sales.class)
                    .setParameter(1, LocalDate.now())
-                   .setParameter(2, LocalDate.now());
-                    
-           return  typedQuery.getResultList();
-           
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+                   .setParameter(2, LocalDate.now())
+                   .getResultList();
     }
     public List<Sales> getSalesByDates(DateRangeUtil dateRange)
     {
@@ -223,5 +212,15 @@ public class SalesService
         return crudApi.getEm().createQuery("SELECT e FROM Customer e WHERE e.customerName= :customerName", Customer.class)
                 .setParameter(Customer._customerName, customerType.getLabel())
                 .getResultStream().findFirst().orElse(null);
+    }
+
+    public List<SaleItem> getDeliveries(String receiptNumber) {
+        Sales sales = getSale(receiptNumber);
+        return getSales(sales);
+    }
+    public List<DeliveryInfo> getWaybills(String receiptNumber) {
+        return crudApi.getEm().createQuery("SELECT e FROM DeliveryInfo e WHERE e.receiptNumber = :receiptNumber", DeliveryInfo.class)
+                    .setParameter(DeliveryInfo._receiptNumber, receiptNumber)
+                    .getResultList();
     }
 }

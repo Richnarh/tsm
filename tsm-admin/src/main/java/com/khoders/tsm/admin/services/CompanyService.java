@@ -9,10 +9,8 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.Stringz;
 import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.entities.system.CompanyProfile;
-import com.khoders.tsm.entities.system.EventModule;
 import com.khoders.tsm.entities.system.Permission;
 import com.khoders.tsm.entities.system.UserAccount;
-import com.khoders.tsm.enums.EventType;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,10 +79,6 @@ public class CompanyService
         return Collections.emptyList();
     }
 
-    public List<EventModule> getEventModules() {
-        return crudApi.getEm().createQuery("SELECT e FROM EventModule e ORDER BY e.moduleName", EventModule.class).getResultList();
-    }
-
     public List<String> getTables() {
         List<String> tableList = crudApi.getEm().createNativeQuery("SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE' AND table_schema = 'tsm' ORDER BY table_name ASC")
                 .getResultList();
@@ -107,13 +101,4 @@ public class CompanyService
          
        return tableList;
     }
-    
-    public EventModule moduleExist(String moduleName){
-        EventModule em = crudApi.getEm().createQuery("SELECT e FROM EventModule e WHERE e.moduleName = :moduleName", EventModule.class)
-                 .setParameter(EventModule._moduleName, moduleName)
-                 .getResultStream().findFirst().orElse(null);
-        
-        return em;
-    }
-
 }
