@@ -20,7 +20,8 @@
                                 <h:form id="deliveriesTable">
                                     <div>
                                         <p:inputText value="#{deliveriesController.receiptNumber}" placeholder="Enter Receipt No."/>
-                                        <p:commandButton id="searchDeliveries" value="Search" class="my-2 mx-2" icon="#{msg.refresh_icon}" action="#{deliveriesController.loadDeliveries()}" update="@form"/>
+                                        <p:commandButton id="searchDeliveries" value="Search" class="my-2 mx-2" icon="#{msg.seach_icon}" action="#{deliveriesController.loadDeliveries()}" update="@form"/>
+                                        <p:commandButton rendered="#{deliveriesController.saleItemList.size() > 0}" id="shippingInfo" class="kbtn-default mx-2" value="Shipping Info" action="#{deliveriesController.viewShippingInfo()}" update="@form"/>
                                         <h:commandLink rendered="#{deliveriesController.saleItemList.size() > 0}" target="_blank" value="Print Waybill" class="btn btn-outline-primary" action="#{deliveriesController.printWaybill()}"/>
                                     </div>
                                     <p:dataTable value="#{deliveriesController.saleItemList}" var="saleItem">
@@ -60,6 +61,24 @@
                                         <img src="#{application.contextPath}/assets/img/loading.gif" height="75px"/>
                                         <p><small>Please wait...</small></p>
                                     </p:blockUI>
+                                    
+                                    <p:overlayPanel for="shippingInfo" hideEffect="fade" dynamic="true" style="width:300px; padding-top: 2.6rem" dismissable="false" showCloseIcon="true">
+                                        <h:panelGrid columns="2" class="spaced-form">
+                                            <span class="mr-2">Driver Name <span class="text-danger">*</span></span>
+                                            <p:inputText required="true" value="#{deliveriesController.shippingInfo.driverName}"/>
+
+                                            <span class="mr-2">Car Number <span class="text-danger">*</span></span>
+                                            <p:inputText required="true" value="#{deliveriesController.shippingInfo.carNumber}"/>
+
+                                            <span class="mr-2">Notes</span>
+                                            <p:inputTextarea value="#{deliveriesController.shippingInfo.notes}"/>
+                                            
+                                        </h:panelGrid>
+                                        <hr/>
+                                        <center>
+                                            <p:commandButton class="kbtn-success" icon="#{msg.check_icon}" value="#{msg.save}" action="#{deliveriesController.saveShipping()}"/>
+                                        </center>
+                                    </p:overlayPanel>
                                 </h:form>
                             </div>
                         </div>

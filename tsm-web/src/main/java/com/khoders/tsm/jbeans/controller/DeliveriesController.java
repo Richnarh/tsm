@@ -9,10 +9,12 @@ import com.khoders.resource.enums.DeliveryStatus;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.reports.ReportManager;
 import com.khoders.resource.utilities.Msg;
+import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.DeliveryInfo;
 import com.khoders.tsm.entities.Sales;
+import com.khoders.tsm.entities.ShippingInfo;
 import com.khoders.tsm.jbeans.ReportFiles;
 import com.khoders.tsm.jbeans.dto.SalesReceipt;
 import com.khoders.tsm.listener.AppSession;
@@ -22,6 +24,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,6 +48,13 @@ public class DeliveriesController implements Serializable{
     private Customer selectedCustomer = null;
     private double totalAmount = 0.0;
     private String receiptNumber = null;
+    
+    private ShippingInfo shippingInfo = null;
+    
+    @PostConstruct
+    private void init(){
+        clearShipping();
+    }
     
     public void loadDeliveries(){
         if(receiptNumber == null)return;
@@ -74,13 +84,13 @@ public class DeliveriesController implements Serializable{
             List<SalesReceipt> salesReceiptList = new LinkedList<>();
             
             List<DeliveryInfo> deliveryInfos = salesService.getWaybills(receiptNumber.trim());
-            Sales sales = salesService.getSale(receiptNumber);
+            
             if(deliveryInfos.isEmpty()){
                 Msg.error("Receipt No. incorrect or no delivery info exist.");
                 return;
             }
             
-            SalesReceipt salesReceipt = xtractService.extractWaybill(deliveryInfos,sales);
+            SalesReceipt salesReceipt = xtractService.extractWaybill(deliveryInfos,receiptNumber);
 
             salesReceiptList.add(salesReceipt);
             ReportManager.reportParams.put("logo", ReportFiles.LOGO);
@@ -90,6 +100,36 @@ public class DeliveriesController implements Serializable{
         {
             e.printStackTrace();
         }
+    }
+    
+    public void saveShipping(){
+        try {
+            shippingInfo.setReceiptNumber(receiptNumber);
+            shippingInfo.genCode();
+            if(crudApi.save(shippingInfo) != null){
+                Msg.info("Shipping Info saved!");
+            }
+            shippingInfo = new ShippingInfo();
+        } catch (Exception e) {
+        }
+    }
+    
+    public void viewShippingInfo(){
+        if(receiptNumber != null){
+            shippingInfo = salesService.getShippingInfo(receiptNumber);
+            if(shippingInfo == null){
+                System.out.println("Null value");
+                clearShipping();
+            }
+        }
+    }
+    
+    public void clearShipping(){
+        shippingInfo = new ShippingInfo();
+        shippingInfo.setCompanyBranch(appSession.getCompanyBranch());
+        shippingInfo.setUserAccount(appSession.getCurrentUser());
+        
+        SystemUtils.resetJsfUI();
     }
     
     public void clear(){
@@ -133,6 +173,52 @@ public class DeliveriesController implements Serializable{
     public void setReceiptNumber(String receiptNumber) {
         this.receiptNumber = receiptNumber;
     }
-    
-    
+
+    public CrudApi getCrudApi() {
+        return crudApi;
+    }
+
+    public void setCrudApi(CrudApi crudApi) {
+        this.crudApi = crudApi;
+    }
+
+    public AppSession getAppSession() {
+        return appSession;
+    }
+
+    public void setAppSession(AppSession appSession) {
+        this.appSession = appSession;
+    }
+
+    public SalesService getSalesService() {
+        return salesService;
+    }
+
+    public void setSalesService(SalesService salesService) {
+        this.salesService = salesService;
+    }
+
+    public XtractService getXtractService() {
+        return xtractService;
+    }
+
+    public void setXtractService(XtractService xtractService) {
+        this.xtractService = xtractService;
+    }
+
+    public ReportManager getReportManager() {
+        return reportManager;
+    }
+
+    public void setReportManager(ReportManager reportManager) {
+        this.reportManager = reportManager;
+    }
+
+    public ShippingInfo getShippingInfo() {
+        return shippingInfo;
+    }
+
+    public void setShippingInfo(ShippingInfo shippingInfo) {
+        this.shippingInfo = shippingInfo;
+    }    
 }

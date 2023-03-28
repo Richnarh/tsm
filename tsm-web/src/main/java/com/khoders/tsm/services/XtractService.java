@@ -14,6 +14,7 @@ import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.ProductType;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
+import com.khoders.tsm.entities.ShippingInfo;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
@@ -233,10 +234,15 @@ public class XtractService
         return false;
     }
 
-    public SalesReceipt extractWaybill(List<DeliveryInfo> deliveryInfos,Sales sales) {
+    public SalesReceipt extractWaybill(List<DeliveryInfo> deliveryInfos,String receiptNumber) {
        Waybill waybill = new Waybill();
        List<SaleItemDto> saleItems = new LinkedList<>();
        
+       Sales sales = salesService.getSale(receiptNumber);
+       ShippingInfo shippingInfo = salesService.getShippingInfo(receiptNumber);
+       
+       waybill.setDriverName(shippingInfo.getDriverName());
+       waybill.setCarNo(shippingInfo.getCarNumber());
        waybill.setCustomer(sales.getCustomer().getCustomerName());
        waybill.setAddress(sales.getCustomer().getAddress());
        waybill.setPhoneNumber(sales.getCustomer().getPhone());

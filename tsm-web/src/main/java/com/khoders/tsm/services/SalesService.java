@@ -18,6 +18,7 @@ import com.khoders.tsm.entities.CompoundSale;
 import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.DeliveryInfo;
 import com.khoders.tsm.entities.Inventory;
+import com.khoders.tsm.entities.ShippingInfo;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import java.time.LocalDate;
@@ -222,5 +223,11 @@ public class SalesService
         return crudApi.getEm().createQuery("SELECT e FROM DeliveryInfo e WHERE e.receiptNumber = :receiptNumber", DeliveryInfo.class)
                     .setParameter(DeliveryInfo._receiptNumber, receiptNumber)
                     .getResultList();
+    }
+
+    public ShippingInfo getShippingInfo(String receiptNumber) {
+        return crudApi.getEm().createQuery("SELECT e FROM ShippingInfo e WHERE e.receiptNumber= :receiptNumber", ShippingInfo.class)
+                .setParameter(ShippingInfo._receiptNumber, receiptNumber)
+                .getResultStream().findFirst().orElse(null);
     }
 }
