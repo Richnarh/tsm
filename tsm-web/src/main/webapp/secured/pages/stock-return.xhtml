@@ -98,16 +98,6 @@
                                             </div>
 
                                             <div class="form-group row py-2">
-                                                <label class="col-sm-4 col-form-label">#{msg.client} <span class="text-danger">*</span> </label>
-                                                <div class="col-md-8">
-                                                    <p:selectOneMenu filter="true" filterMatchMode="contains" style="width: 100%" value="#{stockReturnController.stockReturn.customer}" required="true">
-                                                        <f:selectItem itemLabel="#{msg.choose}"/>
-                                                        <f:selectItems value="#{usercommonBeans.customerList}"/>
-                                                    </p:selectOneMenu>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group row">
                                                 <label class="col-sm-4 col-form-label">#{msg.description}</label>
                                                 <div class="col-md-8">
                                                     <p:inputTextarea value="#{stockReturnController.stockReturn.description}" style="width: 100%" placeholder="Enter description"/>
@@ -133,14 +123,11 @@
                                 <div class="row">
                                     <div class="col-md-4 p-3">
                                         <h:form id="transferForm" class="spaced-form">   
-                                            <h:panelGrid columns="2">
-                                                <span>Qty in shop</span>
-                                                <h:outputText class="field-shade" value="#{stockReturnController.selectedInventory.qtyInShop}"/>
-                                                
+                                            <h:panelGrid columns="2">                                                
                                                 <span>#{msg.product} <span class="text-danger">*</span></span>
-                                                <p:selectOneMenu value="#{stockReturnController.returnItem.inventory}" required="true" filter="true" filterMatchMode="contains">
+                                                <p:selectOneMenu value="#{stockReturnController.returnItem.saleItem}" required="true" filter="true" filterMatchMode="contains">
                                                     <f:selectItem itemLabel="#{msg.choose}"/>
-                                                    <f:selectItems value="#{usercommonBeans.inventoryList}"/>
+                                                    <f:selectItems value="#{stockReturnController.saleItemList}"/>
                                                     <p:ajax listener="#{stockReturnController.selectInventory()}" update="@form"/>
                                                 </p:selectOneMenu>
 
@@ -174,7 +161,7 @@
                                                 </p:rowExpansion>
 
                                                 <p:column headerText="#{msg.product} name" filterBy="#{returnItem.inventory}" filterMatchMode="contains">
-                                                    #{returnItem.inventory}
+                                                    #{returnItem.saleItem}
                                                 </p:column>
                                                 <p:column headerText="#{msg.quantity}" style="width: 90px" class="text-right">
                                                     #{returnItem.qtyReturn}

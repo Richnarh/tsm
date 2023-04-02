@@ -98,7 +98,15 @@ public class SalesController implements Serializable
     }
     
     public void inventoryProperties(){
-        saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+        
+        if(saleItem.isWholeSale()){
+            System.out.println("wholesale true: "+saleItem.isWholeSale());
+            saleItem.setUnitPrice(saleItem.getInventory().getWprice());
+        }else{
+            System.out.println("wholesale false: "+saleItem.isWholeSale());
+            saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+        }
+        
         qtyRem = (int) saleItem.getInventory().getQtyInShop();
     }
     

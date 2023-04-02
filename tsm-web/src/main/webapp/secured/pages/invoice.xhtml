@@ -89,21 +89,20 @@
                                             #{sales.customer.customerName}
                                         </p:column>
 
-                                        <p:column headerText="Sales Type">
+                                        <p:column headerText="Sales Type" style="width: 150px;">
                                             <h:outputText value="#{sales.salesType.label}"/>
                                         </p:column>
 
-                                        <p:column headerText="#{msg.total_amount}" class="text-end">
+                                        <p:column headerText="#{msg.total_amount}" class="text-end" style="width: 150px;">
                                             <h:outputText value="#{sales.totalAmount}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
                                             </h:outputText>
                                         </p:column>
 
-                                        <p:column headerText="#{msg.action}" style="width: 100px;">
-                                            <p:menuButton value="#{msg.choose}">
-                                                <p:menuitem target="_blank" icon="#{msg.print_icon}" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}" ajax="false"/>
-                                                <p:menuitem icon="#{msg.check_icon_circle}" value="View Sales" immediate="true" action="#{salesController.viewSales(sales)}" ajax="false"/>
-                                            </p:menuButton>
+                                        <p:column headerText="#{msg.action}">
+                                            <h:commandLink class="ptext-link" target="_blank" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}"/>
+                                            |
+                                            <h:commandLink class="ptext-link" value="View Sales" immediate="true" action="#{salesController.viewSales(sales)}"/>
                                         </p:column>
                                     </p:dataTable>
                                     <p:blockUI block="salesTable" trigger=":salesForm:reload,:salesForm:reset, :salesForm:pos">
@@ -113,7 +112,6 @@
                                 </h:form>
                             </h:panelGroup>
 
-                            <!-- To be used later -->
                             <ui:remove>
                                 <p:menuitem icon="#{msg.cog_icon}" value="View as Invoice" immediate="true" action="#{salesController.viewAsInvoiceSale(sales)}" ajax="false"/>
                                 <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Cash Receipt" action="#{salesController.geneateCashReceipt(sales)}" ajax="false"/>
@@ -122,7 +120,6 @@
                                 <p:menuitem rendered="#{sales.isProformaInvoice == true}" target="_blank" icon="#{msg.print_icon}" value="Print Pro Invoice" action="#{salesController.generateProInvoice(sales)}" ajax="false"/>
                                 <p:menuitem rendered="#{sales.isProformaInvoice == true}" icon="#{msg.cog_icon}" value="Generate Invoice" action="#{salesController.convertProformaToInvoice(sales)}" ajax="false"/>
                             </ui:remove>
-                            <!-- To be used later End/-->
 
                             <h:panelGroup rendered="#{salesController.pageView.createView}">
                                 <div class="py-3">

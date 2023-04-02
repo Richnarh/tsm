@@ -202,18 +202,6 @@ public class InventoryService {
         return Collections.emptyList();
     }
 
-    public List<SaleItem> getSales(Sales sales) {
-        try {
-            TypedQuery<SaleItem> typedQuery = crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales", SaleItem.class);
-            typedQuery.setParameter(SaleItem._sales, sales);
-            return typedQuery.getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
-    }
-
     public List<Sales> getTotalSumPerDateRange(DateRangeUtil dateRange) {
         try {
             return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2 ", Sales.class)

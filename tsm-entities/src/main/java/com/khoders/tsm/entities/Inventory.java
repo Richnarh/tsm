@@ -129,6 +129,5 @@ public class Inventory extends UserAccountRecord implements Serializable{
             return stockReceiptItem+" ("+unitMeasurement.getUnits()+")";
         else
             return stockReceiptItem+"";
-        
     }
 }

@@ -78,7 +78,7 @@
                                         </p:column>
                                         
                                         <p:column headerText="#{msg.action}" style="width: 120px;">
-                                            <p:menuButton value="#{msg.manage}">
+                                            <p:menuButton value="#{msg.choose}">
                                             <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{purchaseOrderController.editPurchaseOrder(purchaseOrder)}" immediate="true" update=":mainPanel"/>
                                             <p:menuitem icon="#{msg.add_icon}" id="orderItem" class="text-info" value="Order Item" action="#{purchaseOrderController.managePurchaseOrderItem(purchaseOrder)}" immediate="true" update=":mainPanel"/>
                                             <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}" action="#{purchaseOrderController.deletePurchaseOrder(purchaseOrder)}" immediate="true"  update=":mainPanel"/>

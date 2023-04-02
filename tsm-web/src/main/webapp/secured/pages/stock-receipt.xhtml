@@ -22,7 +22,7 @@
                                                      action="#{stockReceiptController.initOrder()}" update="@form"/>
                                     <p:dataTable value="#{stockReceiptController.purchaseOrderList}" var="purchaseOrder" scrollable="true" scrollHeight="400">
                                         <p:column headerText="#{msg.purchase_order}s">
-                                            <h:commandLink styleClass="ptext-link" value="#{purchaseOrder.orderCode} (#{purchaseOrder.totalAmount})" action="#{stockReceiptController.selectPurchaseOrder(purchaseOrder)}">
+                                            <h:commandLink styleClass="ptext-link" value="#{purchaseOrder.orderCode} (#{purchaseOrder.customer})" action="#{stockReceiptController.selectPurchaseOrder(purchaseOrder)}">
                                                 <p:ajax update=":mainPanel"/>
                                             </h:commandLink>
                                         </p:column>

@@ -6,11 +6,14 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">  
 
     <h:panelGrid columns="2" class="spaced-form"> 
+        <span>Whole Sale</span>
+        <p:selectBooleanCheckbox value="#{salesController.saleItem.wholeSale}"/>
+        
         <span>#{msg.product} <span class="text-danger">*</span> </span>                                
         <p:selectOneMenu style="width: 100%" filter="true" value="#{salesController.saleItem.inventory}" filterMatchMode="contains" required="true">
             <f:selectItem itemLabel="#{msg.choose} Product"/>
             <f:selectItems value="#{usercommonBeans.inventoryList}"/>
-            <p:ajax listener="#{salesController.inventoryProperties()}" update="sellingPrice"/>
+            <p:ajax listener="#{salesController.inventoryProperties()}" update="sellingPrice, qtyRem"/>
         </p:selectOneMenu>
 
         <span>#{msg.quantity} <span class="text-danger">*</span> </span>
@@ -20,7 +23,7 @@
         <p:inputText style="width: 100%" disabled="true" id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
 
         <span>Qty Rem</span>
-        <h:inputText class="form-control" value="#{salesController.qtyRem}" disabled="true" style="width: 100%"/>
+        <h:inputText class="form-control" id="qtyRem" value="#{salesController.qtyRem}" disabled="true" style="width: 100%"/>
 
     </h:panelGrid>
 

@@ -20,7 +20,7 @@
                                 <p:commandButton id="reloadProd" value="Reload" class="my-2" icon="#{msg.refresh_icon}"
                                                  action="#{inventoryController.initProduct()}" update="@form"/>
                                 <p:dataTable value="#{inventoryController.stockReceiptItemList}" var="stockReceiptItem" scrollable="true" scrollHeight="400">
-                                    <p:column headerText="#{msg.product}" filterBy="#{stockReceiptItem.stockReceiptItem.product.productName}" filterMatchMode="contains">
+                                    <p:column headerText="#{msg.product}" filterBy="#{stockReceiptItem.product.productName}" filterMatchMode="contains">
                                         <h:commandLink styleClass="ptext-link" value="#{stockReceiptItem.product.productName} #{stockReceiptItem.product.packaging.packagingName}" action="#{inventoryController.selectProduct(stockReceiptItem)}">
                                             <p:ajax update=":inventoryForm"/>
                                         </h:commandLink>
@@ -123,6 +123,9 @@
                                 </p:column>
                                 <p:column headerText="Selling Price" style="width: 100px;" class="text-end">
                                     <h:outputText value="#{inventory.packagePrice}"/>
+                                </p:column>
+                                <p:column headerText="Qty in Shop" style="width: 100px;" class="text-end">
+                                    <h:outputText value="#{inventory.qtyInShop}"/>
                                 </p:column>
                                 <p:column headerText="#{msg.action}" style="width: 100px;">
                                     <p:menuButton value="#{msg.choose}">

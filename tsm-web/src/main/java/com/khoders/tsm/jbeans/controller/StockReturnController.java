@@ -12,6 +12,7 @@ import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.ReturnItem;
+import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.listener.AppSession;
@@ -42,16 +43,15 @@ public class StockReturnController implements Serializable
     private ReturnItem returnItem = new ReturnItem();
     private List<StockReturn> stockReturnList = new LinkedList<>();
     private List<ReturnItem> returnItemList = new LinkedList<>();
+    private List<SaleItem> saleItemList = new LinkedList<>();
     
-    private Inventory selectedInventory = null;
     private StockReturn selectedStockReturn = null;
 
     private FormView pageView = FormView.listForm();
     private String optionText;
 
     @PostConstruct
-    private void init()
-    {
+    private void init(){
         clearStockReturn();
         stockReturnList = inventoryService.getStockReturnList();
     }
@@ -62,17 +62,20 @@ public class StockReturnController implements Serializable
         pageView.restToCreateView();
     }
     
-    public void selectInventory(){
-        selectedInventory = returnItem.getInventory();
-    }
-    
     public void manageItem(StockReturn stockReturn)
     {
         clearReturnItem();
         selectedStockReturn = stockReturn;
         returnItemList = inventoryService.getReturnItems(stockReturn);
-        System.out.println("");
+        
+        saleItem(stockReturn.getReceiptNumber());
+        
         pageView.restToDetailView();
+    }
+    
+    public void saleItem(String receiptNumber){
+        Sales sale = stockService.getSales(receiptNumber);
+        saleItemList = stockService.getSales(sale);
     }
 
     public void saveStockReturn()
@@ -86,8 +89,8 @@ public class StockReturnController implements Serializable
                     return;
                 }else{
                     stockReturn.setSales(sales);
+                    stockReturn.setCustomer(sales.getCustomer());
                 }
-                
             }
             if (crudApi.save(stockReturn) != null)
             {
@@ -132,14 +135,14 @@ public class StockReturnController implements Serializable
             {
                 returnItemList = CollectionList.washList(returnItemList, returnItem);
                 
-                Inventory newInventory = stockService.existProdctPackage(returnItem.getInventory().getStockReceiptItem(), returnItem.getInventory().getUnitMeasurement().getUnits());
+                Inventory newInventory = stockService.existProdctPackage(returnItem.getSaleItem().getInventory().getStockReceiptItem(), returnItem.getSaleItem().getInventory().getUnitMeasurement().getUnits());
                 double qtyInShop = newInventory.getQtyInShop();
                 newInventory.setQtyInShop(qtyInShop+returnItem.getQtyReturn());
                 crudApi.save(newInventory);
                 Msg.info("Return item saved!");
             } else
             {
-              Msg.info(Msg.FAILED_MESSAGE);
+              Msg.error(Msg.FAILED_MESSAGE);
             }
             clearReturnItem();
         } catch (Exception e)
@@ -234,8 +237,8 @@ public class StockReturnController implements Serializable
         this.returnItem = returnItem;
     }
 
-    public Inventory getSelectedInventory() {
-        return selectedInventory;
+    public List<SaleItem> getSaleItemList() {
+        return saleItemList;
     }
     
 }

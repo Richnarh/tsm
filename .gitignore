@@ -9,3 +9,9 @@ tsm-admin/nb-configuration.xml
 */tsm-web/target/*
 */tsm-admin/target/*
 /tsm-entities/target/
+/tsm-web/src/main/resources/com/khoders/tsm/resources/reports/invoice.jasper
+/tsm-web/src/main/resources/com/khoders/tsm/resources/reports/cash_receipt.jasper
+/tsm-web/src/main/resources/com/khoders/tsm/resources/reports/receipt.jasper
+/tsm-web/src/main/resources/com/khoders/tsm/resources/reports/product.jasper
+/tsm-web/src/main/resources/com/khoders/tsm/resources/reports/proforma_invoice.jasper
+/tsm-web/src/main/resources/com/khoders/tsm/resources/reports/waybill.jasper

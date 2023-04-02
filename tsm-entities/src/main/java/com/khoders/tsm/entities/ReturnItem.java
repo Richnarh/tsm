@@ -26,10 +26,10 @@ public class ReturnItem extends UserAccountRecord implements Serializable {
     @ManyToOne
     private StockReturn stockReturn;
     
-    public static final String _inventory = "inventory";
-    @JoinColumn(name = "inventory", referencedColumnName = "id")
+    public static final String _saleItem = "saleItem";
+    @JoinColumn(name = "sale_item", referencedColumnName = "id")
     @ManyToOne
-    private Inventory inventory;
+    private SaleItem saleItem;
     
     public static final String _qtyReturn = "qtyReturn";
     @Column(name = "qty_return")
@@ -50,13 +50,13 @@ public class ReturnItem extends UserAccountRecord implements Serializable {
     public void setQtyReturn(double qtyReturn) {
         this.qtyReturn = qtyReturn;
     }
-    
-    public Inventory getInventory() {
-        return inventory;
+
+    public SaleItem getSaleItem() {
+        return saleItem;
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
+    public void setSaleItem(SaleItem saleItem) {
+        this.saleItem = saleItem;
     }
     
 }

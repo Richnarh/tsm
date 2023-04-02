@@ -14,6 +14,7 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Packaging;
+import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
@@ -121,5 +122,10 @@ public class StockService {
         return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber=:receiptNumber", Sales.class)
                 .setParameter("receiptNumber", receiptNumber)
                 .getResultStream().findFirst().orElse(null);
+    }
+    public List<SaleItem> getSales(Sales sales) {
+            return crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales", SaleItem.class)
+                   .setParameter(SaleItem._sales, sales)
+                   .getResultList();
     }
 }
