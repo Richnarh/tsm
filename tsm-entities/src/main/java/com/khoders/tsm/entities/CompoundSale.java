@@ -25,7 +25,7 @@ import javax.persistence.Table;
 @Table(name = "compound_sale")
 public class CompoundSale extends UserAccountRecord implements Serializable{
     @Column(name = "compound_amount")
-    private double compoundAmount;
+    private Double compoundAmount;
     
     public static final String _customer = "customer";
     @JoinColumn(name = "customer", referencedColumnName = "id")
@@ -37,11 +37,11 @@ public class CompoundSale extends UserAccountRecord implements Serializable{
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
-    public double getCompoundAmount() {
+    public Double getCompoundAmount() {
         return compoundAmount;
     }
 
-    public void setCompoundAmount(double compoundAmount) {
+    public void setCompoundAmount(Double compoundAmount) {
         this.compoundAmount = compoundAmount;
     }
 

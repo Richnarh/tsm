@@ -41,13 +41,13 @@ public class CreditPayment extends UserAccountRecord{
     private Sales sales;
     
     @Column(name = "total_credit")
-    private double totalCredit;
+    private Double totalCredit;
     
     @Column(name = "credit_remaining")
-    private double creditRemaining;
+    private Double creditRemaining;
     
     @Column(name = "amount_paid")
-    private double amountPaid;
+    private Double amountPaid;
     
     @Column(name = "payment_date")
     private LocalDate paymentDate = LocalDate.now();
@@ -84,27 +84,27 @@ public class CreditPayment extends UserAccountRecord{
         this.sales = sales;
     }
 
-    public double getTotalCredit() {
+    public Double getTotalCredit() {
         return totalCredit;
     }
 
-    public void setTotalCredit(double totalCredit) {
+    public void setTotalCredit(Double totalCredit) {
         this.totalCredit = totalCredit;
     }
     
-    public double getCreditRemaining() {
+    public Double getCreditRemaining() {
         return creditRemaining;
     }
 
-    public void setCreditRemaining(double creditRemaining) {
+    public void setCreditRemaining(Double creditRemaining) {
         this.creditRemaining = creditRemaining;
     }
 
-    public double getAmountPaid() {
+    public Double getAmountPaid() {
         return amountPaid;
     }
 
-    public void setAmountPaid(double amountPaid) {
+    public void setAmountPaid(Double amountPaid) {
         this.amountPaid = amountPaid;
     }
 

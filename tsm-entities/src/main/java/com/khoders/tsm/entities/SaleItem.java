@@ -15,7 +15,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  *
@@ -26,13 +25,13 @@ import javax.persistence.Transient;
 public class SaleItem extends UserAccountRecord implements Serializable{
     
     @Column(name = "quantity")
-    private double quantity=1;
+    private Double quantity;
 
     @Column(name = "unit_price")
-    private double unitPrice;
+    private Double unitPrice;
     
     @Column(name = "sub_total")
-    private double subTotal;
+    private Double subTotal;
     
     public static final String _customer = "customer";
     @JoinColumn(name = "customer")
@@ -60,26 +59,6 @@ public class SaleItem extends UserAccountRecord implements Serializable{
     @Column(name = "whole_sale")
     private boolean wholeSale;
     
-    public double getQuantity()
-    {
-        return quantity;
-    }
-
-    public void setQuantity(double quantity)
-    {
-        this.quantity = quantity;
-    }
-    
-    public double getUnitPrice()
-    {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice)
-    {
-        this.unitPrice = unitPrice;
-    }
-    
     public Customer getCustomer()
     {
         return customer;
@@ -100,16 +79,30 @@ public class SaleItem extends UserAccountRecord implements Serializable{
         this.description = description;
     }
 
-    public double getSubTotal()
-    {
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Double getSubTotal() {
         return subTotal;
     }
 
-    public void setSubTotal(double subTotal)
-    {
+    public void setSubTotal(Double subTotal) {
         this.subTotal = subTotal;
     }
-
+    
     public Inventory getInventory() {
         return inventory;
     }

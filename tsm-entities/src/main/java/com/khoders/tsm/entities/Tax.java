@@ -27,7 +27,7 @@ public class Tax extends BaseModel implements Serializable
   private String taxName;
   
   @Column(name = "tax_rate")
-  private double taxRate;
+  private Double taxRate;
   
   @Column(name = "reorder")
   private int reOrder;
@@ -52,12 +52,12 @@ public class Tax extends BaseModel implements Serializable
         this.taxName = taxName;
     }
 
-    public double getTaxRate()
+    public Double getTaxRate()
     {
         return taxRate;
     }
 
-    public void setTaxRate(double taxRate)
+    public void setTaxRate(Double taxRate)
     {
         this.taxRate = taxRate;
     }

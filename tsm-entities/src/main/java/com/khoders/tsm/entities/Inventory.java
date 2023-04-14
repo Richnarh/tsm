@@ -33,22 +33,22 @@ public class Inventory extends UserAccountRecord implements Serializable{
     private Location location;
     
     @Column(name = "units_in_package")
-    private double unitsInPackage;
+    private Double unitsInPackage;
     
     public static final String _packagePrice = "packagePrice";
     @Column(name = "package_price")
-    private double packagePrice; //selling price, retail price
+    private Double packagePrice; //selling price, retail price
     
     public static final String _wprice = "wprice";
     @Column(name = "wprice")
-    private double wprice; //whole sale price
+    private Double wprice; //whole sale price
     
     @Column(name = "description")
     @Lob
     private String description;
     
     @Column(name = "qty_in_shop")
-    private double qtyInShop;
+    private Double qtyInShop;
     
     public static final String _unitMeasurement = "unitMeasurement";
     @JoinColumn(name = "units_measurement", referencedColumnName = "id")
@@ -71,19 +71,19 @@ public class Inventory extends UserAccountRecord implements Serializable{
         this.location = location;
     }
 
-    public double getUnitsInPackage() {
+    public Double getUnitsInPackage() {
         return unitsInPackage;
     }
 
-    public void setUnitsInPackage(double unitsInPackage) {
+    public void setUnitsInPackage(Double unitsInPackage) {
         this.unitsInPackage = unitsInPackage;
     }
 
-    public double getPackagePrice() {
+    public Double getPackagePrice() {
         return packagePrice;
     }
 
-    public void setPackagePrice(double packagePrice) {
+    public void setPackagePrice(Double packagePrice) {
         this.packagePrice = packagePrice;
     }
 
@@ -103,29 +103,29 @@ public class Inventory extends UserAccountRecord implements Serializable{
         this.unitMeasurement = unitMeasurement;
     }
 
-    public double getQtyInShop() {
+    public Double getQtyInShop() {
         return qtyInShop;
     }
 
-    public void setQtyInShop(double qtyInShop) {
+    public void setQtyInShop(Double qtyInShop) {
         this.qtyInShop = qtyInShop;
     }
 
-    public double getWprice() {
+    public Double getWprice() {
         return wprice;
     }
 
-    public void setWprice(double wprice) {
+    public void setWprice(Double wprice) {
         this.wprice = wprice;
     }
     
     @Override
     public String toString() {
-        if(unitMeasurement != null && unitsInPackage != 0.0)
-           return stockReceiptItem+" ("+unitMeasurement.getUnits()+" - "+(int)unitsInPackage+")";
-        else if(unitMeasurement == null && unitsInPackage != 0)
-            return stockReceiptItem+" ("+(int)unitsInPackage+")";
-        else if(unitMeasurement != null && unitsInPackage == 0.0)
+        if(unitMeasurement != null && unitsInPackage != null)
+           return stockReceiptItem+" ("+unitMeasurement.getUnits()+" - "+unitsInPackage+")";
+        else if(unitMeasurement == null && unitsInPackage != null)
+            return stockReceiptItem+" ("+unitsInPackage+")";
+        else if(unitMeasurement != null && unitsInPackage == null)
             return stockReceiptItem+" ("+unitMeasurement.getUnits()+")";
         else
             return stockReceiptItem+"";

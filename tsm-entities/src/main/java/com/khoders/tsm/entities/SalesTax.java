@@ -30,7 +30,7 @@ public class SalesTax extends UserAccountRecord implements Serializable
     private String taxName;
 
     @Column(name = "tax_rate")
-    private double taxRate;
+    private Double taxRate;
   
     public static final String _sales = "sales";
     @JoinColumn(name = "sales", referencedColumnName = "id")
@@ -38,7 +38,7 @@ public class SalesTax extends UserAccountRecord implements Serializable
     private Sales sales;
     
     @Column(name = "tax_amount")
-    private double taxAmount;
+    private Double taxAmount;
     
     @Column(name = "reorder")
     private int reOrder;
@@ -64,22 +64,22 @@ public class SalesTax extends UserAccountRecord implements Serializable
         this.taxName = taxName;
     }
 
-    public double getTaxRate()
+    public Double getTaxRate()
     {
         return taxRate;
     }
 
-    public void setTaxRate(double taxRate)
+    public void setTaxRate(Double taxRate)
     {
         this.taxRate = taxRate;
     }
     
-    public double getTaxAmount()
+    public Double getTaxAmount()
     {
         return taxAmount;
     }
 
-    public void setTaxAmount(double taxAmount)
+    public void setTaxAmount(Double taxAmount)
     {
         this.taxAmount = taxAmount;
     }

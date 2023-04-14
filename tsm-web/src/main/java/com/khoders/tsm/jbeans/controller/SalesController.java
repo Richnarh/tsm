@@ -107,7 +107,7 @@ public class SalesController implements Serializable
             saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
         }
         
-        qtyRem = (int) saleItem.getInventory().getQtyInShop();
+        qtyRem = (int)saleItem.getInventory().getQtyInShop().doubleValue();
     }
     
     public void selectSalesType(){

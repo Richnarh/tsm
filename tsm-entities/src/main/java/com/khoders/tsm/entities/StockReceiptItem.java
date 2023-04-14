@@ -46,22 +46,22 @@ public class StockReceiptItem extends UserAccountRecord implements Serializable{
     private ReceiptStatus receiptStatus = ReceiptStatus.PENDING;
     
     @Column(name = "pkg_quantity")
-    private double pkgQuantity;
+    private Double pkgQuantity;
     
     @Column(name = "pkg_factor")
-    private double pkgFactor;
+    private Double pkgFactor;
     
     @Column(name = "wprice")
-    private double wprice;
+    private Double wprice;
     
     @Column(name = "qty_sold")
-    private double qtySold;
+    private Double qtySold;
     
     @Column(name = "qty_left")
-    private double qtyLeft;
+    private Double qtyLeft;
     
     @Column(name = "cost_price")
-    private double costPrice;
+    private Double costPrice;
     
     @Column(name = "description")
     @Lob
@@ -83,31 +83,31 @@ public class StockReceiptItem extends UserAccountRecord implements Serializable{
         this.purchaseOrderItem = purchaseOrderItem;
     }
 
-    public double getQtySold()
+    public Double getQtySold()
     {
         return qtySold;
     }
 
-    public void setQtySold(double qtySold)
+    public void setQtySold(Double qtySold)
     {
         this.qtySold = qtySold;
     }
 
-    public double getQtyLeft()
+    public Double getQtyLeft()
     {
         return qtyLeft;
     }
 
-    public void setQtyLeft(double qtyLeft)
+    public void setQtyLeft(Double qtyLeft)
     {
         this.qtyLeft = qtyLeft;
     }
 
-    public double getCostPrice() {
+    public Double getCostPrice() {
         return costPrice;
     }
 
-    public void setCostPrice(double costPrice) {
+    public void setCostPrice(Double costPrice) {
         this.costPrice = costPrice;
     }
 
@@ -127,27 +127,27 @@ public class StockReceiptItem extends UserAccountRecord implements Serializable{
         this.product = product;
     }
 
-    public double getPkgQuantity() {
+    public Double getPkgQuantity() {
         return pkgQuantity;
     }
 
-    public void setPkgQuantity(double pkgQuantity) {
+    public void setPkgQuantity(Double pkgQuantity) {
         this.pkgQuantity = pkgQuantity;
     }
 
-    public double getPkgFactor() {
+    public Double getPkgFactor() {
         return pkgFactor;
     }
 
-    public void setPkgFactor(double pkgFactor) {
+    public void setPkgFactor(Double pkgFactor) {
         this.pkgFactor = pkgFactor;
     }
     
-    public double getWprice() {
+    public Double getWprice() {
         return wprice;
     }
 
-    public void setWprice(double wprice) {
+    public void setWprice(Double wprice) {
         this.wprice = wprice;
     }
 

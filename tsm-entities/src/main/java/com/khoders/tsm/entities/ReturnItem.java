@@ -33,7 +33,7 @@ public class ReturnItem extends UserAccountRecord implements Serializable {
     
     public static final String _qtyReturn = "qtyReturn";
     @Column(name = "qty_return")
-    private double qtyReturn;
+    private Double qtyReturn;
 
     public StockReturn getStockReturn() {
         return stockReturn;
@@ -43,11 +43,11 @@ public class ReturnItem extends UserAccountRecord implements Serializable {
         this.stockReturn = stockReturn;
     }
 
-    public double getQtyReturn() {
+    public Double getQtyReturn() {
         return qtyReturn;
     }
 
-    public void setQtyReturn(double qtyReturn) {
+    public void setQtyReturn(Double qtyReturn) {
         this.qtyReturn = qtyReturn;
     }
 

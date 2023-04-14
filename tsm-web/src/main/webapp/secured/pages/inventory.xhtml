@@ -47,13 +47,13 @@
                                         </p:selectOneMenu>
 
                                         <span>Units in package <span class="text-danger">*</span></span>
-                                        <p:inputText title="The quantity that makes the selected unit" value="#{inventoryController.inventory.unitsInPackage}"/>
+                                        <p:inputText placeholder="Enter units" title="The quantity that makes the selected unit" value="#{inventoryController.inventory.unitsInPackage}"/>
 
                                         <span>Retail Price for (#{inventoryController.selectedUnit}) <span class="text-danger">*</span></span>
-                                        <p:inputText value="#{inventoryController.inventory.packagePrice}"/>
+                                        <p:inputText placeholder="Retail price" value="#{inventoryController.inventory.packagePrice}"/>
                                         
                                         <span>Whole Sale Price</span>
-                                        <p:inputText value="#{inventoryController.inventory.wprice}"/>
+                                        <p:inputText placeholder="Whole price" value="#{inventoryController.inventory.wprice}"/>
 
                                     </h:panelGrid>
                                     <br/>

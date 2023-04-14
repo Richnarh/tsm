@@ -17,10 +17,10 @@
         </p:selectOneMenu>
 
         <span>#{msg.quantity} <span class="text-danger">*</span> </span>
-        <p:inputText style="width: 100%" value="#{salesController.saleItem.quantity}" required="true"/>
+        <p:inputText placeholder="Enter qty" style="width: 100%" value="#{salesController.saleItem.quantity}" required="true"/>
 
         <span>Unit Price <span class="text-danger">*</span> </span>
-        <p:inputText style="width: 100%" disabled="true" id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
+        <p:inputText placeholder="Price" style="width: 100%" disabled="true" id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
 
         <span>Qty Rem</span>
         <h:inputText class="form-control" id="qtyRem" value="#{salesController.qtyRem}" disabled="true" style="width: 100%"/>

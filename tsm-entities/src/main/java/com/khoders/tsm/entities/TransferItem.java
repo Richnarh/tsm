@@ -33,7 +33,7 @@ public class TransferItem extends UserAccountRecord implements Serializable{
     private BatchTransfer batchTransfer;
     
     @Column(name = "qty_transferred")
-    private double qtyTransferred;
+    private Double qtyTransferred;
         
     public String getTransferCode() {
         return transferCode;
@@ -51,11 +51,11 @@ public class TransferItem extends UserAccountRecord implements Serializable{
         this.stockReceiptItem = stockReceiptItem;
     }
 
-    public double getQtyTransferred() {
+    public Double getQtyTransferred() {
         return qtyTransferred;
     }
 
-    public void setQtyTransferred(double qtyTransferred) {
+    public void setQtyTransferred(Double qtyTransferred) {
         this.qtyTransferred = qtyTransferred;
     }
     

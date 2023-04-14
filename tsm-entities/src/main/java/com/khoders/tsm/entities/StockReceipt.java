@@ -44,7 +44,7 @@ public class StockReceipt extends UserAccountRecord implements Serializable{
     private boolean stockSaved = false;
     
     @Column(name = "total_amount")
-    private double totalAmount;
+    private Double totalAmount;
     
     @Column(name = "description")
     private String description;
@@ -65,11 +65,11 @@ public class StockReceipt extends UserAccountRecord implements Serializable{
         this.receivedBy = receivedBy;
     }
     
-    public double getTotalAmount() {
+    public Double getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(double totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 

@@ -41,14 +41,14 @@ public class Sales extends UserAccountRecord {
     private String receiptNumber;
 
     @Column(name = "total_amount")
-    private double totalAmount;
+    private Double totalAmount;
 
     @Column(name = "payment_method")
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
 
     @Column(name = "qty_purchased")
-    private double qtyPurchased;
+    private Double qtyPurchased;
     
     @Column(name = "due_date")
     private LocalDate dueDate;
