@@ -21,7 +21,7 @@
         <h:panelGroup>
             <h:panelGrid columns="2">
                 <input type="text" placeholder="Price" class="form-control" style="width: 100%" readonly="true" jsf:id="sellingPrice" jsf:value="#{salesController.saleItem.unitPrice}" required="true"/>
-                <p:commandLink action="#{salesController.addWp()}" class="shadow-sm p-2" value="Set W.P" update="sellingPrice" immediate="true"/>
+                <p:commandLink action="#{salesController.addWp()}" class="shadow-sm p-2 fw-bold" value="Set W.P" update="sellingPrice" immediate="true"/>
             </h:panelGrid>
         </h:panelGroup>
         <span>Qty Rem</span>
