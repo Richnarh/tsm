@@ -31,7 +31,7 @@ public class Product extends UserAccountRecord implements Serializable
     private String productCode = SystemUtils.generateShortCode();
         
     @Column(name = "reorder_level")
-    private int reorderLevel;
+    private Integer reorderLevel;
         
     @JoinColumn(name = "product_type")
     @ManyToOne
@@ -90,7 +90,7 @@ public class Product extends UserAccountRecord implements Serializable
         return reorderLevel;
     }
 
-    public void setReorderLevel(int reorderLevel)
+    public void setReorderLevel(Integer reorderLevel)
     {
         this.reorderLevel = reorderLevel;
     }

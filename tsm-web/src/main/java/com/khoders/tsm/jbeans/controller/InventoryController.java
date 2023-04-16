@@ -32,7 +32,7 @@ public class InventoryController implements Serializable
    @Inject private InventoryService inventoryService;
    @Inject private StockService stockService;
    
-   private Inventory inventory;
+   private Inventory inventory = new Inventory();
    private List<Inventory> inventoryList = new LinkedList<>();
    private List<Inventory> segmentedList = new LinkedList<>();
    private List<StockReceiptItem> stockReceiptItemList = new LinkedList<>();
@@ -56,6 +56,7 @@ public class InventoryController implements Serializable
    public void selectProduct(StockReceiptItem stockReceiptItem){
        selectedStockReceiptItem=stockReceiptItem;
        segmentedList = stockService.inventoryProduct(selectedStockReceiptItem);
+       
        inventory.setWprice(stockReceiptItem.getWprice());
    }
    
@@ -78,11 +79,12 @@ public class InventoryController implements Serializable
                   return;
               }
           }
-           if(inventory.getUnitsInPackage() == 0.0){
+           
+           if(inventory != null && inventory.getUnitsInPackage() == 0.0){
                Msg.error("Units in package is required");
                return;
            }
-           if(inventory.getPackagePrice() == 0.0){
+           if(inventory != null && inventory.getPackagePrice() == 0.0){
                Msg.error("Selling price is required");
                return;
            }
@@ -130,6 +132,18 @@ public class InventoryController implements Serializable
         SystemUtils.resetJsfUI();
     }
 
+    public void updateWp(){
+         stockReceiptItemList.forEach(item ->{
+            inventoryList = inventoryService.getInventoryList();
+            inventoryList.forEach(i -> {
+                if(i.getStockReceiptItem().getId().equals(item.getId())){
+                    i.setWprice(item.getWprice());
+                    crudApi.save(i);
+                }
+                
+            });
+        });
+    }
     public Inventory getInventory()
     {
         return inventory;

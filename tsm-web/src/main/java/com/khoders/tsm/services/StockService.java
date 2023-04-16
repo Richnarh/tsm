@@ -128,4 +128,10 @@ public class StockService {
                    .setParameter(SaleItem._sales, sales)
                    .getResultList();
     }
+
+    public Inventory getInventoryByStockReceiptItem(StockReceiptItem stockReceiptItem) {
+       return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem =:stockReceiptItem", Inventory.class)
+                .setParameter(Inventory._stockReceiptItem, stockReceiptItem)
+                .getResultStream().findFirst().orElse(null); 
+    }
 }

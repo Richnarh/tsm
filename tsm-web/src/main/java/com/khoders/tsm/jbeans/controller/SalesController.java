@@ -99,15 +99,19 @@ public class SalesController implements Serializable
     
     public void inventoryProperties(){
         
-        if(saleItem.isWholeSale()){
-            System.out.println("wholesale true: "+saleItem.isWholeSale());
-            saleItem.setUnitPrice(saleItem.getInventory().getWprice());
-        }else{
-            System.out.println("wholesale false: "+saleItem.isWholeSale());
-            saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+        saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+        
+        qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getQtyInShop() != null ? (int)saleItem.getInventory().getQtyInShop().doubleValue() : 0;
+    }
+    
+    public void addWp(){
+        if(saleItem.getInventory() == null){
+            Msg.error("Please select product");
+            return;
         }
         
-        qtyRem = (int)saleItem.getInventory().getQtyInShop().doubleValue();
+        saleItem.setUnitPrice(salesService.getWp(saleItem.getInventory().getId()));
+        saleItem.setWholeSale(true);
     }
     
     public void selectSalesType(){

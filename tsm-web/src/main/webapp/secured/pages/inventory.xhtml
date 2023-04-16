@@ -22,7 +22,7 @@
                                 <p:dataTable value="#{inventoryController.stockReceiptItemList}" var="stockReceiptItem" scrollable="true" scrollHeight="400">
                                     <p:column headerText="#{msg.product}" filterBy="#{stockReceiptItem.product.productName}" filterMatchMode="contains">
                                         <h:commandLink styleClass="ptext-link" value="#{stockReceiptItem.product.productName} #{stockReceiptItem.product.packaging.packagingName}" action="#{inventoryController.selectProduct(stockReceiptItem)}">
-                                            <p:ajax update=":inventoryForm"/>
+                                            <p:ajax update=":inventoryForm, :segmentTable"/>
                                         </h:commandLink>
                                     </p:column>
                                 </p:dataTable>
@@ -57,30 +57,31 @@
 
                                     </h:panelGrid>
                                     <br/>
-                                    <p:commandButton value="#{inventoryController.optionText}" class="kbtn-success mx-3" icon="#{msg.check_icon}" action="#{inventoryController.saveInventory()}" update=":inventoryTable, @form"/>
-                                    <p:commandButton value="#{msg.clear}" class="kbtn-default" icon="#{msg.clear_icon}" action="#{inventoryController.clearInventory()}" immediate="true" update="@form"/>
+                                    <p:commandButton value="#{inventoryController.optionText}" class="kbtn-success mx-3" icon="#{msg.check_icon}" action="#{inventoryController.saveInventory()}"  update=":inventoryTable, :segmentTable, @form"/>
+                                    <p:commandButton value="#{msg.clear}" class="kbtn-default mx-3" icon="#{msg.clear_icon}" action="#{inventoryController.clearInventory()}" immediate="true" update="@form"/>
+                                    <!--<p:commandButton value="Update WP" class="kbtn-default" immediate="true" action="{inventoryController.updateWp()}" ajax="false"/>-->
                                 </div>
-
-                                <div>
-                                    <p:dataTable id="segmentTable" value="#{inventoryController.segmentedList}" var="segment">
-                                        <f:facet name="header">Snapshot of selected product</f:facet>
-                                        <p:column headerText="Product">
-                                            <h:outputText value="#{segment.stockReceiptItem.product.productName}"/>
-                                        </p:column>
-                                        <p:column headerText="Units" style="width: 100px;">
-                                            <h:outputText value="#{segment.unitMeasurement.units}"/>
-                                        </p:column>
-                                        <p:column headerText="Units in Package" style="width: 100px;" class="text-end">
-                                            <h:outputText value="#{segment.unitsInPackage}"/>
-                                        </p:column>
-                                        <p:column headerText="Selling Price" style="width: 100px;" class="text-end">
-                                            <h:outputText value="#{segment.packagePrice}"/>
-                                        </p:column>
-                                    </p:dataTable>
-                                </div>
+                             </h:form>
+                            <h:form id="segmentTable">
+                                <p:dataTable value="#{inventoryController.segmentedList}" var="segment">
+                                    <f:facet name="header">Snapshot of selected product</f:facet>
+                                    <p:column headerText="Product">
+                                        <h:outputText value="#{segment.stockReceiptItem.product.productName}"/>
+                                    </p:column>
+                                    <p:column headerText="Units" style="width: 100px;">
+                                        <h:outputText value="#{segment.unitMeasurement.units}"/>
+                                    </p:column>
+                                    <p:column headerText="Units in Package" style="width: 100px;" class="text-end">
+                                        <h:outputText value="#{segment.unitsInPackage}"/>
+                                    </p:column>
+                                    <p:column headerText="Retail Price" style="width: 100px;" class="text-end">
+                                        <h:outputText value="#{segment.packagePrice}"/>
+                                    </p:column>
+                                    <p:column headerText="W.P Price" style="width: 100px;" class="text-end">
+                                        <h:outputText value="#{segment.wprice}"/>
+                                    </p:column>
+                                </p:dataTable>
                             </h:form>
-
-
                         </div>
                     </div>
                     <div class="col-md-12 p-2">
@@ -121,8 +122,11 @@
                                 <p:column headerText="Units in Package" style="width: 100px;" class="text-end">
                                     <h:outputText value="#{inventory.unitsInPackage}"/>
                                 </p:column>
-                                <p:column headerText="Selling Price" style="width: 100px;" class="text-end">
+                                <p:column headerText="Retail Price" style="width: 100px;" class="text-end">
                                     <h:outputText value="#{inventory.packagePrice}"/>
+                                </p:column>
+                                <p:column headerText="W.P Price" style="width: 100px;" class="text-end">
+                                    <h:outputText value="#{inventory.wprice}"/>
                                 </p:column>
                                 <p:column headerText="Qty in Shop" style="width: 100px;" class="text-end">
                                     <h:outputText value="#{inventory.qtyInShop}"/>

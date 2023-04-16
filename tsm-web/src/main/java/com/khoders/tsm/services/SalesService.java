@@ -230,4 +230,10 @@ public class SalesService
                 .setParameter(ShippingInfo._receiptNumber, receiptNumber)
                 .getResultStream().findFirst().orElse(null);
     }
+
+    public Double getWp(String id) {
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.id =:id", Inventory.class)
+                .setParameter(Inventory._id, id)
+                .getResultStream().findFirst().orElse(null).getWprice();
+    }
 }
