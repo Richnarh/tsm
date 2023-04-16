@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">  
 
     <h:panelGrid columns="2" class="spaced-form">         
         <span>#{msg.product} <span class="text-danger">*</span> </span>                                
@@ -19,7 +20,7 @@
         <span>Unit Price <span class="text-danger">*</span> </span>
         <h:panelGroup>
             <h:panelGrid columns="2">
-                <p:inputText placeholder="Price" style="width: 100%" disabled="true" id="sellingPrice" value="#{salesController.saleItem.unitPrice}" required="true"/>
+                <input type="text" placeholder="Price" class="form-control" style="width: 100%" readonly="true" jsf:id="sellingPrice" jsf:value="#{salesController.saleItem.unitPrice}" required="true"/>
                 <p:commandLink action="#{salesController.addWp()}" class="shadow-sm p-2" value="Set W.P" update="sellingPrice" immediate="true"/>
             </h:panelGrid>
         </h:panelGroup>
