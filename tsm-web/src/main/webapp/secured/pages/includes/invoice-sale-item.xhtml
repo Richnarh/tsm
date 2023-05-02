@@ -25,7 +25,7 @@
                         </p:selectOneMenu>
                         <p:commandLink class="shadow-sm p-2" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
                     </h:panelGrid>
-                    <h:panelGroup rendered="#{salesController.selectedSalesType != 'NORMAL_SALES'}">
+                    <h:panelGroup rendered="#{salesController.selectedSalesType != 'INSTANT_SALES'}">
                         <div class="row">
                             <div class="col-md-12">
                                 <h:panelGrid columns="2">
@@ -85,7 +85,7 @@
                         </tbody>
                     </table>
 
-                    <center class="py-3 mt-2    ">
+                    <center class="py-3 mt-2">
                         <h:panelGrid columns="2">
                             <span>Total Amount</span>
                             <h:outputText value="#{salesController.totalAmount}" class="field-shade">
@@ -101,6 +101,9 @@
                     </center>
                 </div>
             </div>
+            <center class="pt-5">
+                <small class="p-1 text-secondary"><i class="fa fa-info"></i> Process and Saved transaction cannot be edited!</small>
+            </center>
         </h:form>
 
         <p:dialog header="Add Customer" resizable="false" widgetVar="customerForm" closeOnEscape="true" modal="true" id="customerModal" height="319" width="450">

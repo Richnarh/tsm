@@ -31,7 +31,7 @@ public class Product extends UserAccountRecord implements Serializable
     private String productCode = SystemUtils.generateShortCode();
         
     @Column(name = "reorder_level")
-    private Integer reorderLevel;
+    private int reorderLevel;
         
     @JoinColumn(name = "product_type")
     @ManyToOne
@@ -90,7 +90,7 @@ public class Product extends UserAccountRecord implements Serializable
         return reorderLevel;
     }
 
-    public void setReorderLevel(Integer reorderLevel)
+    public void setReorderLevel(int reorderLevel)
     {
         this.reorderLevel = reorderLevel;
     }
@@ -103,16 +103,6 @@ public class Product extends UserAccountRecord implements Serializable
         this.Packaging = Packaging;
     }
 
-    public void genCode()
-    {
-        if (getProductCode() != null)
-        {
-            setProductCode(getProductCode());
-        } else
-        {
-            setProductCode(SystemUtils.generateShortCode());
-        }
-    }
     @Override
     public String toString()
     {

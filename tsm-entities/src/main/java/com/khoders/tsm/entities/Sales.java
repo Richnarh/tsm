@@ -56,7 +56,7 @@ public class Sales extends UserAccountRecord {
     public static final String _salesType = "salesType";
     @Column(name = "sales_type")
     @Enumerated(EnumType.STRING)
-    private SalesType salesType = SalesType.NORMAL_SALES;
+    private SalesType salesType = SalesType.INSTANT_SALES;
      
     public static final String _paymentStatus = "paymentStatus"; 
     @Column(name = "payment_status")

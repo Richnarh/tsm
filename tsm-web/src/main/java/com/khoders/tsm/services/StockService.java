@@ -32,7 +32,6 @@ import javax.persistence.TypedQuery;
 @Stateless
 public class StockService {
     @Inject private CrudApi crudApi;
-    @Inject private AppSession appSession;
 
     public List<Object[]> getStockReceiptItems()
     {
@@ -48,8 +47,8 @@ public class StockService {
     
     public StockReceipt getStockReceipt(PurchaseOrder purchaseOrder) {
         try {
-            return crudApi.getEm().createQuery("SELECT e FROM StockReceipt e WHERE e.purchaseOrder=?1", StockReceipt.class)
-                    .setParameter(1, purchaseOrder)
+            return crudApi.getEm().createQuery("SELECT e FROM StockReceipt e WHERE e.purchaseOrder=:purchaseOrder", StockReceipt.class)
+                    .setParameter(StockReceipt._purchaseOrder, purchaseOrder)
                     .getResultStream().findAny().orElse(null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,8 +58,8 @@ public class StockService {
 
     public StockReceipt getStockReceipt(String orderCode) {
         try {
-            return crudApi.getEm().createQuery("SELECT e FROM StockReceipt e WHERE e.receiptNo=?1", StockReceipt.class)
-                    .setParameter(1, orderCode)
+            return crudApi.getEm().createQuery("SELECT e FROM StockReceipt e WHERE e.receiptNo=:receiptNo", StockReceipt.class)
+                    .setParameter(StockReceipt._receiptNo, orderCode)
                     .getResultStream().findAny().orElse(null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,9 +68,9 @@ public class StockService {
     }
     public Inventory existProdctPackage(StockReceiptItem receiptItem, String units) {
         UnitMeasurement unitMeasurement = getUnits(units);
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:receiptItem AND e.unitMeasurement=:unitMeasurement", Inventory.class)
-                .setParameter("receiptItem", receiptItem)
-                .setParameter("unitMeasurement", unitMeasurement)
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:stockReceiptItem AND e.unitMeasurement=:unitMeasurement", Inventory.class)
+                .setParameter(Inventory._stockReceiptItem, receiptItem)
+                .setParameter(Inventory._unitMeasurement, unitMeasurement)
                 .getResultStream().findFirst().orElse(null);
     }
     public ProductType getProductType(String prdtType){
@@ -86,27 +85,27 @@ public class StockService {
     }
 
     public Packaging getPackage(String packageString) {
-        return crudApi.getEm().createQuery("SELECT e FROM Packaging e WHERE e.packagingName=?1", Packaging.class)
-                .setParameter(1, packageString)
+        return crudApi.getEm().createQuery("SELECT e FROM Packaging e WHERE e.packagingName=:packagingName", Packaging.class)
+                .setParameter(Packaging._packagingName, packageString)
                 .getResultStream().findFirst().orElse(null);
     }
 
     public Product getProduct(String productName) {
-        return crudApi.getEm().createQuery("SELECT e FROM Product e WHERE e.productName=?1", Product.class)
-                .setParameter(1, productName)
+        return crudApi.getEm().createQuery("SELECT e FROM Product e WHERE e.productName=:productName", Product.class)
+                .setParameter(Product._productName, productName)
                 .getResultStream().findFirst().orElse(null);
     }
 
     public List<Inventory> inventoryProduct(StockReceiptItem receiptItem) {
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:receiptItem", Inventory.class)
-                .setParameter("receiptItem", receiptItem)
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:stockReceiptItem", Inventory.class)
+                .setParameter(Inventory._stockReceiptItem, receiptItem)
                 .getResultList();
     }
     
     public Customer walkinCustomer() {
-        String qryString = "SELECT e FROM Customer e WHERE e.customerName=?1";
+        String qryString = "SELECT e FROM Customer e WHERE e.customerName=:customerName";
         TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
-                .setParameter(1, CustomerType.WALK_IN_CUSTOMER.getLabel());
+                .setParameter(Customer._customerName, CustomerType.WALK_IN_CUSTOMER.getLabel());
         return typedQuery.getResultStream().findFirst().orElse(null);
     }
     

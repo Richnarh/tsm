@@ -50,6 +50,12 @@ public class Inventory extends UserAccountRecord implements Serializable{
     @Column(name = "qty_in_shop")
     private Double qtyInShop;
     
+    @Column(name = "qty_sold")
+    private Double qtySold;
+    
+    @Column(name = "qty_left")
+    private Double qtyLeft;
+    
     public static final String _unitMeasurement = "unitMeasurement";
     @JoinColumn(name = "units_measurement", referencedColumnName = "id")
     @ManyToOne
@@ -117,6 +123,22 @@ public class Inventory extends UserAccountRecord implements Serializable{
 
     public void setWprice(Double wprice) {
         this.wprice = wprice;
+    }
+
+    public Double getQtySold() {
+        return qtySold;
+    }
+
+    public void setQtySold(Double qtySold) {
+        this.qtySold = qtySold;
+    }
+
+    public Double getQtyLeft() {
+        return qtyLeft;
+    }
+
+    public void setQtyLeft(Double qtyLeft) {
+        this.qtyLeft = qtyLeft;
     }
     
     @Override

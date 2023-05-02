@@ -128,7 +128,6 @@
                                                 <p:selectOneMenu value="#{stockReturnController.returnItem.saleItem}" required="true" filter="true" filterMatchMode="contains">
                                                     <f:selectItem itemLabel="#{msg.choose}"/>
                                                     <f:selectItems value="#{stockReturnController.saleItemList}"/>
-                                                    <p:ajax listener="#{stockReturnController.selectInventory()}" update="@form"/>
                                                 </p:selectOneMenu>
 
                                                 <span>#{msg.quantity} <span class="text-danger">*</span></span>

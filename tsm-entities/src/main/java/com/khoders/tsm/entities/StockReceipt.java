@@ -22,27 +22,33 @@ import javax.persistence.Table;
 @Table(name = "stock_receipt")
 public class StockReceipt extends UserAccountRecord implements Serializable{
   
+    public static final String _receiptNo="receiptNo";
     @Column(name = "receipt_no")
     private String receiptNo;
     
+    public static final String _purchaseOrder="purchaseOrder";
     @JoinColumn(name = "purchase_order", referencedColumnName = "id")
     @ManyToOne
     private PurchaseOrder purchaseOrder;
     
+    public static final String _location="location";
     @JoinColumn(name = "location", referencedColumnName = "id")
     @ManyToOne
     private Location location;
-        
+    
+    public static final String _receivedBy="receivedBy";    
     @JoinColumn(name = "received_by", referencedColumnName = "id")
     @ManyToOne
     private UserAccount receivedBy;
     
+    public static final String _batchNo="batchNo";
     @Column(name = "batch_no")
     private String batchNo;
     
     @Column(name = "stock_saved")
     private boolean stockSaved = false;
     
+    public static final String _totalAmount="totalAmount";   
     @Column(name = "total_amount")
     private Double totalAmount;
     

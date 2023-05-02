@@ -8,7 +8,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-<modules>  <module>tsm-web</module>
+<modules>  
+    <module>tsm-web</module>
     <module>tsm-admin</module>
     <module>tsm-entities</module>
 </modules>

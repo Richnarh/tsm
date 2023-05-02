@@ -12,7 +12,7 @@ import com.khoders.resource.utilities.MsgResolver;
  * @author Pascal
  */
 public enum SalesType implements MsgResolver{
-    NORMAL_SALES("NORMAL_SALES", "Normal Sales"),
+    INSTANT_SALES("INSTANT_SALES", "Instant Sales"),
     INVOICE_SALES("INVOICE_SALES", "Invoice Sales"),
     PROFORMA_INVOICE_SALES("PROFORMA_INVOICE_SALES", "Proforma Invoice Sales"),
     CREDIT_SALES("CREDIT_SALES", "Credit Sales");

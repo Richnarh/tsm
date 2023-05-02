@@ -23,6 +23,7 @@ import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.enums.EventModule;
 import com.khoders.tsm.enums.SalesType;
+import com.khoders.tsm.services.StockService;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,13 +45,14 @@ public class SalesController implements Serializable
     @Inject private CrudApi crudApi; 
     @Inject private AppSession appSession; 
     @Inject private SalesService salesService;
+    @Inject private StockService stockService;
     @Inject private XtractService xtractService;
     @Inject private ReportManager reportManager;
         
     private SaleItem saleItem = new SaleItem();
-    private List<SaleItem> saleItemList,itemList = new LinkedList<>();
+    private List<SaleItem> saleItemList = new LinkedList<>();
     private List<Sales> salesList = new LinkedList<>();
-    private SalesType selectedSalesType = SalesType.NORMAL_SALES;
+    private SalesType selectedSalesType = SalesType.INSTANT_SALES;
     
     private List<Tax> taxList = new LinkedList<>();
     private List<SalesTax> salesTaxList = new LinkedList<>();
@@ -123,8 +125,7 @@ public class SalesController implements Serializable
       dateRange = new DateRangeUtil();
     }
     
-    public void fetchPackagePrice(Inventory inventory)
-    {
+    public void fetchPackagePrice(Inventory inventory){
         System.out.println("Item selected -- ");
         double packagePrice = salesService.queryPackagePrice(inventory.getUnitMeasurement(), saleItem.getInventory().getStockReceiptItem());  
         System.out.println("packagePrice => "+packagePrice);
@@ -213,12 +214,11 @@ public class SalesController implements Serializable
         double qtyBought = saleItemList.stream().mapToDouble(SaleItem::getQuantity).sum();
         try 
         {
-                System.out.println("customer: "+sales.getCustomer());
                 if(sales.getCustomer() == null){
                     sales.setCustomer(salesService.walkinCustomer());
                 }
                 if(sales.getSalesType() == SalesType.CREDIT_SALES){
-                    System.out.println("Credit selling....");
+                    System.out.println("CREDIT_SALES selling....");
                     Sales creditSale = salesService.checkCustomerCredit(sales.getCustomer());
                     if(creditSale != null){
                         creditSale.setCompound(true);
@@ -226,6 +226,7 @@ public class SalesController implements Serializable
                         System.out.println("Credit selling....True");
                     }
                 }
+                
                 sales.genCode();
                 sales.setPaymentStatus(PaymentStatus.PENDING);
                 sales.setCompound(false);
@@ -245,10 +246,8 @@ public class SalesController implements Serializable
                     return;
                 }
                 
-                if (crudApi.save(sales) != null)
-                {
-                    for (SaleItem item : saleItemList)
-                    {
+                if (crudApi.save(sales) != null){
+                    for (SaleItem item : saleItemList){
                         item.genCode();
                         item.setSales(sales);
                         item.setCompanyBranch(appSession.getCompanyBranch());
@@ -256,8 +255,21 @@ public class SalesController implements Serializable
                         item.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
                         item.setLastModifiedDate(LocalDateTime.now());
                         crudApi.save(item);
+                        
+                        if(sales.getSalesType() == SalesType.INSTANT_SALES){
+                            Inventory inventory = stockService.existProdctPackage(item.getInventory().getStockReceiptItem(), item.getInventory().getUnitMeasurement().getUnits());
+                            double qtyInShop = inventory.getQtyInShop();
+                            double newQty = qtyInShop - item.getQuantity();
+                            inventory.setQtyInShop(newQty);
+                            
+                            System.out.println("Product: "+inventory.getStockReceiptItem());
+                            System.out.println("Old qty: "+qtyInShop);
+                            System.out.println("New qty: "+newQty);
+                            System.out.println("............\n");
+                            crudApi.save(inventory);
+                            System.out.println("Qty updated: ");
+                        }
                     }
-                   
                 }
                 
                 salesList = CollectionList.washList(salesList, sales);
