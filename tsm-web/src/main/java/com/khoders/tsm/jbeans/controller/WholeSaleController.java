@@ -41,9 +41,9 @@ import javax.inject.Named;
  *
  * @author richard
  */
-@Named(value = "salesController")
+@Named(value = "wholeSaleController")
 @SessionScoped
-public class SalesController implements Serializable
+public class WholeSaleController implements Serializable
 {
     @Inject private CrudApi crudApi; 
     @Inject private AppSession appSession; 
@@ -57,12 +57,12 @@ public class SalesController implements Serializable
     private List<Sales> salesList = new LinkedList<>();
     private SalesType selectedSalesType = SalesType.INSTANT_SALES;
     
+    private List<Tax> taxList = new LinkedList<>();
+    private List<SalesTax> salesTaxList = new LinkedList<>();
+    
     private Payment payment = new Payment();
     private List<Payment> paymentList = new LinkedList<>();
     private List<Payment> paymentItems = new LinkedList<>();
-    
-    private List<Tax> taxList = new LinkedList<>();
-    private List<SalesTax> salesTaxList = new LinkedList<>();
     List<SalesTaxDto> salesTaxDtoList = new LinkedList<>();
     
     private Sales sales = new Sales();
@@ -82,30 +82,21 @@ public class SalesController implements Serializable
     private void init()
     {
         clearAll();
-        salesList = salesService.getSales(SaleSource.RETAIL); 
+        salesList = salesService.getSales(SaleSource.WHOLESALE);
         taxList = salesService.getTaxList();
     }
     
-    public void initPayment(){
-        paymentList = salesService.payments(sales);
-    }
-    
-    public void clearPayment(){
-        payment = new Payment();
-        SystemUtils.resetJsfUI();
-    }
-    
-    public void initNewSale() {
+    public void initNewSale()
+    {
         enableTax = false;
         enableTax = appSession.getCompanyBranch().isEnableTax();
-        System.out.println("enableTax: " + enableTax);
+        System.out.println("enableTax: "+enableTax);
         clearAll();
         paymentItems = salesService.payments(sales);
         appSession.logEvent("Click New Sale", EventModule.SALES, "New Sale");
         pageView.restToCreateView();
     }
-    
-    public void addPayment(){
+        public void addPayment(){
         if(payment.getAmountPaid() == 0.0){
             Msg.error("Please enter amount");
             return;
@@ -118,15 +109,18 @@ public class SalesController implements Serializable
         paymentList = CollectionList.washList(paymentList, payment);
         clearPayment();
     }
-    
-    public void editPayment(Payment payment){
+    public void editPayment(Payment payment) {
         optionText = "Update";
         this.payment = payment;
     }
-    public void deletePayment(Payment payment){
+
+    public void deletePayment(Payment payment) {
         paymentList.remove(payment);
     }
-    
+    public void clearPayment() {
+        payment = new Payment();
+        SystemUtils.resetJsfUI();
+    }
     public void initInvoiceSales()
     {
         clearAll();
@@ -135,34 +129,17 @@ public class SalesController implements Serializable
     
     public void filterSales()
     {
-      salesList = salesService.getSalesByDates(dateRange, SaleSource.RETAIL); 
+      salesList = salesService.getSalesByDates(dateRange, SaleSource.WHOLESALE); 
       appSession.logEvent("Filter Sales", EventModule.SALES, "Filter Sales");
-    }
-    
-    public void inventoryProperties(){
-        
-        saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
-        
-        qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getQtyInShop() != null ? (int)saleItem.getInventory().getQtyInShop().doubleValue() : 0;
     }
     
     public void wholeSalePrice(){
         
-        saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+        saleItem.setUnitPrice(saleItem.getInventory().getWprice());
         
-        qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getQtyInShop() != null ? (int)saleItem.getInventory().getQtyInShop().doubleValue() : 0;
+        qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getStockReceiptItem() != null ? (int)saleItem.getInventory().getStockReceiptItem().getPkgQuantity().doubleValue() : 0;
     }
-    
-    public void addWp(){
-        if(saleItem.getInventory() == null){
-            Msg.error("Please select product");
-            return;
-        }
-        
-        saleItem.setUnitPrice(salesService.getWp(saleItem.getInventory().getId()));
-//        saleItem.setWholeSale(true);
-    }
-    
+     
     public void selectSalesType(){
         this.selectedSalesType = sales.getSalesType();
     }
@@ -175,8 +152,8 @@ public class SalesController implements Serializable
     public void fetchPackagePrice(Inventory inventory){
         System.out.println("Item selected -- ");
         Inventory inv = salesService.queryPackagePrice(inventory.getUnitMeasurement(), saleItem.getInventory().getStockReceiptItem());  
-        System.out.println("packagePrice => "+inv.getPackagePrice());
-        saleItem.setUnitPrice(inv.getPackagePrice());
+        System.out.println("wholesale price => "+inv.getWprice());
+        saleItem.setUnitPrice(inv.getWprice());
         saleItem.setInventory(inventory);
     }
     public void addSaleItem()
@@ -260,26 +237,23 @@ public class SalesController implements Serializable
         }
         if(totalPayable == 0.0) totalPayable = totalAmount;
     }
-    
-    public void processSale(){
+    public void processSale() {
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
-        
+
         if (enableTax) {
             processSale = true;
             taxCalculation();
             System.out.println("taxCalculation.......");
         }
-        if(totalPayable == 0.0) totalPayable = totalAmount;
+        if (totalPayable == 0.0) {
+            totalPayable = totalAmount;
+        }
     }
-    
     public void saveAll()
     {
-        if (saleItemList.isEmpty()) {
+        if (saleItemList.isEmpty())
+        {
             Msg.error("Cannot process an empty sale");
-            return;
-        }
-        if (paymentList.isEmpty()) {
-            Msg.error("Please add payment info");
             return;
         }
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
@@ -332,9 +306,9 @@ public class SalesController implements Serializable
                         break;
                 }
             }
-                
                 sales.genCode();
                 sales.setPaymentStatus(PaymentStatus.PENDING);
+                sales.setSaleSource(SaleSource.WHOLESALE);
                 sales.setCompound(false);
                 sales.setPurchaseDate(LocalDateTime.now());
                 sales.setTotalAmount(totalAmount);
@@ -344,7 +318,7 @@ public class SalesController implements Serializable
                 sales.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
                 sales.setLastModifiedDate(LocalDateTime.now());
                 sales.setQtyPurchased(qtyBought);
-                sales.setSaleSource(SaleSource.RETAIL);
+                
                 Sales catalogue = crudApi.find(Sales.class, sales.getId());
                 
                 if(catalogue != null){
@@ -364,7 +338,7 @@ public class SalesController implements Serializable
                         
                         if(sales.getSalesType() == SalesType.INSTANT_SALES){
                             Inventory inventory = stockService.existProdctPackage(item.getInventory().getStockReceiptItem(), item.getInventory().getUnitMeasurement().getUnits());
-                            double qtyInShop = inventory.getQtyInShop();
+                            double qtyInShop = inventory.getStockReceiptItem().getPkgQuantity();
                             double newQty = qtyInShop - item.getQuantity();
                             inventory.setQtyInShop(newQty);
                             
@@ -385,7 +359,7 @@ public class SalesController implements Serializable
                     taxCalculation();
                     System.out.println("taxCalculation.......");
                 }
-                savePayment(sales);
+                
                 Msg.info("Transaction saved successfully!");
                 appSession.logEvent("Save Sales", EventModule.SALES, "Complete Sales");
         } catch (Exception e) 
@@ -393,14 +367,7 @@ public class SalesController implements Serializable
             e.printStackTrace();
         }
     }
-    private void savePayment(Sales sales){
-        paymentList.forEach(pay ->{
-            pay.setSales(sales);
-            pay.genCode();
-            crudApi.save(pay);
-        });
-        System.out.println("Payment save complete");
-    }
+    
     public void taxCalculation()
     {
         System.out.println("Executing taxCalculation......");
@@ -409,7 +376,7 @@ public class SalesController implements Serializable
         for (Tax tax : taxList)
         {
             SalesTax salesTax = new SalesTax();
-            
+
             double calc = processSale ? totalAmount : sales.getTotalAmount() * (tax.getTaxRate()/100);
 
             salesTax.genCode();
@@ -420,6 +387,7 @@ public class SalesController implements Serializable
             salesTax.setUserAccount(appSession.getCurrentUser());
             salesTax.setCompanyBranch(appSession.getCompanyBranch());
             salesTax.setSales(sales);
+
             if(!processSale)
                 crudApi.save(salesTax);
             else{
@@ -431,6 +399,7 @@ public class SalesController implements Serializable
                 salesTaxDtoList.add(dto);
             }
         }
+            
         System.out.println("Adding salesTax: "+salesTaxDtoList.size());    
         salesTaxList = salesService.getSalesTaxList(sales);
         
@@ -461,7 +430,8 @@ public class SalesController implements Serializable
             totalPayable = vat + taxableValue;
             
             salesVat.setTaxAmount(vat);
-            if(!processSale)
+
+                      if(!processSale)
                 crudApi.save(salesVat);
             
         }else{
@@ -525,14 +495,10 @@ public class SalesController implements Serializable
     
     public void clearAll()
     {
-        optionText = "Save Changes";
         saleItem = new SaleItem();
-        payment = new Payment();
         saleItemList = new LinkedList<>();
-        paymentItems = new LinkedList<>();
         saleItem.genCode();
         totalAmount = 0.0;
-        totalPayable = 0.0;
         sales.setCustomer(salesService.defaultCustomer(CustomerType.WALK_IN_CUSTOMER));
         saleItem.setUserAccount(appSession.getCurrentUser());
         saleItem.setCompanyBranch(appSession.getCompanyBranch());
@@ -678,7 +644,14 @@ public class SalesController implements Serializable
         return qtyRem;
     }
 
-    public List<Payment> getPaymentList() {
+    public boolean isEnableTax() {
+        return enableTax;
+    }
+
+    public void setEnableTax(boolean enableTax) {
+        this.enableTax = enableTax;
+    }
+     public List<Payment> getPaymentList() {
         return paymentList;
     }
 
@@ -688,14 +661,6 @@ public class SalesController implements Serializable
 
     public void setPayment(Payment payment) {
         this.payment = payment;
-    }
-
-    public boolean isEnableTax() {
-        return enableTax;
-    }
-
-    public void setEnableTax(boolean enableTax) {
-        this.enableTax = enableTax;
     }
 
     public String getOptionText() {
@@ -709,5 +674,4 @@ public class SalesController implements Serializable
     public boolean isProcessSale() {
         return processSale;
     }
-    
 }

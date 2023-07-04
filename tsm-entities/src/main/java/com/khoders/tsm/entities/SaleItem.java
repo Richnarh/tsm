@@ -56,9 +56,6 @@ public class SaleItem extends UserAccountRecord implements Serializable{
     @Column(name = "description")
     private String description;
     
-    @Column(name = "whole_sale")
-    private boolean wholeSale;
-    
     public Customer getCustomer()
     {
         return customer;
@@ -129,14 +126,6 @@ public class SaleItem extends UserAccountRecord implements Serializable{
         this.deliveryStatus = deliveryStatus;
     }
 
-    public boolean isWholeSale() {
-        return wholeSale;
-    }
-
-    public void setWholeSale(boolean wholeSale) {
-        this.wholeSale = wholeSale;
-    }
-    
     @Override
     public String toString() {
         return inventory+"";

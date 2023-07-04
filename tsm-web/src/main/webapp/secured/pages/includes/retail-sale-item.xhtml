@@ -25,16 +25,18 @@
                         </p:selectOneMenu>
                         <p:commandLink class="shadow-sm p-2" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
                     </h:panelGrid>
+                    <p:commandLink class="shadow-sm p-2" id="content" action="#{salesController.initPayment()}" value="Add Payment" oncomplete="PF('paymentForm').show()" resetValues="true" update="paymentModal">
+                        <p:tooltip style="max-width: 400px;" for="content">
+                            <div>
+                                NOTE: <br/> <span class="text-warning">Payments cannot be edited after successful transaction!</span>
+                                <br/>
+                            </div>
+                        </p:tooltip>
+                    </p:commandLink>
                     <h:panelGroup rendered="#{salesController.selectedSalesType != 'INSTANT_SALES'}">
                         <div class="row">
                             <div class="col-md-12">
                                 <h:panelGrid columns="2">
-                                    <span>#{msg.payment_method}</span>                                
-                                    <p:selectOneMenu value="#{salesController.sales.paymentMethod}">
-                                        <f:selectItem itemLabel="#{msg.choose}"/>
-                                        <f:selectItems value="#{commonClass.paymentMethodList}"/>
-                                    </p:selectOneMenu>
-
                                     <p:outputLabel rendered="#{salesController.selectedSalesType == 'CREDIT_SALES'}" value="#{msg.due_date}" class="p-2"/>
                                     <p:datePicker rendered="#{salesController.selectedSalesType == 'CREDIT_SALES'}" class="mt-2" pattern="#{msg.formatted_date}" yearNavigator="true" monthNavigator="true" value="#{salesController.dueDate}"/>
                                 </h:panelGrid>
@@ -85,29 +87,35 @@
                         </tbody>
                     </table>
 
-                    <center class="py-3 mt-2">
-                        <h:panelGrid columns="2">
-                            <span>Total Amount</span>
-                            <h:outputText value="#{salesController.totalAmount}" class="field-shade">
-                                <f:convertNumber pattern="#{msg.money_pattern}"/>
-                            </h:outputText>
-                        </h:panelGrid>
-                    </center>
-                    <hr/>
-                    <center>
-                        <p:commandButton icon="#{msg.check_icon}" value="Process and Save Transaction" action="#{salesController.saveAll()}" class="kbtn-success mr-5" immediate="true" ajax="false" update="@form, :invoiceItemForm, "/>
-                        <p:commandButton value="#{msg.clear} All" class="kbtn-default mx-3" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form"/>
-                        <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{salesController.closePage()}"/>
-                    </center>
+                    <h:panelGrid columns="2" class="float-end shadow-sm">
+                        <span>Total Amount</span>
+                        <h:inputText class="form-control" value="#{salesController.totalAmount}" disabled="true">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:inputText>
+                        <span class="fw-bold">Total Payable (GHS)</span>
+                        <h:outputText value="#{salesController.totalPayable}" class="field-shade py-2">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </h:panelGrid>
+
+                    <div class="pt-2">
+                        <p:commandButton icon="#{msg.check_icon}" value="Save All" action="#{salesController.saveAll()}" class="kbtn-success" immediate="true" ajax="false" update="@form, :invoiceItemForm, "/>
+                        <p:commandButton icon="#{msg.cog_icon}" value="Process" action="#{salesController.processSale()}" class="kbtn-default mx-3" immediate="true" update="@form, :invoiceItemForm, "/>
+                        <p:commandButton value="#{msg.clear} All" class="kbtn-default" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form"/>
+                    </div>
                 </div>
             </div>
-            <center class="pt-5">
-                <small class="p-1 text-secondary"><i class="fa fa-info"></i> Process and Saved transaction cannot be edited!</small>
+            <hr/>
+            <center>
+                <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{salesController.closePage()}"/>
             </center>
         </h:form>
 
         <p:dialog header="Add Customer" resizable="false" widgetVar="customerForm" closeOnEscape="true" modal="true" id="customerModal" height="319" width="450">
             <ui:include src="customer-modal.xhtml"/>
+        </p:dialog>
+        <p:dialog header="Add Payment" resizable="false" widgetVar="paymentForm" closeOnEscape="true" modal="true" id="paymentModal" height="360" width="550">
+            <ui:include src="payment-modal.xhtml"/>
         </p:dialog>
     </div>
 </html>

@@ -18,9 +18,11 @@ import com.khoders.tsm.entities.CompoundSale;
 import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.DeliveryInfo;
 import com.khoders.tsm.entities.Inventory;
+import com.khoders.tsm.entities.Payment;
 import com.khoders.tsm.entities.ShippingInfo;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
+import com.khoders.tsm.enums.SaleSource;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -69,11 +71,17 @@ public class SalesService
         return Collections.emptyList();
     }
         
-    public Customer walkinCustomer()
-    {
+    public Customer walkinCustomer() {
         String qryString = "SELECT e FROM Customer e WHERE e.customerName = :customerName";
         TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
                 .setParameter(Customer._customerName, CustomerType.WALK_IN_CUSTOMER.getLabel());
+        return typedQuery.getResultStream().findFirst().orElse(null);
+    }
+    
+    public Customer backLogSupplier() {
+        String qryString = "SELECT e FROM Customer e WHERE e.customerName = :customerName";
+        TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
+                .setParameter(Customer._customerName, CustomerType.BACK_LOG_SUPPLIER.getLabel());
         return typedQuery.getResultStream().findFirst().orElse(null);
     }
     
@@ -88,38 +96,40 @@ public class SalesService
                         .getResultStream().findFirst().orElse(null);
     }
     
-    public List<Sales> getSales()
+    public List<Sales> getSales(SaleSource saleSource)
     {
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2", Sales.class)
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2 AND e.saleSource = ?3", Sales.class)
                    .setParameter(1, LocalDate.now())
                    .setParameter(2, LocalDate.now())
+                   .setParameter(3, saleSource)
                    .getResultList();
     }
-    public List<Sales> getSalesByDates(DateRangeUtil dateRange)
-    {
+    
+    public List<Sales> getSalesByDates(DateRangeUtil dateRange, SaleSource saleSource){
         try {
             if(dateRange.getFromDate() == null || dateRange.getToDate() == null)
             {
-                  String  queryString = "SELECT e FROM Sales e ORDER BY e.valueDate DESC";
-                  TypedQuery<Sales> typedQuery = crudApi.getEm().createQuery(queryString, Sales.class);
-                                    return typedQuery.getResultList();
+                String  queryString = "SELECT e FROM Sales e WHERE e.saleSource = :saleSource ORDER BY e.valueDate DESC";
+                return  crudApi.getEm().createQuery(queryString, Sales.class)
+                        .setParameter(Sales._saleSource, saleSource)
+                        .getResultList();
             }
             
-            String qryString = "SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2 ORDER BY e.valueDate DESC";
+            String qryString = "SELECT e FROM Sales e WHERE e.saleSource = :saleSource AND e.valueDate BETWEEN ?1 AND ?2 ORDER BY e.valueDate DESC";
             
-            TypedQuery<Sales> typedQuery = crudApi.getEm().createQuery(qryString, Sales.class)
+            return crudApi.getEm().createQuery(qryString, Sales.class)
+                    .setParameter(Sales._saleSource, saleSource)
                     .setParameter(1, dateRange.getFromDate())
-                    .setParameter(2, dateRange.getToDate());
-           return typedQuery.getResultList();
+                    .setParameter(2, dateRange.getToDate())
+                    .getResultList();
             
-        } catch (Exception e) 
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return Collections.emptyList();
     }
-    public List<Inventory> queryPackagePrice(StockReceiptItem receiptItem)
-    {
+    
+    public List<Inventory> queryPackagePrice(StockReceiptItem receiptItem){
         try
         {
             return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem =:stockReceiptItem", Inventory.class)
@@ -132,20 +142,12 @@ public class SalesService
         }
         return Collections.emptyList();
     }
-    public double queryPackagePrice(UnitMeasurement unitMeasurement, StockReceiptItem StockReceiptItem)
+    public Inventory queryPackagePrice(UnitMeasurement unitMeasurement, StockReceiptItem StockReceiptItem)
     {
-        try
-        {
-            return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.unitMeasurement = :unitMeasurement AND e.stockReceiptItem = :StockReceiptItem", Inventory.class)
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.unitMeasurement = :unitMeasurement AND e.stockReceiptItem = :StockReceiptItem", Inventory.class)
                     .setParameter(Inventory._unitMeasurement, unitMeasurement)
                     .setParameter(Inventory._stockReceiptItem, StockReceiptItem)
-                    .getSingleResult().getPackagePrice();
-            
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return 0.0;
+                    .getResultStream().findFirst().orElse(null);
     }
 
     public List<CreditPayment> getCreditSales(Sales sales) {
@@ -235,5 +237,12 @@ public class SalesService
         return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.id =:id", Inventory.class)
                 .setParameter(Inventory._id, id)
                 .getResultStream().findFirst().orElse(null).getWprice();
+    }
+
+    public List<Payment> payments(Sales sales) {
+        if(sales == null) return new LinkedList<>();
+        return crudApi.getEm().createQuery("SELECT e FROM Payment e WHERE e.sales = :sales", Payment.class)
+                    .setParameter(Payment._sales, sales)
+                    .getResultList();
     }
 }

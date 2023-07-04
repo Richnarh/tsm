@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <h:body>
+        <ui:composition template="../templatesUI.xhtml">
+            <ui:define name="pageTitle">
+                POS | Invoices
+            </ui:define>
+
+            <ui:define name="pageContent">
+                <h:panelGroup id="mainPanel">
+                    <div class="card mb-5">
+                        <div class="container-fluid">
+                            <div class="card-header"> T R A N S A C T I O N</div>
+                            <h:panelGroup rendered="#{salesController.pageView.listView}">
+                                <h:form class="m-2" id="salesForm">
+                                    <ui:remove>
+                                        <div class="float-end mx-2">
+                                            <h:commandButton id="invoice" value="Make #{msg.new} Invoice" class="btn btn-outline-primary btn-sm"
+                                                             action="#{salesController.initInvoiceSales()}">
+                                                <p:ajax update=":mainPanel"/>
+                                            </h:commandButton>
+                                        </div>
+                                    </ui:remove>
+
+                                    <div class="float-end">
+                                        <h:commandButton id="pos" value="Make #{msg.new} Sale" class="btn btn-primary btn-sm"
+                                                         action="#{salesController.initNewSale()}">
+                                            <p:ajax update=":mainPanel"/>
+                                        </h:commandButton>
+                                    </div>
+                                    <span class="shadow-sm float-end col-1 faded-shade">Count: #{salesController.salesList.size()}</span>
+
+
+                                    <p:commandButton id="searchBtn" class="kbtn-default" value="Search" icon="#{msg.seach_icon}"/>
+                                    <p:overlayPanel for="searchBtn" hideEffect="fade" dynamic="true" style="width:600px; height: 100px; padding-top: 2.6rem" dismissable="false" showCloseIcon="true">
+                                        <span class="mr-2">From Date: </span>
+                                        <p:datePicker value="#{salesController.dateRange.fromDate}"
+                                                      pattern="#{msg.formatted_date}" 
+                                                      monthNavigator="true" yearNavigator="true"/>
+
+                                        <span class="mr-2">To Date: </span>
+                                        <p:datePicker value="#{salesController.dateRange.toDate}"
+                                                      pattern="#{msg.formatted_date}" 
+                                                      monthNavigator="true" yearNavigator="true"/>
+
+                                        <h:commandButton id="reload" class="mx-2 btn btn-outline-primary btn-sm" value="Search Sales" action="#{salesController.filterSales()}">
+                                            <p:ajax update=":mainPanel"/>
+                                        </h:commandButton>
+
+                                        <h:commandButton id="reset" class="btn btn-secondary btn-sm" value="#{msg.reset}" action="#{salesController.reset()}">
+                                            <p:ajax update=":salesTable, @form"/>
+                                        </h:commandButton>
+                                    </p:overlayPanel>
+                                </h:form>
+                                <h:form id="salesTable" class="mb-3">
+                                    <p:dataTable value="#{salesController.salesList}" reflow="true" var="sales" scrollable="true" scrollHeight="400">
+                                        <f:facet name="header">Transactions/Sales for Today</f:facet>
+                                        <p:column style="width: 15px;">
+                                            <p:rowToggler/>
+                                        </p:column>
+
+                                        <p:rowExpansion>
+                                            <h:panelGrid columns="2">
+                                                <span>#{msg.created_date}</span>
+                                                <h:outputText value="#{sales.createdDate}">
+                                                    <f:convertDateTime type="localDateTime" pattern="#{msg.formated_date_time_words_short}"/>
+                                                </h:outputText>
+
+                                            </h:panelGrid>
+                                        </p:rowExpansion>
+
+                                        <p:column headerText="#{msg.date}" style="width: 100px;">
+                                            <h:outputText value="#{sales.purchaseDate}">
+                                                <f:convertDateTime pattern="#{msg.formatted_date}" type="localDate"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.receipt} No." filterBy="#{sales.receiptNumber}" filterMatchMode="contains">
+                                            #{sales.receiptNumber}
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.customer}" filterBy="#{sales.customer.customerName}" filterMatchMode="contains">
+                                            #{sales.customer.customerName}
+                                        </p:column>
+
+                                        <p:column headerText="Sales Type" style="width: 150px;">
+                                            <h:outputText value="#{sales.salesType.label}"/>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.total_amount}" class="text-end" style="width: 150px;">
+                                            <h:outputText value="#{sales.totalAmount}">
+                                                <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                            </h:outputText>
+                                        </p:column>
+
+                                        <p:column headerText="#{msg.action}">
+                                            <h:commandLink class="ptext-link" target="_blank" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}"/>
+                                            |
+                                            <h:commandLink class="ptext-link" value="View Sales" immediate="true" action="#{salesController.viewSales(sales)}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                    <p:blockUI block="salesTable" trigger=":salesForm:reload,:salesForm:reset, :salesForm:pos">
+                                        <img src="#{application.contextPath}/assets/img/loading.gif" height="75px"/>
+                                        <p><small>Please wait...</small></p>
+                                    </p:blockUI>
+                                </h:form>
+                            </h:panelGroup>
+
+                            <ui:remove>
+                                <p:menuitem icon="#{msg.cog_icon}" value="View as Invoice" immediate="true" action="#{salesController.viewAsInvoiceSale(sales)}" ajax="false"/>
+                                <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Cash Receipt" action="#{salesController.geneateCashReceipt(sales)}" ajax="false"/>
+                                <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Invoice" action="#{salesController.generateInvoice(sales)}" ajax="false"/>
+                                <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Pro Invoice" action="#{salesController.generateProInvoice(sales)}" ajax="false"/>
+                                <p:menuitem rendered="#{sales.isProformaInvoice == true}" target="_blank" icon="#{msg.print_icon}" value="Print Pro Invoice" action="#{salesController.generateProInvoice(sales)}" ajax="false"/>
+                                <p:menuitem rendered="#{sales.isProformaInvoice == true}" icon="#{msg.cog_icon}" value="Generate Invoice" action="#{salesController.convertProformaToInvoice(sales)}" ajax="false"/>
+                            </ui:remove>
+
+                            <h:panelGroup rendered="#{salesController.pageView.createView}">
+                                <div class="py-3">
+                                    <ui:include src="includes/invoice-sale-item.xhtml"/>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+                </h:panelGroup>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

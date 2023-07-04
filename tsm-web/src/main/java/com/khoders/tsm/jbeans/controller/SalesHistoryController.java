@@ -39,6 +39,7 @@ public class SalesHistoryController implements Serializable{
     
     private Customer selectedCustomer = null;
     private double totalAmount = 0.0;
+    private String receiptNo;
     
     public void loadCustomer(){
         customerList = inventoryService.getCustomerList();
@@ -53,6 +54,7 @@ public class SalesHistoryController implements Serializable{
     
     public void loadSaleItem(Sales sales){
         saleItemList = salesService.getSales(sales);
+        receiptNo = sales.getReceiptNumber();
     }
     
     public void fetchCreditPayment(Customer c){
@@ -97,6 +99,10 @@ public class SalesHistoryController implements Serializable{
 
     public double getTotalAmount() {
         return totalAmount;
+    }
+
+    public String getReceiptNo() {
+        return receiptNo;
     }
     
 }

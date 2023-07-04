@@ -183,6 +183,10 @@ public class StockUploadController implements Serializable
                 }
                 if(recieveOrder && purchaseOrder != null){
                     stockReceipt = new StockReceipt();
+                    if(location == null){
+                        Msg.error("Receipt location not set.");
+                        return;
+                    }
                     stockReceipt.setReceiptNo(SystemUtils.generateIN());
                     stockReceipt.setRefNo(purchaseOrder.getOrderCode());
                     stockReceipt.setBatchNo(SystemUtils.generateCode());

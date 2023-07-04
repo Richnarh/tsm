@@ -37,7 +37,7 @@
                                 <h:panelGroup rendered="#{salesHistoryController.salesList.size() > 0}">
                                     <h:form id="salesTable">
                                         <p:dataTable value="#{salesHistoryController.salesList}" var="sales" scrollable="true" scrollHeight="450">
-                                            <f:facet name="header">Transactions/Sales for customer - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
+                                            <f:facet name="header">Transactions for customer - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
                                             <p:column style="width: 15px;">
                                                 <p:rowToggler/>
                                             </p:column>
@@ -86,7 +86,7 @@
                                 <h:panelGroup rendered="#{salesHistoryController.saleItemList.size() > 0}">
                                     <h:form id="saleItemTable">
                                         <p:dataTable value="#{salesHistoryController.saleItemList}" var="saleItem">
-                                            <f:facet name="header">Sales Items purchased by - #{salesHistoryController.selectedCustomer.customerName}</f:facet>
+                                            <f:facet name="header">Transactions by - #{salesHistoryController.selectedCustomer.customerName} (#{salesHistoryController.receiptNo})</f:facet>
                                             <p:column headerText="#{msg.product}">
                                                 #{saleItem.inventory.stockReceiptItem}
                                             </p:column>

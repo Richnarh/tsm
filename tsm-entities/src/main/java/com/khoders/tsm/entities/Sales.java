@@ -9,6 +9,7 @@ import com.khoders.tsm.entities.system.UserAccountRecord;
 import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.enums.SaleSource;
 import com.khoders.tsm.enums.SalesType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,11 +42,7 @@ public class Sales extends UserAccountRecord {
     private String receiptNumber;
 
     @Column(name = "total_amount")
-    private Double totalAmount;
-
-    @Column(name = "payment_method")
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod = PaymentMethod.CASH;
+    private double totalAmount;
 
     @Column(name = "qty_purchased")
     private Double qtyPurchased;
@@ -71,7 +68,28 @@ public class Sales extends UserAccountRecord {
     @JoinColumn(name = "compound_sale")
     @ManyToOne
     private CompoundSale compoundSale;
+    
+    public static final String _saleSource = "saleSource";    
+    @Column(name = "source")
+    @Enumerated(EnumType.STRING)
+    private SaleSource saleSource;
 
+    public SaleSource getSaleSource() {
+        return saleSource;
+    }
+
+    public void setSaleSource(SaleSource saleSource) {
+        this.saleSource = saleSource;
+    }
+    
+    public Double getQtyPurchased() {
+        return qtyPurchased;
+    }
+
+    public void setQtyPurchased(Double qtyPurchased) {
+        this.qtyPurchased = qtyPurchased;
+    }
+    
     public LocalDateTime getPurchaseDate() {
         return purchaseDate;
     }
@@ -103,23 +121,7 @@ public class Sales extends UserAccountRecord {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public double getQtyPurchased() {
-        return qtyPurchased;
-    }
-
-    public void setQtyPurchased(double qtyPurchased) {
-        this.qtyPurchased = qtyPurchased;
-    }
-
+ 
     public SalesType getSalesType() {
         return salesType;
     }

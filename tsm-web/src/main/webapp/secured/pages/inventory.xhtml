@@ -50,10 +50,10 @@
                                         <p:inputText placeholder="Enter units" title="The quantity that makes the selected unit" value="#{inventoryController.inventory.unitsInPackage}"/>
 
                                         <span>Retail Price for (#{inventoryController.selectedUnit}) <span class="text-danger">*</span></span>
-                                        <p:inputText placeholder="Retail price" value="#{inventoryController.inventory.packagePrice}"/>
+                                        <p:inputText placeholder="Enter retail price" value="#{inventoryController.inventory.packagePrice}"/>
                                         
                                         <span>Whole Sale Price</span>
-                                        <p:inputText placeholder="Whole price" value="#{inventoryController.inventory.wprice}"/>
+                                        <p:inputText placeholder="Enter wholesale price" value="#{inventoryController.inventory.wprice}"/>
 
                                     </h:panelGrid>
                                     <br/>
@@ -125,7 +125,7 @@
                                 <p:column headerText="Retail Price" style="width: 100px;" class="text-end">
                                     <h:outputText value="#{inventory.packagePrice}"/>
                                 </p:column>
-                                <p:column headerText="W.P Price" style="width: 100px;" class="text-end">
+                                <p:column headerText="Wholesale Price" style="width: 100px;" class="text-end">
                                     <h:outputText value="#{inventory.wprice}"/>
                                 </p:column>
                                 <p:column headerText="Qty in Shop" style="width: 100px;" class="text-end">

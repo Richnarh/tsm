@@ -36,6 +36,7 @@
     <class>com.khoders.tsm.entities.system.EventLog</class>
     <class>com.khoders.tsm.entities.DeliveryInfo</class>
     <class>com.khoders.tsm.entities.ShippingInfo</class>
+    <class>com.khoders.tsm.entities.Payment</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>

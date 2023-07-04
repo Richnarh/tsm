@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
+
+    <div class="container">
+        <h:form id="invoiceItemForm" class="spaced-form">    
+            <div class="row">
+                <div class="mb-3">
+                    <h:panelGrid columns="2">
+                        <span class="mx-2">Sales Type</span>
+                        <p:selectOneMenu value="#{wholeSaleController.sales.salesType}">
+                            <f:selectItems value="#{commonClass.salesTypeList}"/>
+                            <p:ajax listener="#{wholeSaleController.selectSalesType()}" update="@form"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <h:panelGrid columns="3">
+                        <span>#{msg.customer} <span class="text-danger">*</span></span>                                
+                        <p:selectOneMenu value="#{wholeSaleController.sales.customer}" required="true" filter="true" filterMatchMode="contains">
+                            <f:selectItem itemLabel="#{msg.choose} Customer"/>
+                            <f:selectItems value="#{usercommonBeans.customerList}"/>
+                        </p:selectOneMenu>
+                        <p:commandLink class="shadow-sm p-2" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
+                    </h:panelGrid>
+                    <p:commandLink class="shadow-sm p-2" id="content" action="#{salesController.initPayment()}" value="Add Payment" oncomplete="PF('paymentForm').show()" resetValues="true" update="paymentModal">
+                        <p:tooltip style="max-width: 400px;" for="content">
+                            <div>
+                                NOTE: <br/> <span class="text-warning">Payments cannot be edited after successful transaction!</span>
+                                <br/>
+                            </div>
+                        </p:tooltip>
+                    </p:commandLink>
+                    <h:panelGroup rendered="#{wholeSaleController.selectedSalesType != 'INSTANT_SALES'}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:panelGrid columns="2">
+                                    <span>#{msg.payment_method}</span>                                
+                                    <p:selectOneMenu value="#{wholeSaleController.sales.paymentMethod}">
+                                        <f:selectItem itemLabel="#{msg.choose}"/>
+                                        <f:selectItems value="#{commonClass.paymentMethodList}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel rendered="#{wholeSaleController.selectedSalesType == 'CREDIT_SALES'}" value="#{msg.due_date}" class="p-2"/>
+                                    <p:datePicker rendered="#{wholeSaleController.selectedSalesType == 'CREDIT_SALES'}" class="mt-2" pattern="#{msg.formatted_date}" yearNavigator="true" monthNavigator="true" value="#{wholeSaleController.dueDate}"/>
+                                </h:panelGrid>
+                                <br/>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </div>
+                <hr/>
+                <div class="col-lg-4">      
+                    <ui:include src="wholesale-form.xhtml"/>
+                </div>
+                <div class="col-lg-8">
+                    <table class="table">
+                        <tr>
+                            <th>Product</th>
+                            <th>Package</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Sub Total</th>
+                            <th>#</th>
+                        </tr>
+                        <tbody>
+                            <ui:repeat value="#{wholeSaleController.saleItemList}" var="saleItem" >
+                                <tr>
+                                    <td>#{saleItem.inventory.stockReceiptItem}</td>
+                                    <td>#{saleItem.inventory.unitMeasurement}</td>
+                                    <td>
+                                        <h:outputText value="#{saleItem.quantity}">
+                                            <f:convertNumber pattern="#"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td>
+                                        <h:outputText value="#{saleItem.unitPrice}">
+                                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td>
+                                        <h:outputText value="#{saleItem.unitPrice * saleItem.quantity}">
+                                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td>
+                                        <p:commandButton class="kbtn-default" icon="#{msg.clear_icon}" action="#{wholeSaleController.removeCartItem(saleItem)}" immediate="true" process="@this" update="@form"/>
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+
+                    <h:panelGrid columns="2" class="float-end shadow-sm">
+                        <span>Total Amount</span>
+                        <h:inputText class="form-control" value="#{wholeSaleController.totalAmount}" disabled="true">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:inputText>
+                        <span class="fw-bold">Total Payable (GHS)</span>
+                        <h:outputText value="#{wholeSaleController.totalPayable}" class="field-shade py-2">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </h:panelGrid>
+
+                    <div class="pt-2">
+                        <p:commandButton icon="#{msg.check_icon}" value="Save All" action="#{wholeSaleController.saveAll()}" class="kbtn-success" immediate="true" ajax="false" update="@form, :invoiceItemForm, "/>
+                        <p:commandButton icon="#{msg.cog_icon}" value="Process" action="#{wholeSaleController.processSale()}" class="kbtn-default mx-3" immediate="true" update="@form, :invoiceItemForm, "/>
+                        <p:commandButton value="#{msg.clear} All" class="kbtn-default" icon="#{msg.clear_icon}" immediate="true" action="#{wholeSaleController.clearAll()}" update="@form"/>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <center>
+                <h:commandButton value="#{msg.close}" class="btn btn-danger float-end" immediate="true" action="#{wholeSaleController.closePage()}"/>
+            </center>
+        </h:form>
+
+        <p:dialog header="Add Customer" resizable="false" widgetVar="customerForm" closeOnEscape="true" modal="true" id="customerModal" height="319" width="450">
+            <ui:include src="customer-modal.xhtml"/>
+        </p:dialog>
+        <p:dialog header="Add Payment" resizable="false" widgetVar="paymentForm" closeOnEscape="true" modal="true" id="paymentModal" height="360" width="550">
+            <ui:include src="payment-modal.xhtml"/>
+        </p:dialog>
+    </div>
+</html>
+

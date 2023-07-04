@@ -18,7 +18,12 @@
         <p:inputText placeholder="Enter qty" style="width: 100%" value="#{salesController.saleItem.quantity}" required="true"/>
 
         <span>Unit Price <span class="text-danger">*</span> </span>
-        <input type="text" placeholder="Price" class="form-control" style="width: 100%" readonly="true" jsf:id="sellingPrice" jsf:value="#{salesController.saleItem.unitPrice}" required="true"/>
+        <h:panelGroup>
+            <h:panelGrid columns="2">
+                <input type="text" placeholder="Price" class="form-control" style="width: 100%" readonly="true" jsf:id="sellingPrice" jsf:value="#{salesController.saleItem.unitPrice}" required="true"/>
+                <p:commandLink action="#{salesController.addWp()}" class="shadow-sm p-2 fw-bold" value="Set W.P" update="sellingPrice" immediate="true"/>
+            </h:panelGrid>
+        </h:panelGroup>
         <span>Qty Rem</span>
         <h:inputText class="form-control" id="qtyRem" value="#{salesController.qtyRem}" disabled="true" style="width: 100%"/>
 

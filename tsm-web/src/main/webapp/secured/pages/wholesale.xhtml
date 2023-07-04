@@ -9,7 +9,7 @@
     <h:body>
         <ui:composition template="../templatesUI.xhtml">
             <ui:define name="pageTitle">
-                POS | Invoices
+                POS | Whole Sales
             </ui:define>
 
             <ui:define name="pageContent">
@@ -17,12 +17,12 @@
                     <div class="card mb-5">
                         <div class="container-fluid">
                             <div class="card-header"> T R A N S A C T I O N</div>
-                            <h:panelGroup rendered="#{salesController.pageView.listView}">
+                            <h:panelGroup rendered="#{wholeSaleController.pageView.listView}">
                                 <h:form class="m-2" id="salesForm">
                                     <ui:remove>
                                         <div class="float-end mx-2">
                                             <h:commandButton id="invoice" value="Make #{msg.new} Invoice" class="btn btn-outline-primary btn-sm"
-                                                             action="#{salesController.initInvoiceSales()}">
+                                                             action="#{wholeSaleController.initInvoiceSales()}">
                                                 <p:ajax update=":mainPanel"/>
                                             </h:commandButton>
                                         </div>
@@ -30,36 +30,36 @@
 
                                     <div class="float-end">
                                         <h:commandButton id="pos" value="Make #{msg.new} Sale" class="btn btn-primary btn-sm"
-                                                         action="#{salesController.initNewSale()}">
+                                                         action="#{wholeSaleController.initNewSale()}">
                                             <p:ajax update=":mainPanel"/>
                                         </h:commandButton>
                                     </div>
-                                    <span class="shadow-sm float-end col-1 faded-shade">Count: #{salesController.salesList.size()}</span>
+                                    <span class="shadow-sm float-end col-1 faded-shade">Count: #{wholeSaleController.salesList.size()}</span>
 
 
-                                    <p:commandButton id="searchBtn" class="kbtn-default" value="Search" icon="#{msg.seach_icon}" />
+                                    <p:commandButton id="searchBtn" class="kbtn-default" value="Search" icon="#{msg.seach_icon}"/>
                                     <p:overlayPanel for="searchBtn" hideEffect="fade" dynamic="true" style="width:600px; height: 100px; padding-top: 2.6rem" dismissable="false" showCloseIcon="true">
                                         <span class="mr-2">From Date: </span>
-                                        <p:datePicker value="#{salesController.dateRange.fromDate}"
+                                        <p:datePicker value="#{wholeSaleController.dateRange.fromDate}"
                                                       pattern="#{msg.formatted_date}" 
                                                       monthNavigator="true" yearNavigator="true"/>
 
                                         <span class="mr-2">To Date: </span>
-                                        <p:datePicker value="#{salesController.dateRange.toDate}"
+                                        <p:datePicker value="#{wholeSaleController.dateRange.toDate}"
                                                       pattern="#{msg.formatted_date}" 
                                                       monthNavigator="true" yearNavigator="true"/>
 
-                                        <h:commandButton id="reload" class="mx-2 btn btn-outline-primary btn-sm" value="Search Sales" action="#{salesController.filterSales()}">
+                                        <h:commandButton id="reload" class="mx-2 btn btn-outline-primary btn-sm" value="Search Sales" action="#{wholeSaleController.filterSales()}">
                                             <p:ajax update=":mainPanel"/>
                                         </h:commandButton>
 
-                                        <h:commandButton id="reset" class="btn btn-secondary btn-sm" value="#{msg.reset}" action="#{salesController.reset()}">
+                                        <h:commandButton id="reset" class="btn btn-secondary btn-sm" value="#{msg.reset}" action="#{wholeSaleController.reset()}">
                                             <p:ajax update=":salesTable, @form"/>
                                         </h:commandButton>
                                     </p:overlayPanel>
                                 </h:form>
                                 <h:form id="salesTable" class="mb-3">
-                                    <p:dataTable value="#{salesController.salesList}" reflow="true" var="sales" scrollable="true" scrollHeight="400">
+                                    <p:dataTable value="#{wholeSaleController.salesList}" reflow="true" var="sales" scrollable="true" scrollHeight="400">
                                         <f:facet name="header">Transactions/Sales for Today</f:facet>
                                         <p:column style="width: 15px;">
                                             <p:rowToggler/>
@@ -94,15 +94,19 @@
                                         </p:column>
 
                                         <p:column headerText="#{msg.total_amount}" class="text-end" style="width: 150px;">
-                                            <h:outputText value="#{sales.totalAmount}">
+                                            <h:outputText value="#{sales != null and sales.totalAmount != null ? sales.totalAmount : '-'}">
                                                 <f:convertNumber pattern="#{msg.money_pattern}"/>
                                             </h:outputText>
                                         </p:column>
 
-                                        <p:column headerText="#{msg.action}">
-                                            <h:commandLink class="ptext-link" target="_blank" value="Print Receipt" action="#{salesController.generatePOSReceipt(sales)}"/>
-                                            |
-                                            <h:commandLink class="ptext-link" value="View Sales" immediate="true" action="#{salesController.viewSales(sales)}"/>
+                                        <p:column style="width: 90px">
+                                            <p:menuButton value="#{msg.manage}">
+                                                <p:menuitem icon="#{msg.eye_icon}" value="View Sales" immediate="true" action="#{wholeSaleController.viewSales(sales)}" ajax="false"/>
+                                                <p:menuitem target="_blank" icon="#{msg.pdf_icon}" value="Print Receipt" action="#{wholeSaleController.generatePOSReceipt(sales)}" ajax="false"/>
+                                                <p:menuitem rendered="#{sales.salesType == 'INVOICE_SALES'}" target="_blank" icon="#{msg.pdf_icon}" value="Print Invoice" action="#{wholeSaleController.generateInvoice(sales)}" ajax="false"/>
+                                                <p:menuitem rendered="#{sales.salesType == 'PROFORMA_INVOICE_SALES'}" target="_blank" icon="#{msg.pdf_icon}" value="Proforma Invoice" action="#{wholeSaleController.generateProInvoice(sales)}" ajax="false"/>
+                                                <p:menuitem rendered="#{sales.salesType == 'PROFORMA_INVOICE_SALES'}" icon="#{msg.cog_icon}" value="Generate Invoice" action="#{wholeSaleController.convertProformaToInvoice(sales)}" ajax="false"/>
+                                            </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
                                     <p:blockUI block="salesTable" trigger=":salesForm:reload,:salesForm:reset, :salesForm:pos">
@@ -111,19 +115,9 @@
                                     </p:blockUI>
                                 </h:form>
                             </h:panelGroup>
-
-                            <ui:remove>
-                                <p:menuitem icon="#{msg.cog_icon}" value="View as Invoice" immediate="true" action="#{salesController.viewAsInvoiceSale(sales)}" ajax="false"/>
-                                <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Cash Receipt" action="#{salesController.geneateCashReceipt(sales)}" ajax="false"/>
-                                <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Invoice" action="#{salesController.generateInvoice(sales)}" ajax="false"/>
-                                <p:menuitem rendered="#{salesController.invoiceType == sales.invoiceType}" target="_blank" icon="#{msg.print_icon}" value="Print Pro Invoice" action="#{salesController.generateProInvoice(sales)}" ajax="false"/>
-                                <p:menuitem rendered="#{sales.isProformaInvoice == true}" target="_blank" icon="#{msg.print_icon}" value="Print Pro Invoice" action="#{salesController.generateProInvoice(sales)}" ajax="false"/>
-                                <p:menuitem rendered="#{sales.isProformaInvoice == true}" icon="#{msg.cog_icon}" value="Generate Invoice" action="#{salesController.convertProformaToInvoice(sales)}" ajax="false"/>
-                            </ui:remove>
-
-                            <h:panelGroup rendered="#{salesController.pageView.createView}">
+                            <h:panelGroup rendered="#{wholeSaleController.pageView.createView}">
                                 <div class="py-3">
-                                    <ui:include src="includes/invoice-sale-item.xhtml"/>
+                                    <ui:include src="includes/wholesale-item.xhtml"/>
                                 </div>
                             </h:panelGroup>
                         </div>
