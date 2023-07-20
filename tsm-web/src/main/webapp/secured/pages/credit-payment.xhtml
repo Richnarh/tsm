@@ -172,7 +172,7 @@
                                         <div class="py-2">
                                             <p:commandButton icon="#{msg.check_icon}" action="#{creditPaymentController.initialiseDbbf()}" update="@form" class="kbtn-default shadow-sm" value="Initialise DBBF"/>
                                         </div>
-                                        <p:dataTable value="#{creditPaymentController.compoundSalesList}" var="sales">
+                                        <p:dataTable value="#{creditPaymentController.compoundSaleList}" var="sales">
                                             <p:column headerText="#{msg.date}">
                                                 <h:outputText value="#{sales.createdDate}">
                                                     <f:convertDateTime pattern="#{msg.formated_date_words_short}" type="localDate"/>
@@ -181,7 +181,9 @@
                                             <p:column headerText="#{msg.receipt_no}">
                                                 #{sales.receiptNumber}
                                             </p:column>
-
+                                            <p:column headerText="Compounded">
+                                                <h:outputText value="#{sales.compound ? 'YES' : 'NO'}"/>
+                                            </p:column>
                                             <p:column headerText="#{msg.total_amount}" class="text-end">
                                                 <h:outputText value="#{sales.totalAmount}">
                                                     <f:convertNumber pattern="#{msg.money_pattern}"/>

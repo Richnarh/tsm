@@ -112,8 +112,8 @@ public class InventoryService {
 
     public List<Customer> getCustomerList() {
         try {
-            return crudApi.getEm().createQuery("SELECT e FROM Customer e WHERE e.companyBranch = :companyBranch ORDER BY e.customerName ASC", Customer.class)
-                    .setParameter(Customer._companyBranch, appSession.getCompanyBranch())
+            return crudApi.getEm().createQuery("SELECT e FROM Customer e ORDER BY e.customerName ASC", Customer.class)
+//                    .setParameter(Customer._companyBranch, appSession.getCompanyBranch())
                     .getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,16 +190,11 @@ public class InventoryService {
     }
     
     public List<Sales> getCreditSales() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.salesType = :salesType AND e.paymentStatus <> :paymentStatus  AND e.compound = :compound", Sales.class)
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.salesType = :salesType AND e.paymentStatus <> :paymentStatus  AND e.compound = :compound", Sales.class)
                     .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
                     .setParameter(Sales._paymentStatus, PaymentStatus.FULLY_PAID)
                     .setParameter(Sales._compound, false)
                     .getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
     }
 
     public List<Sales> getTotalSumPerDateRange(DateRangeUtil dateRange) {

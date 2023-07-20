@@ -6,19 +6,7 @@
       xmlns:p="http://primefaces.org/ui">  
 
     <h:panelGroup rendered="#{dbbfController.creditPaymentList.size() > 0}">
-        <div class="row">
-            <div class="col-12 col-sm-12 col-lg-12 py-2">
-                <h:form id="initForm" style="margin-bottom: 5px;">
-                    <div class="float-end">
-                        <span class="p-1 fw-bold shadow-sm text-white" style="background: #07a">
-                            GHS: <h:outputText value="#{dbbfController.totalAmount}">
-                                <f:convertNumber pattern="#{msg.money_pattern}"/>
-                            </h:outputText>
-                        </span>
-                    </div>
-                </h:form>
-            </div>
-        </div>
+        
         <h:form id="creditTable">
             <p:dataTable value="#{dbbfController.creditPaymentList}" var="creditPayment">
                 <p:column style="width: 30px;">

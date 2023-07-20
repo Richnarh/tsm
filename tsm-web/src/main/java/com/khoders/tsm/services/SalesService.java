@@ -23,6 +23,7 @@ import com.khoders.tsm.entities.ShippingInfo;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.enums.SaleSource;
+import com.khoders.tsm.enums.SalesType;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -150,6 +151,11 @@ public class SalesService
                     .getResultStream().findFirst().orElse(null);
     }
 
+    public List<CreditPayment> getCreditSales(CompoundSale compoundSale) {
+        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.compoundSale = :compoundSale ORDER BY e.paymentDate DESC", CreditPayment.class)
+                    .setParameter(CreditPayment._compoundSale, compoundSale)
+                    .getResultList();
+    }
     public List<CreditPayment> getCreditSales(Sales sales) {
         return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = :sales ORDER BY e.paymentDate DESC", CreditPayment.class)
                     .setParameter(CreditPayment._sales, sales)
@@ -157,17 +163,17 @@ public class SalesService
     }
 
     public List<Sales> getCompoundSales(Customer customer) {
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.compound = :compound AND e.customer = :customer AND e.paymentStatus <> :paymentStatus", Sales.class)
-                    .setParameter(Sales._compound, true)
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.salesType = :salesType AND e.compound = :compound", Sales.class)
                     .setParameter(Sales._customer, customer)
-                    .setParameter(Sales._paymentStatus, PaymentStatus.FULLY_PAID)
+                    .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
+                    .setParameter(Sales._compound, false)
                     .getResultList();
     }
     
     public CompoundSale getCompoundSale(Customer customer) {
         return crudApi.getEm().createQuery("SELECT e FROM CompoundSale e WHERE e.customer = :customer AND e.paymentStatus <> :paymentStatus", CompoundSale.class)
                     .setParameter(CompoundSale._customer, customer)
-                    .setParameter(CompoundSale._paymentStatus, PaymentStatus.PARTIALLY_PAID)
+                    .setParameter(CompoundSale._paymentStatus, PaymentStatus.FULLY_PAID)
                     .getResultStream().findFirst().orElse(null);
     }
 
@@ -176,27 +182,15 @@ public class SalesService
                     .getResultList();
     }
     
-    public Sales checkCustomerCredit(Customer customer) {
-        Sales sales = crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.paymentStatus = :paymentStatus", Sales.class)
+    public Sales getCreditSales(Customer customer) {
+        Sales sales = crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.salesType = :salesType AND e.compound = :compound", Sales.class)
                     .setParameter(Sales._customer, customer)
-                    .setParameter(Sales._paymentStatus, PaymentStatus.PENDING)
+                    .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
+                    .setParameter(Sales._compound, false)
                     .getResultStream().findFirst().orElse(null);
-        
-        if(sales == null){
-            crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.paymentStatus = :paymentStatus", Sales.class)
-                    .setParameter(Sales._customer, customer)
-                    .setParameter(Sales._paymentStatus, PaymentStatus.PARTIALLY_PAID)
-                    .getResultStream().findFirst().orElse(null);
-        }
         return sales;
     }
-
-    public List<Sales> getDbbfSales(CompoundSale cs) {
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.compoundSale = :compoundSale", Sales.class)
-                    .setParameter(Sales._compoundSale, cs)
-                    .getResultList();
-    }
-
+    
     public List<Sales> getCustomerSales(Customer selectedCustomer) {
         return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND  e.companyBranch = :companyBranch", Sales.class)
                     .setParameter(Sales._customer, selectedCustomer)

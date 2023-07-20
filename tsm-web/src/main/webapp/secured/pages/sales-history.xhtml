@@ -46,6 +46,10 @@
                                                 <h:panelGrid columns="2">
                                                     <span>Id</span>
                                                     <h:outputText value="#{sales.id}"/>
+                                                    
+                                                    <span>Compounded</span>
+                                                    <h:outputText value="#{sales.compound ? 'YES' : 'NO'}"/>
+                                                    
                                                     <span>#{msg.created_date}</span>
                                                     <h:outputText value="#{sales.createdDate}">
                                                         <f:convertDateTime type="localDateTime" pattern="#{msg.formated_date_time_words_short}"/>

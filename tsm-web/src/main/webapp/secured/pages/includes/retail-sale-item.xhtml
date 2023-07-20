@@ -21,7 +21,7 @@
                         <span>#{msg.customer} <span class="text-danger">*</span></span>                                
                         <p:selectOneMenu value="#{salesController.sales.customer}" required="true" filter="true" filterMatchMode="contains">
                             <f:selectItem itemLabel="#{msg.choose} Customer"/>
-                            <f:selectItems value="#{usercommonBeans.customerList}"/>
+                            <f:selectItems value="#{salesController.customerList}"/>
                         </p:selectOneMenu>
                         <p:commandLink class="shadow-sm p-2" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
                     </h:panelGrid>
@@ -100,7 +100,7 @@
 
                     <div class="pt-2">
                         <p:commandButton icon="#{msg.check_icon}" value="Save All" action="#{salesController.saveAll()}" class="kbtn-success" immediate="true" ajax="false" update="@form, :invoiceItemForm, "/>
-                        <p:commandButton icon="#{msg.cog_icon}" value="Process" action="#{salesController.processSale()}" class="kbtn-default mx-3" immediate="true" update="@form, :invoiceItemForm, "/>
+                        <p:commandButton icon="#{msg.cog_icon}" value="Process" action="#{salesController.processSale()}" class="kbtn-default mx-3" immediate="true" update="@form, :invoiceItemForm"/>
                         <p:commandButton value="#{msg.clear} All" class="kbtn-default" icon="#{msg.clear_icon}" immediate="true" action="#{salesController.clearAll()}" update="@form"/>
                     </div>
                 </div>

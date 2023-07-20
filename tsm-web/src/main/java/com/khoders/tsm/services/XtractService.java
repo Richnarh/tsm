@@ -8,6 +8,7 @@ import com.khoders.tsm.jbeans.dto.SalesReceipt;
 import com.khoders.tsm.jbeans.dto.SalesTaxDto;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
+import com.khoders.tsm.entities.CompoundSale;
 import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.DeliveryInfo;
 import com.khoders.tsm.entities.Product;
@@ -161,7 +162,7 @@ public class XtractService
 //        return viewStockList;
 //    }
 
-    public CashReceipt extractCashReceipt(CreditPayment creditPayment) {
+    public CashReceipt extractCashReceipt(CreditPayment creditPayment, CompoundSale compoundSale) {
         CashReceipt cashReceipt = new CashReceipt();
         if (appSession.getCurrentUser().getCompanyBranch() != null)
         {
@@ -171,10 +172,10 @@ public class XtractService
         {
             cashReceipt.setWebsite(appSession.getCurrentUser().getCompanyBranch().getCompanyProfile().getWebsite());
         }
-        cashReceipt.setReceiptNumber(creditPayment.getSales().getReceiptNumber());
+        cashReceipt.setRefNo(creditPayment.getRefNo());
         cashReceipt.setAmountPaid(creditPayment.getAmountPaid());
         cashReceipt.setAmountRem(creditPayment.getCreditRemaining());
-        cashReceipt.setInvoiceAmnt(creditPayment.getSales().getTotalAmount());
+        cashReceipt.setInvoiceAmnt(creditPayment.getTotalCredit());
         cashReceipt.setDate(LocalDateTime.now());
         try
         {

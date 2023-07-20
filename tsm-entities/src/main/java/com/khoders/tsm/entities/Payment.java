@@ -30,7 +30,7 @@ public class Payment extends UserAccountRecord{
     
     public static final String _amountPaid = "amountPaid";  
     @Column(name = "amount_paid")
-    private double amountPaid;
+    private Double amountPaid;
     
     public static final String _sales = "sales"; 
     @JoinColumn(name = "sales", referencedColumnName = "id")
@@ -45,14 +45,14 @@ public class Payment extends UserAccountRecord{
         this.paymentMethod = paymentMethod;
     }
 
-    public double getAmountPaid() {
+    public Double getAmountPaid() {
         return amountPaid;
     }
 
-    public void setAmountPaid(double amountPaid) {
+    public void setAmountPaid(Double amountPaid) {
         this.amountPaid = amountPaid;
     }
-
+    
     public Sales getSales() {
         return sales;
     }

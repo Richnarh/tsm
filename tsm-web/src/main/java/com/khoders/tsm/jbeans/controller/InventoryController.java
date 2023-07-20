@@ -73,7 +73,7 @@ public class InventoryController implements Serializable
        try
        {
            if(optionText.equals("Save Changes")){
-              Inventory newPackage = stockService.existProdctPackage(selectedStockReceiptItem, inventory.getUnitMeasurement().getUnits());
+              Inventory newPackage = stockService.getProduct(selectedStockReceiptItem, inventory.getUnitMeasurement());
               if (newPackage != null){
                   Msg.error("product and the package already exist");
                   return;

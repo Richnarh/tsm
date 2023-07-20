@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 public class CashReceipt
 {
-    private String receiptNumber;
+    private String refNo;
     private LocalDateTime date;
     private String branchName;
     private String website;
@@ -24,16 +24,14 @@ public class CashReceipt
     private double totalTax;
     private double amountRem;
 
-    public String getReceiptNumber()
-    {
-        return receiptNumber;
+    public String getRefNo() {
+        return refNo;
     }
 
-    public void setReceiptNumber(String receiptNumber)
-    {
-        this.receiptNumber = receiptNumber;
+    public void setRefNo(String refNo) {
+        this.refNo = refNo;
     }
-
+    
     public LocalDateTime getDate()
     {
         return date;
@@ -43,7 +41,6 @@ public class CashReceipt
     {
         this.date = date;
     }
-
 
     public String getBranchName()
     {

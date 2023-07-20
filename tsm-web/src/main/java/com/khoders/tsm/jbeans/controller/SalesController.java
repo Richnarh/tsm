@@ -26,6 +26,7 @@ import com.khoders.tsm.enums.EventModule;
 import com.khoders.tsm.enums.SaleSource;
 import com.khoders.tsm.enums.SalesType;
 import com.khoders.tsm.jbeans.dto.SalesTaxDto;
+import com.khoders.tsm.services.InventoryService;
 import com.khoders.tsm.services.StockService;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -49,6 +50,7 @@ public class SalesController implements Serializable
     @Inject private AppSession appSession; 
     @Inject private SalesService salesService;
     @Inject private StockService stockService;
+    @Inject private InventoryService inventoryService;
     @Inject private XtractService xtractService;
     @Inject private ReportManager reportManager;
         
@@ -60,6 +62,7 @@ public class SalesController implements Serializable
     private Payment payment = new Payment();
     private List<Payment> paymentList = new LinkedList<>();
     private List<Payment> paymentItems = new LinkedList<>();
+    private List<Customer> customerList = new LinkedList<>();
     
     private List<Tax> taxList = new LinkedList<>();
     private List<SalesTax> salesTaxList = new LinkedList<>();
@@ -84,6 +87,7 @@ public class SalesController implements Serializable
         clearAll();
         salesList = salesService.getSales(SaleSource.RETAIL); 
         taxList = salesService.getTaxList();
+        customerList = inventoryService.getCustomerList();
     }
     
     public void initPayment(){
@@ -100,6 +104,7 @@ public class SalesController implements Serializable
         enableTax = appSession.getCompanyBranch().isEnableTax();
         System.out.println("enableTax: " + enableTax);
         clearAll();
+        totalPayable = 0.0;
         paymentItems = salesService.payments(sales);
         appSession.logEvent("Click New Sale", EventModule.SALES, "New Sale");
         pageView.restToCreateView();
@@ -165,6 +170,12 @@ public class SalesController implements Serializable
     
     public void selectSalesType(){
         this.selectedSalesType = sales.getSalesType();
+        if(selectedSalesType != SalesType.INSTANT_SALES){
+            customerList.remove(salesService.walkinCustomer());
+            customerList.remove(salesService.backLogSupplier());
+        }else{
+            customerList = inventoryService.getCustomerList();
+        }
     }
         
     public void reset(){
@@ -203,7 +214,7 @@ public class SalesController implements Serializable
                 saleItem.setId(crudApi.genId());
                 saleItemList.add(saleItem);                
                 saleItemList = CollectionList.washList(saleItemList, saleItem);
-                
+                totalAmount += salesAmount;
                 Msg.info("One item added to cart");
             }
             clear();
@@ -283,6 +294,16 @@ public class SalesController implements Serializable
             return;
         }
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
+        double amtPaid = paymentList.stream().mapToDouble(Payment::getAmountPaid).sum();
+        if(amtPaid < totalAmount){
+            Msg.error("Total amount paid is less than total amount");
+            return;
+        }
+        Sales catalogue = crudApi.find(Sales.class, sales.getId());
+        if(catalogue != null){
+            Msg.error("Please this transaction cannot be altered!");
+            return;
+        }
         double qtyBought = saleItemList.stream().mapToDouble(SaleItem::getQuantity).sum();
         try 
         {
@@ -301,7 +322,7 @@ public class SalesController implements Serializable
                             return;
                         }
                         System.out.println("CREDIT_SALES selling....");
-                        Sales creditSale = salesService.checkCustomerCredit(sales.getCustomer());
+                        Sales creditSale = salesService.getCreditSales(sales.getCustomer());
                         if (creditSale != null) {
                             creditSale.setCompound(true);
                             crudApi.save(creditSale);
@@ -345,13 +366,7 @@ public class SalesController implements Serializable
                 sales.setLastModifiedDate(LocalDateTime.now());
                 sales.setQtyPurchased(qtyBought);
                 sales.setSaleSource(SaleSource.RETAIL);
-                Sales catalogue = crudApi.find(Sales.class, sales.getId());
-                
-                if(catalogue != null){
-                    Msg.error("Please this transaction cannot be altered!");
-                    return;
-                }
-                
+                               
                 if (crudApi.save(sales) != null){
                     for (SaleItem item : saleItemList){
                         item.genCode();
@@ -363,7 +378,7 @@ public class SalesController implements Serializable
                         crudApi.save(item);
                         
                         if(sales.getSalesType() == SalesType.INSTANT_SALES){
-                            Inventory inventory = stockService.existProdctPackage(item.getInventory().getStockReceiptItem(), item.getInventory().getUnitMeasurement().getUnits());
+                            Inventory inventory = stockService.getProduct(item.getInventory().getStockReceiptItem(), item.getInventory().getUnitMeasurement());
                             double qtyInShop = inventory.getQtyInShop();
                             double newQty = qtyInShop - item.getQuantity();
                             inventory.setQtyInShop(newQty);
@@ -519,6 +534,7 @@ public class SalesController implements Serializable
     public void clear()
     {
         saleItem = new SaleItem();
+        totalAmount = 0.0;
         saleItem.genCode();
         SystemUtils.resetJsfUI();
     }
@@ -529,6 +545,7 @@ public class SalesController implements Serializable
         saleItem = new SaleItem();
         payment = new Payment();
         saleItemList = new LinkedList<>();
+        paymentList = new LinkedList<>();
         paymentItems = new LinkedList<>();
         saleItem.genCode();
         totalAmount = 0.0;
@@ -708,6 +725,10 @@ public class SalesController implements Serializable
 
     public boolean isProcessSale() {
         return processSale;
+    }
+
+    public List<Customer> getCustomerList() {
+        return customerList;
     }
     
 }

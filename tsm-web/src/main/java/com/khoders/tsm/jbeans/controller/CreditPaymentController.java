@@ -10,7 +10,6 @@ import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.reports.ReportManager;
-import com.khoders.resource.utilities.BeansUtil;
 import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.FormView;
 import com.khoders.resource.utilities.Msg;
@@ -48,8 +47,9 @@ public class CreditPaymentController implements Serializable{
     
     private CreditPayment creditPayment = new CreditPayment();
     private List<CreditPayment> creditPaymentList = new LinkedList<>();
-    private List<Sales> compoundSalesList = new LinkedList<>();
+    private List<Sales> compoundSaleList = new LinkedList<>();
     private Customer selectedCustomer = null;
+    private CompoundSale compoundSale;
    
     private FormView pageView = FormView.listForm();
     private Sales selectedSale = null;
@@ -63,53 +63,50 @@ public class CreditPaymentController implements Serializable{
     
     public void initialiseDbbf(){
         if(selectedSale != null)
-            compoundSalesList = salesService.getCompoundSales(selectedSale.getCustomer());
+            compoundSaleList = salesService.getCompoundSales(selectedSale.getCustomer());
         
-        if(compoundSalesList.isEmpty())
+        if(compoundSaleList.isEmpty())
             Msg.error("There are no records for Dept Balance Brought Forward");
     }
     
     public void saveDbbf(){
-        if(compoundSalesList.isEmpty()){
+        if(compoundSaleList.isEmpty()){
             Msg.error("There are no previous pending/partially paid credit sales for ("+selectedSale.getCustomer()+")");
             return;
         }
         StringBuilder sb = new StringBuilder();
-        CompoundSale cs = new CompoundSale();
-        double csAmount = selectedSale.getTotalAmount();
         
-        for (Sales sales : compoundSalesList) {
-            if(sales.getCompoundSale() != null){
-                continue;
-            }
+        double csAmount = 0.0;
+        
+        for (Sales sales : compoundSaleList){
             String receiptCode = Stringz.removeCharBefore(sales.getReceiptNumber(), "/");
+            System.out.println("receiptCode: "+receiptCode);
             sb.append(receiptCode).append("/");
             csAmount += sales.getTotalAmount();
         }
-        String receiptCode = Stringz.removeCharBefore(selectedSale.getReceiptNumber(), "/");
-        sb.append(receiptCode);
-        System.out.println("receiptCode__....... "+receiptCode);
         CompoundSale cSale = salesService.getCompoundSale(selectedSale.getCustomer());
         if(cSale != null){
             StringBuilder builder = new StringBuilder();
             builder.append(cSale.getRefNo());
-            builder.insert(cSale.getRefNo().length(), "/"+receiptCode);
+            sb.deleteCharAt(sb.length() - 1);
+            builder.insert(cSale.getRefNo().length(), "/"+sb.toString());
             csAmount += cSale.getCompoundAmount();
             cSale.setCompoundAmount(csAmount);
             System.out.println("Ref No. (cSale) : "+builder.toString());
             cSale.setRefNo(builder.toString());
             if (crudApi.save(cSale) != null) {
-                selectedSale.setCompound(true);
-                selectedSale.setCompoundSale(cSale);
-                crudApi.save(selectedSale);
+                compoundSaleList.forEach(sale ->{
+                    sale.setCompound(true);
+                    crudApi.save(sale);
+                });
             }
-             Msg.info("DBBF Created Successfully!");
-             return;
+            Msg.info("DBBF Created Successfully!");
+            compoundSale = cSale;
+            return;
         }
-        
-        String[] str = Stringz.splitStr(SystemUtils.generateRefNo(), "/");
-        sb.insert(0, str[0]+"/");
-        System.out.println("Ref No: "+sb.toString());
+        CompoundSale cs = new CompoundSale();
+        sb.deleteCharAt(sb.length() - 1);
+        System.out.println("Ref: "+sb.toString());
         cs.setRefNo(sb.toString());
         cs.setCompoundAmount(csAmount);
         cs.setCustomer(selectedSale.getCustomer());
@@ -118,13 +115,11 @@ public class CreditPaymentController implements Serializable{
         cs.setCompanyBranch(appSession.getCompanyBranch());
         
         if(crudApi.save(cs) != null){
-            for (Sales sales : compoundSalesList) {
-                sales.setCompoundSale(cs);
-                crudApi.save(sales);
-            }
-            selectedSale.setCompound(true);
-            selectedSale.setCompoundSale(cs);
-            crudApi.save(selectedSale);
+            compoundSaleList.forEach(sale -> {
+                sale.setCompound(true);
+                crudApi.save(sale);
+            });
+            compoundSale = cs;
         }
         Msg.info("DBBF Created Successfully!");
     }
@@ -154,8 +149,7 @@ public class CreditPaymentController implements Serializable{
            paymentStatus = null;
    }
 
-   public void saveCreditPayment()
-    {
+   public void saveCreditPayment(){
         try {
             if (creditPayment.getAmountPaid() == 0.0) {
                 Msg.error("Please enter amount paid");
@@ -176,6 +170,7 @@ public class CreditPaymentController implements Serializable{
     }
    
     void initSales(){
+        creditPayment.setCompoundSale(compoundSale);
         creditPayment.setSales(selectedSale);
         creditPayment.genCode();
         creditPayment.setValueDate(selectedSale.getValueDate());
@@ -188,7 +183,7 @@ public class CreditPaymentController implements Serializable{
         creditPayment.setCompanyBranch(appSession.getCompanyBranch());
         creditPayment.setLastModifiedBy(appSession.getCurrentUser().getFullname());
         
-        List<CreditPayment> cpList = salesService.getCreditSales(selectedSale);
+        List<CreditPayment> cpList = salesService.getCreditSales(compoundSale);
         double totalAmountPaid = cpList.stream().mapToDouble(CreditPayment::getAmountPaid).sum();
         System.out.println("cpList: "+cpList.size());
         System.out.println("totalAmountPaid: "+totalAmountPaid);
@@ -218,7 +213,7 @@ public class CreditPaymentController implements Serializable{
         {
             List<CashReceipt> cashReceiptList = new LinkedList<>();
 
-            CashReceipt cashReceipt = xtractService.extractCashReceipt(creditPayment);
+            CashReceipt cashReceipt = xtractService.extractCashReceipt(creditPayment,compoundSale);
 
             cashReceiptList.add(cashReceipt);
             ReportManager.reportParams.put("logo", ReportFiles.LOGO);
@@ -258,8 +253,7 @@ public class CreditPaymentController implements Serializable{
     
     public void closePage()
     {
-       creditPayment = new CreditPayment();
-       compoundSalesList = new LinkedList<>();
+       clearCreditPayment();
        selectedSale = null;
        totalAmount = 0.0;
        optionText = "Save Changes";
@@ -268,6 +262,7 @@ public class CreditPaymentController implements Serializable{
         
     public void clearCreditPayment() {
         creditPayment = new CreditPayment();
+        compoundSaleList = new LinkedList<>();
         creditPayment.setUserAccount(appSession.getCurrentUser());
         creditPayment.setCompanyBranch(appSession.getCompanyBranch());
         optionText = "Save Changes";
@@ -331,8 +326,8 @@ public class CreditPaymentController implements Serializable{
         return totalAmount;
     }
 
-    public List<Sales> getCompoundSalesList() {
-        return compoundSalesList;
+    public List<Sales> getCompoundSaleList() {
+        return compoundSaleList;
     }
     
 }

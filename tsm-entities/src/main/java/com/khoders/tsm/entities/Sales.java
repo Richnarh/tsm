@@ -6,7 +6,6 @@
 package com.khoders.tsm.entities;
 
 import com.khoders.tsm.entities.system.UserAccountRecord;
-import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.enums.SaleSource;
@@ -64,10 +63,10 @@ public class Sales extends UserAccountRecord {
     @Column(name = "compound")
     private boolean compound;
     
-    public static final String _compoundSale = "compoundSale";    
-    @JoinColumn(name = "compound_sale")
-    @ManyToOne
-    private CompoundSale compoundSale;
+//    public static final String _compoundSale = "compoundSale";    
+//    @JoinColumn(name = "compound_sale")
+//    @ManyToOne
+//    private CompoundSale compoundSale;
     
     public static final String _saleSource = "saleSource";    
     @Column(name = "source")
@@ -138,13 +137,13 @@ public class Sales extends UserAccountRecord {
         this.dueDate = dueDate;
     }
 
-    public CompoundSale getCompoundSale() {
-        return compoundSale;
-    }
-
-    public void setCompoundSale(CompoundSale compoundSale) {
-        this.compoundSale = compoundSale;
-    }
+//    public CompoundSale getCompoundSale() {
+//        return compoundSale;
+//    }
+//
+//    public void setCompoundSale(CompoundSale compoundSale) {
+//        this.compoundSale = compoundSale;
+//    }
 
     public boolean isCompound() {
         return compound;

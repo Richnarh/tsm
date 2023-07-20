@@ -35,7 +35,7 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="receiptNumber" class="java.lang.String"/>
+	<field name="refNo" class="java.lang.String"/>
 	<field name="date" class="java.time.LocalDateTime"/>
 	<field name="branchName" class="java.lang.String"/>
 	<field name="website" class="java.lang.String"/>
@@ -58,7 +58,7 @@
 	<detail>
 		<band height="151" splitType="Stretch">
 			<staticText>
-				<reportElement style="title" x="0" y="133" width="80" height="15" uuid="c2d55aed-cc42-481f-8ee7-1ced9e2582ab">
+				<reportElement style="title" x="0" y="133" width="90" height="15" uuid="c2d55aed-cc42-481f-8ee7-1ced9e2582ab">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
 					<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
@@ -110,7 +110,7 @@
 				<textElement textAlignment="Right">
 					<font fontName="Calibri"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{receiptNumber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{refNo}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement style="field-label" x="0" y="6" width="60" height="15" uuid="05963211-5cb4-40d6-b038-7e50838e698d"/>
@@ -118,7 +118,7 @@
 					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
-				<text><![CDATA[Receipt No.]]></text>
+				<text><![CDATA[Ref. No.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement style="field-label" x="0" y="54" width="90" height="15" uuid="ffb02228-80f5-4880-ba5f-bdd96a2e36a4">
@@ -135,7 +135,7 @@
 				<text><![CDATA[Description]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="field-label" x="0" y="75" width="80" height="15" uuid="32f5bbb9-362c-4c53-bfff-8a6af1f7247d">
+				<reportElement style="field-label" x="0" y="75" width="90" height="15" uuid="32f5bbb9-362c-4c53-bfff-8a6af1f7247d">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
@@ -143,7 +143,7 @@
 					<font fontName="Calibri"/>
 					<paragraph firstLineIndent="2" rightIndent="0"/>
 				</textElement>
-				<text><![CDATA[Total Amount]]></text>
+				<text><![CDATA[Credit Amount]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement style="field-value" x="70" y="23" width="116" height="15" uuid="feb55991-95fe-4125-b000-ce4da33530fb"/>
@@ -239,7 +239,7 @@
 				<textFieldExpression><![CDATA[$F{amountPaid}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="field-label" x="0" y="94" width="80" height="15" uuid="cb73c825-b6d4-4138-aa85-611f30781022">
+				<reportElement style="field-label" x="0" y="94" width="90" height="15" uuid="cb73c825-b6d4-4138-aa85-611f30781022">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
@@ -250,7 +250,7 @@
 				<text><![CDATA[Amount Paid]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="field-label" x="0" y="113" width="80" height="15" uuid="05143ad9-a24d-4428-a2eb-7ecfd875d4a3">
+				<reportElement style="field-label" x="0" y="113" width="90" height="15" uuid="05143ad9-a24d-4428-a2eb-7ecfd875d4a3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
 				</reportElement>
@@ -277,7 +277,7 @@
 				<textFieldExpression><![CDATA[$F{amountRem}]]></textFieldExpression>
 			</textField>
 			<textField pattern="GH¢ #,##0.00" isBlankWhenNull="true">
-				<reportElement style="title" x="80" y="133" width="106" height="15" uuid="b393277c-1dd7-4680-9dc6-530621dc2cb8">
+				<reportElement style="title" x="93" y="133" width="92" height="15" uuid="b393277c-1dd7-4680-9dc6-530621dc2cb8">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>

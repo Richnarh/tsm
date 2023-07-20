@@ -18,7 +18,6 @@ import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Location;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
-import com.khoders.tsm.enums.EventModule;
 import com.khoders.tsm.enums.ReceiptStatus;
 import com.khoders.tsm.jbeans.dto.StockDetails;
 import com.khoders.tsm.services.XtractService;
@@ -232,7 +231,7 @@ public class StockUploadController implements Serializable
                         crudApi.save(receiptItem);
                     }
                     if(postToInventory){
-                        Inventory inventory = stockService.existProdctPackage(receiptItem, stockData.getUnitsMeasurement());
+                        Inventory inventory = stockService.getProduct(receiptItem, stockService.getUnits(stockData.getUnitsMeasurement()));
                         if (inventory == null) {
                             inventory = new Inventory();
                             inventory.setStockReceiptItem(receiptItem);

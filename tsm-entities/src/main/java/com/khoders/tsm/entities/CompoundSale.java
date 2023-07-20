@@ -5,7 +5,6 @@
  */
 package com.khoders.tsm.entities;
 
-import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.resource.enums.PaymentStatus;
 import com.khoders.tsm.entities.system.UserAccountRecord;
 import java.io.Serializable;

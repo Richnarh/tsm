@@ -35,6 +35,11 @@ public class CreditPayment extends UserAccountRecord{
     @Lob
     private String description;
     
+    public static final String _compoundSale = "compoundSale";
+    @JoinColumn(name = "compound_sale", referencedColumnName = "id")
+    @ManyToOne
+    private CompoundSale compoundSale;
+    
     public static final String _sales = "sales";
     @JoinColumn(name = "sales", referencedColumnName = "id")
     @ManyToOne
@@ -76,6 +81,14 @@ public class CreditPayment extends UserAccountRecord{
         this.customer = customer;
     }
 
+    public CompoundSale getCompoundSale() {
+        return compoundSale;
+    }
+
+    public void setCompoundSale(CompoundSale compoundSale) {
+        this.compoundSale = compoundSale;
+    }
+
     public Sales getSales() {
         return sales;
     }
@@ -83,7 +96,7 @@ public class CreditPayment extends UserAccountRecord{
     public void setSales(Sales sales) {
         this.sales = sales;
     }
-
+    
     public Double getTotalCredit() {
         return totalCredit;
     }

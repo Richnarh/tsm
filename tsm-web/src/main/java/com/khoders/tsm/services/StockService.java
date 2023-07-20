@@ -66,8 +66,7 @@ public class StockService {
         }
         return null;
     }
-    public Inventory existProdctPackage(StockReceiptItem receiptItem, String units) {
-        UnitMeasurement unitMeasurement = getUnits(units);
+    public Inventory getProduct(StockReceiptItem receiptItem, UnitMeasurement unitMeasurement) {
         return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:stockReceiptItem AND e.unitMeasurement=:unitMeasurement", Inventory.class)
                 .setParameter(Inventory._stockReceiptItem, receiptItem)
                 .setParameter(Inventory._unitMeasurement, unitMeasurement)

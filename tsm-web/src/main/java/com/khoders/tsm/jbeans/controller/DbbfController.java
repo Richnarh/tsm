@@ -46,7 +46,7 @@ public class DbbfController implements Serializable{
     private Customer selectedCustomer = null;
    
     private FormView pageView = FormView.listForm();
-    private Sales selectedSale = null;
+//    private Sales selectedSale = null;
     private double totalAmount = 0.0;
     private PaymentStatus paymentStatus = null;
     private String optionText;
@@ -60,42 +60,39 @@ public class DbbfController implements Serializable{
     }
     
     public void selectDbbf(CompoundSale cs){
-        salesList = salesService.getDbbfSales(cs);
         creditPaymentList = new LinkedList<>();
-        for (Sales sales : salesList) {
-            creditPaymentList.addAll(salesService.getCreditSales(sales));
-        }
-        totalAmount = salesList.stream().mapToDouble(Sales::getTotalAmount).sum();
+        creditPaymentList.addAll(salesService.getCreditSales(cs));
+        totalAmount = cs.getCompoundAmount();
+        System.out.println("totalAmount: "+totalAmount);
+        compoundSale = cs;
     }
     
-    public void makePayment(Sales sales){
-        selectedSale = sales;
+    public void makePayment(){
         initCreditPayment();
     }
     
    public void selectSale(){
        paymentStatus = null;
        totalAmount = 0.0;
-       selectedSale = creditPayment.getSales();
-       totalAmount = selectedSale != null ? selectedSale.getTotalAmount() : 0.0;
-       creditPaymentList = salesService.getCreditSales(selectedSale);
+//       selectedSale = creditPayment.getSales();
+//       totalAmount = selectedSale != null ? selectedSale.getTotalAmount() : 0.0;
+//       creditPaymentList = salesService.getCreditSales(selectedSale);
        for (CreditPayment item : creditPaymentList) {
            if(item.getPaymentStatus().equals(PaymentStatus.FULLY_PAID)){
                paymentStatus = item.getPaymentStatus();
                break;
            }
        }
-       if(selectedSale == null)
-           paymentStatus = null;
+//       if(selectedSale == null)
+//           paymentStatus = null;
    }
-   public void saveCreditPayment()
-    {
+   public void saveCreditPayment(){
         try {
             if (creditPayment.getAmountPaid() < 1) {
                 Msg.error("Please enter amount paid");
                 return;
             }
-            initSales();
+            initPayment();
             if (crudApi.save(creditPayment) != null) {
                 creditPaymentList = CollectionList.washList(creditPaymentList, creditPayment);
                 Msg.info(Msg.SUCCESS_MESSAGE);
@@ -109,40 +106,40 @@ public class DbbfController implements Serializable{
         }
     }
    
-    void initSales(){
-        creditPayment.setSales(selectedSale);
+    void initPayment(){
+        creditPayment.setCompoundSale(compoundSale);
         creditPayment.genCode();
-        creditPayment.setValueDate(selectedSale.getValueDate());
-        creditPayment.setTotalCredit(selectedSale.getTotalAmount());
+        creditPayment.setValueDate(compoundSale.getValueDate());
+        creditPayment.setTotalCredit(totalAmount);
         
-        creditPayment.setCustomer(selectedSale.getCustomer());
-        creditPayment.setDueDate(selectedSale.getValueDate());
-        creditPayment.setDataSource("Credit sales with receipt # "+selectedSale.getReceiptNumber());
+        creditPayment.setCustomer(compoundSale.getCustomer());
+        creditPayment.setDueDate(compoundSale.getValueDate());
+        creditPayment.setDataSource("Credit sales with Ref. No.: "+compoundSale.getRefNo());
         creditPayment.setUserAccount(appSession.getCurrentUser());
         creditPayment.setCompanyBranch(appSession.getCompanyBranch());
         creditPayment.setLastModifiedBy(appSession.getCurrentUser().getFullname());
         
-        List<CreditPayment> cpList = salesService.getCreditSales(selectedSale);
+        List<CreditPayment> cpList = salesService.getCreditSales(compoundSale);
         double totalAmountPaid = cpList.stream().mapToDouble(CreditPayment::getAmountPaid).sum();
         System.out.println("cpList: "+cpList.size());
         System.out.println("totalAmountPaid: "+totalAmountPaid);
-        System.out.println("selectedSale.getTotalAmount(): "+selectedSale.getTotalAmount());
-        double amountRem = selectedSale.getTotalAmount() - totalAmountPaid;
+        System.out.println("selectedSale.getTotalAmount(): "+totalAmount);
+        double amountRem = totalAmount - totalAmountPaid;
         System.out.println("amountRem: "+amountRem);
         if(amountRem > 0.0){
             creditPayment.setCreditRemaining(amountRem - creditPayment.getAmountPaid());
             if (creditPayment.getCreditRemaining() == 0.0) {
                 creditPayment.setPaymentStatus(PaymentStatus.FULLY_PAID);
-                selectedSale.setPaymentStatus(PaymentStatus.FULLY_PAID);
-                crudApi.save(selectedSale);
+                compoundSale.setPaymentStatus(PaymentStatus.FULLY_PAID);
+//                crudApi.save(compoundSale);
             } else {
                 creditPayment.setPaymentStatus(PaymentStatus.PARTIALLY_PAID);
             }
         }else{
             creditPayment.setCreditRemaining(amountRem);
             creditPayment.setPaymentStatus(PaymentStatus.FULLY_PAID);
-            selectedSale.setPaymentStatus(PaymentStatus.FULLY_PAID);
-            crudApi.save(selectedSale);
+            compoundSale.setPaymentStatus(PaymentStatus.FULLY_PAID);
+//            crudApi.save(compoundSale);
         }
     }  
     
@@ -152,7 +149,7 @@ public class DbbfController implements Serializable{
         {
             List<CashReceipt> cashReceiptList = new LinkedList<>();
 
-            CashReceipt cashReceipt = xtractService.extractCashReceipt(creditPayment);
+            CashReceipt cashReceipt = xtractService.extractCashReceipt(creditPayment,compoundSale);
 
             cashReceiptList.add(cashReceipt);
             ReportManager.reportParams.put("logo", ReportFiles.LOGO);
@@ -164,10 +161,6 @@ public class DbbfController implements Serializable{
         }
     }
     public void initCreditPayment(){
-        if(selectedSale == null){
-            Msg.error("Please select sale");
-            return;
-        }
         clearCreditPayment();
         pageView.restToCreateView();
     }
@@ -178,7 +171,7 @@ public class DbbfController implements Serializable{
     public void closePage()
     {
        creditPayment = new CreditPayment();
-       selectedSale = null;
+//       selectedSale = null;
        optionText = "Save Changes";
        pageView.restToListView();
     }
@@ -245,14 +238,6 @@ public class DbbfController implements Serializable{
     public void setPageView(FormView pageView)
     {
         this.pageView = pageView;
-    }
-
-    public Sales getSelectedSale() {
-        return selectedSale;
-    }
-
-    public void setSelectedSale(Sales selectedSale) {
-        this.selectedSale = selectedSale;
     }
 
     public PaymentStatus getPaymentStatus() {
