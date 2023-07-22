@@ -25,6 +25,7 @@ import com.khoders.tsm.entities.Payment;
 import com.khoders.tsm.enums.EventModule;
 import com.khoders.tsm.enums.SaleSource;
 import com.khoders.tsm.enums.SalesType;
+import com.khoders.tsm.jbeans.dto.InvoiceDto;
 import com.khoders.tsm.jbeans.dto.SalesTaxDto;
 import com.khoders.tsm.services.InventoryService;
 import com.khoders.tsm.services.StockService;
@@ -524,11 +525,33 @@ public class SalesController implements Serializable
     }
     
     public void generateInvoice(Sales sales){
+        List<InvoiceDto> proformaInvoiceList = new LinkedList<>();
         
+        saleItemList = salesService.getSales(sales);
+        if(saleItemList.isEmpty()){
+            Msg.error("Cannot process an empty invoice!");
+            return;
+        }
+        InvoiceDto proformaInvoiceDto = xtractService.extractInvoice(saleItemList, sales);
+        proformaInvoiceList.add(proformaInvoiceDto);
+        
+        ReportManager.reportParams.put("logo", ReportFiles.LOGO);
+        reportManager.createReport(proformaInvoiceList, ReportFiles.INVOICE, ReportManager.reportParams); 
     }
     
     public void generateProInvoice(Sales sales){
+        List<InvoiceDto> proformaInvoiceList = new LinkedList<>();
         
+        saleItemList = salesService.getSales(sales);
+        if(saleItemList.isEmpty()){
+            Msg.error("Cannot process an empty invoice!");
+            return;
+        }
+        InvoiceDto proformaInvoiceDto = xtractService.extractInvoice(saleItemList, sales);
+        proformaInvoiceList.add(proformaInvoiceDto);
+        
+        ReportManager.reportParams.put("logo", ReportFiles.LOGO);
+        reportManager.createReport(proformaInvoiceList, ReportFiles.PROFORMA_INVOICE, ReportManager.reportParams);
     }
     
     public void clear()

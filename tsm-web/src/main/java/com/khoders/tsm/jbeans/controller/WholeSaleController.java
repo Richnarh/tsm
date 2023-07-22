@@ -25,6 +25,7 @@ import com.khoders.tsm.entities.Payment;
 import com.khoders.tsm.enums.EventModule;
 import com.khoders.tsm.enums.SaleSource;
 import com.khoders.tsm.enums.SalesType;
+import com.khoders.tsm.jbeans.dto.InvoiceDto;
 import com.khoders.tsm.jbeans.dto.SalesTaxDto;
 import com.khoders.tsm.services.InventoryService;
 import com.khoders.tsm.services.StockService;
@@ -79,10 +80,10 @@ public class WholeSaleController implements Serializable
     private Customer customer = null;
     private PaymentMethod paymentMethod = PaymentMethod.CASH;
     private LocalDate dueDate;
-    private String optionText;
+    private String optionText,invoiceNote;
     
     @PostConstruct
-    private void init()
+    public void init()
     {
         clearAll();
         salesList = salesService.getSales(SaleSource.WHOLESALE);
@@ -90,8 +91,29 @@ public class WholeSaleController implements Serializable
         customerList = inventoryService.getCustomerList();
     }
     
-    public void initNewSale()
-    {
+    public void loadClient() {
+        customerList = inventoryService.getCustomerList();
+        Msg.info("Customer list updated");
+    }
+    
+    public void addNote(Sales sales){
+        this.sales = sales;
+        Sales s = crudApi.find(Sales.class, sales.getId());
+        if(s != null){
+            invoiceNote = s.getNotes();
+        }
+    }
+    
+    public void saveNote(){
+        sales = crudApi.find(Sales.class, sales.getId());
+        if(sales != null){
+            sales.setNotes(invoiceNote);
+            crudApi.save(sales);
+            Msg.info("Invoice note added successfully!");
+        }
+    }
+    
+    public void initNewSale(){
         enableTax = false;
         enableTax = appSession.getCompanyBranch().isEnableTax();
         System.out.println("enableTax: "+enableTax);
@@ -261,9 +283,12 @@ public class WholeSaleController implements Serializable
     }
     public void saveAll()
     {
-        if (saleItemList.isEmpty())
-        {
+        if (saleItemList.isEmpty()) {
             Msg.error("Cannot process an empty sale");
+            return;
+        }
+        if (paymentList.isEmpty()) {
+            Msg.error("Add payments");
             return;
         }
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
@@ -499,15 +524,39 @@ public class WholeSaleController implements Serializable
     }
     
     public void generateInvoice(Sales sales){
+        List<InvoiceDto> proformaInvoiceList = new LinkedList<>();
         
+        saleItemList = salesService.getSales(sales);
+        if(saleItemList.isEmpty()){
+            Msg.error("Cannot process an empty invoice!");
+            return;
+        }
+        InvoiceDto proformaInvoiceDto = xtractService.extractInvoice(saleItemList, sales);
+        proformaInvoiceList.add(proformaInvoiceDto);
+        
+        ReportManager.reportParams.put("logo", ReportFiles.LOGO);
+        reportManager.createReport(proformaInvoiceList, ReportFiles.INVOICE, ReportManager.reportParams); 
     }
     
     public void generateProInvoice(Sales sales){
+        List<InvoiceDto> proformaInvoiceList = new LinkedList<>();
+        saleItemList = salesService.getSales(sales);
+        if(saleItemList.isEmpty()){
+            Msg.error("Cannot process an empty invoice!");
+            return;
+        }
+        InvoiceDto proformaInvoiceDto = xtractService.extractInvoice(saleItemList, sales);
+        proformaInvoiceList.add(proformaInvoiceDto);
+        
+        ReportManager.reportParams.put("logo", ReportFiles.LOGO);
+        reportManager.createReport(proformaInvoiceList, ReportFiles.PROFORMA_INVOICE, ReportManager.reportParams);
+    }
+    
+    public void convertProformaToInvoice(Sales sales){
         
     }
     
-    public void clear()
-    {
+    public void clear(){
         saleItem = new SaleItem();
         saleItem.genCode();
         SystemUtils.resetJsfUI();
@@ -697,6 +746,14 @@ public class WholeSaleController implements Serializable
 
     public List<Customer> getCustomerList() {
         return customerList;
+    }
+
+    public String getInvoiceNote() {
+        return invoiceNote;
+    }
+
+    public void setInvoiceNote(String invoiceNote) {
+        this.invoiceNote = invoiceNote;
     }
     
 }

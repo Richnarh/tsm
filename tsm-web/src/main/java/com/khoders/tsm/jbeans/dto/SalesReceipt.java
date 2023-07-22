@@ -14,6 +14,7 @@ public class SalesReceipt extends BaseDto
     private LocalDateTime date;
     private String modeOfPayment;
     private String branchName;
+    private String customer;
     
     private double totalAmount;
     private double totalTax;
@@ -133,4 +134,13 @@ public class SalesReceipt extends BaseDto
     {
         this.totalPayable = totalPayable;
     }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
+    }
+    
 }

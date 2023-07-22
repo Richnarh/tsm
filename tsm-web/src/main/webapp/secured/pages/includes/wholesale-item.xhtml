@@ -17,13 +17,17 @@
                             <p:ajax listener="#{wholeSaleController.selectSalesType()}" update="@form"/>
                         </p:selectOneMenu>
                     </h:panelGrid>
-                    <h:panelGrid columns="3">
+                    <h:panelGrid columns="4">
                         <span>#{msg.customer} <span class="text-danger">*</span></span>                                
                         <p:selectOneMenu value="#{wholeSaleController.sales.customer}" required="true" filter="true" filterMatchMode="contains">
                             <f:selectItem itemLabel="#{msg.choose} Customer"/>
                             <f:selectItems value="#{wholeSaleController.customerList}"/>
                         </p:selectOneMenu>
                         <p:commandLink class="shadow-sm p-2" value="Add Customer" oncomplete="PF('customerForm').show()" resetValues="true" update="customerModal"/>
+                        <h:commandButton value="refresh" id="clientRefresh" class="btn btn-light btn-xs shadow-sm" action="#{wholeSaleController.loadClient()}">
+                            <p:ajax immediate="true" update="@form"/>
+                        </h:commandButton>
+                        <p:tooltip for="clientRefresh" value="Click to refresh the customer list" position="top"/>
                     </h:panelGrid>
                     <p:commandLink class="shadow-sm p-2" id="content" action="#{salesController.initPayment()}" value="Add Payment" oncomplete="PF('paymentForm').show()" resetValues="true" update="paymentModal">
                         <p:tooltip style="max-width: 400px;" for="content">

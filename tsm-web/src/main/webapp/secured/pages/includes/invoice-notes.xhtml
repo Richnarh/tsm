@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <p:dialog showEffect="fade" hideEffect="fade" responsive="true"  resizable="false" header="Add Invoice Note" widgetVar="invoiceNoteWindow" closeOnEscape="true" modal="true" height="200"  width="300">
+        <h:form>
+            <h:inputTextarea class="form-control" rows="7" value="#{wholeSaleController.invoiceNote}"/>
+            <center class="py-3">
+                <p:commandButton icon="#{msg.check_icon}" class="mx-3 kbtn-success" action="#{wholeSaleController.saveNote()}" value="Save Note"/>
+            </center>
+        </h:form>
+    </p:dialog>
+</html>
+

@@ -104,8 +104,9 @@
                                                 <p:menuitem icon="#{msg.eye_icon}" value="View Sales" immediate="true" action="#{wholeSaleController.viewSales(sales)}" ajax="false"/>
                                                 <p:menuitem target="_blank" icon="#{msg.pdf_icon}" value="Print Receipt" action="#{wholeSaleController.generatePOSReceipt(sales)}" ajax="false"/>
                                                 <p:menuitem rendered="#{sales.salesType == 'INVOICE_SALES'}" target="_blank" icon="#{msg.pdf_icon}" value="Print Invoice" action="#{wholeSaleController.generateInvoice(sales)}" ajax="false"/>
+                                                <p:menuitem rendered="#{sales.salesType == 'INVOICE_SALES'}" icon="#{msg.book_icon}" value="Invoice Note" action="#{wholeSaleController.addNote(sales)}" oncomplete="PF('invoiceNoteWindow').show()" resetValues="true" update="mainPanel"/>
                                                 <p:menuitem rendered="#{sales.salesType == 'PROFORMA_INVOICE_SALES'}" target="_blank" icon="#{msg.pdf_icon}" value="Proforma Invoice" action="#{wholeSaleController.generateProInvoice(sales)}" ajax="false"/>
-                                                <p:menuitem rendered="#{sales.salesType == 'PROFORMA_INVOICE_SALES'}" icon="#{msg.cog_icon}" value="Generate Invoice" action="#{wholeSaleController.convertProformaToInvoice(sales)}" ajax="false"/>
+                                                <p:menuitem rendered="#{sales.salesType == 'PROFORMA_INVOICE_SALES'}" icon="#{msg.cog_icon}" value="Convert to Invoice" action="#{wholeSaleController.convertProformaToInvoice(sales)}" ajax="false"/>
                                             </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
@@ -122,8 +123,8 @@
                             </h:panelGroup>
                         </div>
                     </div>
+                <ui:include src="includes/invoice-notes.xhtml"/>
                 </h:panelGroup>
-
             </ui:define>
         </ui:composition>
     </h:body>

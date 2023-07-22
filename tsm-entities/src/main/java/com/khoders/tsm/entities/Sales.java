@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -63,10 +64,10 @@ public class Sales extends UserAccountRecord {
     @Column(name = "compound")
     private boolean compound;
     
-//    public static final String _compoundSale = "compoundSale";    
-//    @JoinColumn(name = "compound_sale")
-//    @ManyToOne
-//    private CompoundSale compoundSale;
+    public static final String _notes = "notes";    
+    @Column(name = "notes")
+    @Lob
+    private String notes;
     
     public static final String _saleSource = "saleSource";    
     @Column(name = "source")
@@ -159,6 +160,14 @@ public class Sales extends UserAccountRecord {
 
     public void setPaymentStatus(PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
     
     public void genReceipt() {

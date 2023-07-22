@@ -1,5 +1,6 @@
 package com.khoders.tsm.services;
 
+import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.SalesTax;
@@ -20,6 +21,7 @@ import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.jbeans.dto.CashReceipt;
+import com.khoders.tsm.jbeans.dto.InvoiceDto;
 import com.khoders.tsm.jbeans.dto.ProductDto;
 import com.khoders.tsm.jbeans.dto.StockDetails;
 import com.khoders.tsm.jbeans.dto.Waybill;
@@ -54,6 +56,12 @@ public class XtractService
         salesReceipt.setDate(LocalDateTime.now());
         salesReceipt.setCashier(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
         salesReceipt.setPhoneNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
+        String paymentMethod = null;
+        if(!salesService.payments(sales).isEmpty()){
+            paymentMethod = salesService.payments(sales).get(0).getPaymentMethod().getLabel();
+        }
+        salesReceipt.setModeOfPayment(paymentMethod == null ? PaymentMethod.CASH.getLabel() : paymentMethod);
+        salesReceipt.setCustomer(sales.getCustomer().getCustomerName());
 
         List<SalesTax> salesTaxesList  = salesService.getSalesTaxList(sales);
 
@@ -136,31 +144,6 @@ public class XtractService
         }
         return dtoList;
     }
-//    
-//    public List<StockSummary> extractStockSummary(){
-//        List<StockSummary> viewStockList = new LinkedList<>();
-//        List<Object[]> objects = stockService.getStockReceiptItems();
-//        for (Object[] object : objects)
-//        {
-//          StockSummary dto = new StockSummary();
-//          dto.setCompanyAddress(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchAddress() : "");
-//          dto.setWebsite(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null ? appSession.getCompanyBranch().getCompanyProfile().getWebsite() : "");
-//          dto.setTelNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
-//          
-//          dto.setId(Stringz.objectToString(object[0]));
-//          dto.setRefNo(Stringz.objectToString(object[1]));
-//          dto.setProductName(Stringz.objectToString(object[2]));
-//          dto.setPkgQuantity(ParseValue.parseDoubleValue(object[3]));
-//          dto.setProductPackage(Stringz.objectToString(object[4]));
-//          dto.setPackageFactor(ParseValue.parseDoubleValue(object[5]));
-//          dto.setCostPrice(ParseValue.parseDoubleValue(object[6]));
-//          dto.setPackagePrice(ParseValue.parseDoubleValue(object[7]));
-//          dto.setReorderLevel(ParseValue.parseIntegerValue(object[8]));
-//          dto.setQtySold(ParseValue.parseDoubleValue(object[9-1]));
-//          viewStockList.add(dto);
-//        }
-//        return viewStockList;
-//    }
 
     public CashReceipt extractCashReceipt(CreditPayment creditPayment, CompoundSale compoundSale) {
         CashReceipt cashReceipt = new CashReceipt();
@@ -273,4 +256,71 @@ public class XtractService
         waybill.setDeliveryDate(deliveryInfos.get(0).getDeliveryDate());
         return waybill;
     }
+
+    public InvoiceDto extractInvoice(List<SaleItem> itemList, Sales sales){
+        InvoiceDto invoiceDto = new InvoiceDto();
+        List<SaleItemDto> saleItemList = new LinkedList<>();
+        List<SalesTaxDto> salesTaxes = new LinkedList<>();
+        
+        List<SalesTax> salesTaxesList  = salesService.getSalesTaxList(sales);
+        
+        double totalAmount = itemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
+        double sTaxAmount = salesTaxesList.stream().mapToDouble(SalesTax::getTaxAmount).sum();
+        double invoiceValue = sTaxAmount + sales.getTotalAmount();
+         
+        invoiceDto.setTotalPayable(invoiceValue);
+        invoiceDto.setIssueDate(sales.getValueDate());
+        invoiceDto.setTelNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
+        String paymentMethod = null;
+        if(!salesService.payments(sales).isEmpty()){
+            paymentMethod = salesService.payments(sales).get(0).getPaymentMethod().getLabel();
+        }
+        invoiceDto.setPaymentMethod(paymentMethod == null ? PaymentMethod.CASH.getLabel() : paymentMethod);
+        invoiceDto.setTotalAmount(totalAmount);
+        invoiceDto.setInvoiceNotes(sales.getNotes());
+        invoiceDto.setReceiptNumber(sales.getReceiptNumber());
+        invoiceDto.setCompanyAddress(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchAddress() : "");
+        if(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null){
+            invoiceDto.setWebsite(appSession.getCompanyBranch().getCompanyProfile().getWebsite());
+        }
+        
+        if(sales.getCustomer() != null){
+            invoiceDto.setCustomerName(sales.getCustomer().getCustomerName());
+            invoiceDto.setAddress(sales.getCustomer().getAddress());
+            invoiceDto.setPhoneNumber(sales.getCustomer().getPhone());
+            invoiceDto.setEmailAddress(sales.getCustomer().getEmailAddress());
+            invoiceDto.setCustomerId(sales.getCustomer().getRefNo());
+        }
+        System.out.println("salesTaxesList -- "+salesTaxesList.size());
+        for (SalesTax salesTax : salesTaxesList) {
+            SalesTaxDto taxItem = new SalesTaxDto();
+            taxItem.setTaxName(salesTax.getTaxName());
+            taxItem.setTaxRate(salesTax.getTaxRate());
+            taxItem.setTaxAmount(salesTax.getTaxAmount());
+
+            salesTaxes.add(taxItem);
+        }
+        
+        for (SaleItem saleItem : itemList) {
+            SaleItemDto dto = new SaleItemDto();
+
+            dto.setQuantity(saleItem.getQuantity());
+            dto.setUnitPrice(saleItem.getUnitPrice());
+            dto.setSubTotal(saleItem.getSubTotal());
+            if (saleItem.getInventory().getStockReceiptItem() != null && saleItem.getInventory().getStockReceiptItem().getProduct() != null) {
+                dto.setProduct(saleItem.getInventory().getStockReceiptItem().getProduct().getProductName());
+            }
+            if (saleItem.getInventory().getUnitMeasurement() != null) {
+                dto.setProductPackage(saleItem.getInventory().getUnitMeasurement().getUnits());
+            }
+
+            saleItemList.add(dto);
+        }
+       
+        invoiceDto.setSaleItemList(saleItemList);
+        invoiceDto.setTaxList(salesTaxes);
+        
+        return invoiceDto;
+    }
+    
 }
