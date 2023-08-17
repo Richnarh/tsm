@@ -152,8 +152,8 @@ public class DbbfController implements Serializable{
             CashReceipt cashReceipt = xtractService.extractCashReceipt(creditPayment,compoundSale);
 
             cashReceiptList.add(cashReceipt);
-            ReportManager.reportParams.put("logo", ReportFiles.LOGO);
-            reportManager.createReport(cashReceiptList, ReportFiles.CASH_RECEIPT_FILE, ReportManager.reportParams);
+            ReportManager.param.put("logo", ReportFiles.LOGO);
+            reportManager.createReport(cashReceiptList, ReportFiles.CASH_RECEIPT_FILE, ReportManager.param);
 
         }catch(Exception e)
         {

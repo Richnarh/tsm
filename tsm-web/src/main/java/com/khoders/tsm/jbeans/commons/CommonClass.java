@@ -11,6 +11,7 @@ import com.khoders.resource.enums.DeliveryMethod;
 import com.khoders.resource.enums.DeliveryStatus;
 import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.resource.enums.PaymentStatus;
+import com.khoders.tsm.enums.LocType;
 import com.khoders.tsm.enums.SalesType;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -57,5 +58,9 @@ public class CommonClass implements Serializable
     public List<PaymentStatus> getPaymentStatusList()
     {
         return Arrays.asList(PaymentStatus.values());
+    }
+    public List<LocType> getLocTypeList()
+    {
+        return Arrays.asList(LocType.values());
     }
 }

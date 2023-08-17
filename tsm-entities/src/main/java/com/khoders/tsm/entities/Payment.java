@@ -7,6 +7,7 @@ package com.khoders.tsm.entities;
 
 import com.khoders.resource.enums.PaymentMethod;
 import com.khoders.tsm.entities.system.UserAccountRecord;
+import com.khoders.tsm.enums.SaleSource;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -36,6 +37,11 @@ public class Payment extends UserAccountRecord{
     @JoinColumn(name = "sales", referencedColumnName = "id")
     @ManyToOne
     private Sales sales;
+    
+    public static final String _saleSource = "saleSource";    
+    @Column(name = "payment_source")
+    @Enumerated(EnumType.STRING)
+    private SaleSource paymentSource;
 
     public PaymentMethod getPaymentMethod() {
         return paymentMethod;
@@ -59,6 +65,14 @@ public class Payment extends UserAccountRecord{
 
     public void setSales(Sales sales) {
         this.sales = sales;
+    }
+
+    public SaleSource getPaymentSource() {
+        return paymentSource;
+    }
+
+    public void setPaymentSource(SaleSource paymentSource) {
+        this.paymentSource = paymentSource;
     }
     
 }

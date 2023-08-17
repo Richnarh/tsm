@@ -198,7 +198,7 @@ public class WholeSaleController implements Serializable
                 return;
             }
             
-            if (saleItem.getUnitPrice() <= 0.0) {
+            if (saleItem != null && saleItem.getUnitPrice() == null || saleItem.getUnitPrice() <= 0.0) {
                 Msg.error("Please enter price");
                 return;
             }
@@ -287,16 +287,20 @@ public class WholeSaleController implements Serializable
             Msg.error("Cannot process an empty sale");
             return;
         }
-        if (paymentList.isEmpty()) {
-            Msg.error("Add payments");
-            return;
+        if (sales.getSalesType() != SalesType.CREDIT_SALES && sales.getSalesType() != SalesType.PROFORMA_INVOICE_SALES) {
+            if (paymentList.isEmpty()) {
+                Msg.error("Please add payment info");
+                return;
+            }
         }
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
         double qtyBought = saleItemList.stream().mapToDouble(SaleItem::getQuantity).sum();
         double amtPaid = paymentList.stream().mapToDouble(Payment::getAmountPaid).sum();
-        if(amtPaid < totalAmount){
-            Msg.error("Amount paid is less than total amount");
-            return;
+        if (sales.getSalesType() != SalesType.CREDIT_SALES && sales.getSalesType() != SalesType.PROFORMA_INVOICE_SALES) {
+            if(amtPaid < totalAmount){
+                Msg.error("Amount paid is less than total amount");
+                return;
+            }
         }
         Sales catalogue = crudApi.find(Sales.class, sales.getId());
         if(catalogue != null){
@@ -408,6 +412,7 @@ public class WholeSaleController implements Serializable
     private void savePayment(Sales sales){
         paymentList.forEach(pay ->{
             pay.setSales(sales);
+            pay.setPaymentSource(SaleSource.WHOLESALE);
             pay.genCode();
             crudApi.save(pay);
         });
@@ -514,8 +519,8 @@ public class WholeSaleController implements Serializable
             SalesReceipt extractedItem = xtractService.extractToPosReceipt(saleItemList, sales);
 
             salesReceiptList.add(extractedItem);
-            ReportManager.reportParams.put("logo", ReportFiles.LOGO);
-            reportManager.createReport(salesReceiptList, ReportFiles.RECEIPT_FILE, ReportManager.reportParams);
+            ReportManager.param.put("logo", ReportFiles.LOGO);
+            reportManager.createReport(salesReceiptList, ReportFiles.RECEIPT_FILE, ReportManager.param);
 
         }catch(Exception e)
         {
@@ -534,8 +539,8 @@ public class WholeSaleController implements Serializable
         InvoiceDto proformaInvoiceDto = xtractService.extractInvoice(saleItemList, sales);
         proformaInvoiceList.add(proformaInvoiceDto);
         
-        ReportManager.reportParams.put("logo", ReportFiles.LOGO);
-        reportManager.createReport(proformaInvoiceList, ReportFiles.INVOICE, ReportManager.reportParams); 
+        ReportManager.param.put("logo", ReportFiles.LOGO);
+        reportManager.createReport(proformaInvoiceList, ReportFiles.INVOICE, ReportManager.param); 
     }
     
     public void generateProInvoice(Sales sales){
@@ -548,8 +553,8 @@ public class WholeSaleController implements Serializable
         InvoiceDto proformaInvoiceDto = xtractService.extractInvoice(saleItemList, sales);
         proformaInvoiceList.add(proformaInvoiceDto);
         
-        ReportManager.reportParams.put("logo", ReportFiles.LOGO);
-        reportManager.createReport(proformaInvoiceList, ReportFiles.PROFORMA_INVOICE, ReportManager.reportParams);
+        ReportManager.param.put("logo", ReportFiles.LOGO);
+        reportManager.createReport(proformaInvoiceList, ReportFiles.PROFORMA_INVOICE, ReportManager.param);
     }
     
     public void convertProformaToInvoice(Sales sales){

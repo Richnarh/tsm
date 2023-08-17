@@ -6,9 +6,12 @@
 package com.khoders.tsm.entities;
 
 import com.khoders.tsm.entities.system.UserAccountRecord;
+import com.khoders.tsm.enums.LocType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 /**
@@ -24,6 +27,13 @@ public class Location  extends UserAccountRecord implements Serializable{
     @Column(name = "address")
     private String address;
     
+    @Column(name = "loc_type")
+    @Enumerated(EnumType.STRING)
+    private LocType locType;
+    
+    @Column(name = "main_warehouse")
+    private boolean mainWarehouse;
+    
     public String getLocationName() {
         return locationName;
     }
@@ -38,6 +48,22 @@ public class Location  extends UserAccountRecord implements Serializable{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public LocType getLocType() {
+        return locType;
+    }
+
+    public void setLocType(LocType locType) {
+        this.locType = locType;
+    }
+
+    public boolean isMainWarehouse() {
+        return mainWarehouse;
+    }
+
+    public void setMainWarehouse(boolean mainWarehouse) {
+        this.mainWarehouse = mainWarehouse;
     }
 
     @Override

@@ -141,7 +141,7 @@ public class StockUploadController implements Serializable
                 }
                 
                 stockDetailList.add(stockDetails);
-                appSession.logEvent("Stock Upload", null, "Inventory Uploads");
+//                appSession.logEvent("Stock Upload", null, "Inventory Uploads");
                 System.out.println("Iteration "+c+" done!");
             }
         } catch (Exception e)
@@ -238,6 +238,7 @@ public class StockUploadController implements Serializable
                             inventory.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
                             inventory.setPackagePrice(stockData.getRetailPrice());
                             inventory.setUnitsInPackage(stockData.getUnitsInPackage());
+                            inventory.setWprice(stockData.getWprice());
                             inventory.setUserAccount(appSession.getCurrentUser());
                             inventory.setCompanyBranch(appSession.getCompanyBranch());
                             inventory.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);

@@ -93,8 +93,8 @@ public class DeliveriesController implements Serializable{
             SalesReceipt salesReceipt = xtractService.extractWaybill(deliveryInfos,receiptNumber);
 
             salesReceiptList.add(salesReceipt);
-            ReportManager.reportParams.put("logo", ReportFiles.LOGO);
-            reportManager.createReport(salesReceiptList, ReportFiles.WAYBILL_FILE, ReportManager.reportParams);
+            ReportManager.param.put("logo", ReportFiles.LOGO);
+            reportManager.createReport(salesReceiptList, ReportFiles.WAYBILL_FILE, ReportManager.param);
 
         }catch(Exception e)
         {
