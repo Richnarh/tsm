@@ -13,12 +13,14 @@
             </ui:define>
 
             <ui:define name="pageContent">
-                <div class="col-md-12">
+                <div class="col-md-12 pb-5">
                     <div class="row">
                         <div class="col-md-4">
                             <h:form id="prodTbl">
                                 <p:commandButton id="reloadProd" value="Reload" class="my-2" icon="#{msg.refresh_icon}"
                                                  action="#{inventoryController.initProduct()}" update="@form"/>
+                                 <p:commandButton value="Reset Page" class="my-2 kbtn-danger float-end" icon="#{msg.close_icon}"
+                                             action="#{inventoryController.resetPage()}" ajax="false"/>
                                 <p:dataTable value="#{inventoryController.stockReceiptItemList}" var="stockReceiptItem" scrollable="true" scrollHeight="400">
                                     <p:column headerText="#{msg.product}" filterBy="#{stockReceiptItem.product.productName}" filterMatchMode="contains">
                                         <h:commandLink styleClass="ptext-link" value="#{stockReceiptItem.product.productName} #{stockReceiptItem.product.packaging.packagingName}" action="#{inventoryController.selectProduct(stockReceiptItem)}">
@@ -89,7 +91,7 @@
 
                             <p:commandButton id="reload" value="Reload" class="my-2" icon="#{msg.refresh_icon}"
                                              action="#{inventoryController.initInventory()}" update="@form"/>
-
+                            
                             <p:dataTable value="#{inventoryController.inventoryList}" var="inventory" paginator="true" paginatorPosition="bottom" rows="12">
                                 <p:column exportable="false" style="width: 37px;">
                                     <p:rowToggler/>

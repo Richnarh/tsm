@@ -101,26 +101,19 @@ public class UserAccountController implements Serializable{
         }
     }
     
-    public void saveUserAccount()
-    {
-        try
-        {
-            userAccount.setEmailAddress(userAccount.getEmailAddress());
-            userAccount.setPassword(userAccount.getPassword());
-            if (crudApi.save(userAccount) != null)
-            {
-             userAccountList = CollectionList.washList(userAccountList, userAccount);
-             Msg.info("User saved!");
+    public void saveUserAccount(){
+        try {
+            if (crudApi.save(userAccount) != null) {
+                userAccountList = CollectionList.washList(userAccountList, userAccount);
+                Msg.info("User Updated!");
             }
             clear();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
      
-    public void editUserAccount(UserAccount userAccount)
-    {
+    public void editUserAccount(UserAccount userAccount){
         this.userAccount = userAccount;
         optionText = "Update";
     }

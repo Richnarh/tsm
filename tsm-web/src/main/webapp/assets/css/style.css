@@ -1068,13 +1068,13 @@ h1, h2, h3, h4, h5, h6 {
 # Footer
 --------------------------------------------------------------*/
 .footer {
-  padding: 20px 0;
+  padding: 12px 0;
   font-size: 14px;
   transition: all 0.3s;
   border-top: 1px solid #cddfff;
 }
 .footer .copyright {
-  text-align: center;
+  padding-left: 3rem;
   color: #012970;
 }
 .footer .credits {

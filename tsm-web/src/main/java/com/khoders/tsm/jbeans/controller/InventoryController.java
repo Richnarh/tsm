@@ -52,7 +52,12 @@ public class InventoryController implements Serializable
    public void initInventory(){
      inventoryList = inventoryService.getInventoryList();
    }
-   
+   public void resetPage(){
+       inventoryList = new LinkedList<>();
+       segmentedList = new LinkedList<>();
+       stockReceiptItemList = new LinkedList<>();
+       clearInventory();
+   }
    public void selectProduct(StockReceiptItem stockReceiptItem){
        selectedStockReceiptItem=stockReceiptItem;
        segmentedList = stockService.inventoryProduct(selectedStockReceiptItem);

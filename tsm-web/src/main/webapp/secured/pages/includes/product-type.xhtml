@@ -4,10 +4,10 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">  
 
-    <p:dialog resizable="false" widgetVar="productType" closeOnEscape="true" modal="true" height="500"  width="450">
+    <p:dialog header="Product Type" resizable="false" widgetVar="productType" closeOnEscape="true" modal="true" height="500"  width="470">
         <h:form id="productTypeForm" class="spaced-form">
             <h:panelGrid columns="4">
-                <span>#{msg.product} #{msg.type}</span>
+                <span>#{msg.product} #{msg.type} <span class="text-danger">*</span></span>
                 <p:inputText required="true" value="#{productTypeController.productType.productTypeName}"/>
                 
                 <p:commandButton action="#{productTypeController.saveProductType()}" class="kbtn-success" value="#{productTypeController.optionText}" update="@form, :productTypeTable"/>

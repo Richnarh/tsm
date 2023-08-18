@@ -46,7 +46,6 @@ public class ProductController implements Serializable{
     @PostConstruct
     public void init()
     {
-        productList = inventoryService.getProductList();
         clearProduct();
     }
     

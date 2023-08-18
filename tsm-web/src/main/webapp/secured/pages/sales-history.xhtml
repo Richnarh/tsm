@@ -16,7 +16,7 @@
                 <h:panelGroup id="mainPanel">
                     <div class="col-md-12">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <h:form id="customerTable">
                                     <p:commandButton id="reloadCustomer" value="Reload" class="my-2" icon="#{msg.refresh_icon}" action="#{salesHistoryController.loadCustomer()}" update="@form"/>
                                     <p:commandButton rendered="#{salesHistoryController.customerList.size() > 0}" value="Reset Page" class="kbtn-danger float-end" icon="#{msg.close_icon}" action="#{salesHistoryController.resetPage()}" update=":mainPanel"/>
@@ -33,7 +33,10 @@
                                     </p:blockUI>
                                 </h:form>
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-7 mx-auto">
+                                <h:panelGroup rendered="#{salesHistoryController.salesList.size() == 0}">
+                                    <img src="#{application.contextPath}/assets/img/nodata.png"/>
+                                </h:panelGroup>
                                 <h:panelGroup rendered="#{salesHistoryController.salesList.size() > 0}">
                                     <h:form id="salesTable">
                                         <p:dataTable value="#{salesHistoryController.salesList}" var="sales" scrollable="true" scrollHeight="450">
@@ -86,7 +89,7 @@
                         </div>
                         <br/>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <h:panelGroup rendered="#{salesHistoryController.saleItemList.size() > 0}">
                                     <h:form id="saleItemTable">
                                         <p:dataTable value="#{salesHistoryController.saleItemList}" var="saleItem">
