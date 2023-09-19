@@ -47,6 +47,10 @@ public class ProductController implements Serializable{
     public void init()
     {
         clearProduct();
+    } 
+    
+    public void loadProducts(){
+        productList = inventoryService.getProducts();
     }
     
     public void initProduct()

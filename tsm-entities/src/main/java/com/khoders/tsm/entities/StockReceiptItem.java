@@ -25,6 +25,7 @@ import javax.persistence.Table;
 @Table(name = "stock_receipt_item")
 public class StockReceiptItem extends UserAccountRecord implements Serializable{
     
+    public static final String _stockReceipt = "stockReceipt";
     @JoinColumn(name = "stock_receipt", referencedColumnName = "id")
     @ManyToOne
     private StockReceipt stockReceipt;

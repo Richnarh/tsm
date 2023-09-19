@@ -15,7 +15,6 @@ import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.ProductType;
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
-import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
@@ -28,11 +27,9 @@ import com.khoders.tsm.entities.ReturnItem;
 import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.enums.SalesType;
-import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 
 /**
  *
@@ -45,107 +42,43 @@ public class InventoryService {
     @Inject private AppSession appSession;
 
     public List<Product> getProducts() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Product e ORDER BY e.productName ASC", Product.class).getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM Product e ORDER BY e.productName ASC", Product.class).getResultList();
     }
 
-    public List<UnitMeasurement> getUnitMeasurementList()
-    {
-        try
-        {
-            return crudApi.getEm().createQuery("SELECT e FROM UnitMeasurement e ORDER BY e.createdDate DESC", UnitMeasurement.class).getResultList();
-            
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+    public List<UnitMeasurement> getUnitMeasurementList(){
+       return crudApi.getEm().createQuery("SELECT e FROM UnitMeasurement e ORDER BY e.createdDate DESC", UnitMeasurement.class).getResultList();
     }
+    
     public List<Product> getProductList() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Product e ORDER BY e.productType.productTypeName ASC", Product.class).getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM Product e ORDER BY e.productType.productTypeName ASC", Product.class).getResultList();
     }
 
     public List<Location> getLocationList() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Location e ORDER BY e.createdDate DESC", Location.class).getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM Location e ORDER BY e.createdDate DESC", Location.class).getResultList();
     }
+    
     public List<Packaging> getPackagingList() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Packaging e ORDER BY e.createdDate DESC", Packaging.class).getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM Packaging e ORDER BY e.createdDate DESC", Packaging.class).getResultList();
     }
 
     public List<ProductType> getProductTypeList() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM ProductType e ORDER BY e.createdDate DESC", ProductType.class).getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM ProductType e ORDER BY e.createdDate DESC", ProductType.class).getResultList();
     }
-
+    
     public List<Customer> getCustomerList() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Customer e ORDER BY e.customerName ASC", Customer.class)
-//                    .setParameter(Customer._companyBranch, appSession.getCompanyBranch())
-                    .getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM Customer e WHERE e.companyBranch = :companyBranch OR e.companyBranch = NULL ORDER BY e.customerName ASC", Customer.class)
+                .setParameter(Customer._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
 
     public List<UserAccount> getUserAccountList() {
-        try {
-            String qryString = "SELECT e FROM UserAccount e";
-            TypedQuery<UserAccount> typedQuery = crudApi.getEm().createQuery(qryString, UserAccount.class);
-            return typedQuery.getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM UserAccount e", UserAccount.class).getResultList();
     }
 
     public List<PurchaseOrder> getPurchaseOrderList() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM PurchaseOrder e WHERE e.companyBranch = :companyBranch", PurchaseOrder.class)
+        return crudApi.getEm().createQuery("SELECT e FROM PurchaseOrder e WHERE e.companyBranch = :companyBranch", PurchaseOrder.class)
                     .setParameter(PurchaseOrder._companyBranch, appSession.getCompanyBranch())
                     .getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
     }
 
     public List<StockReceipt> getStockReceiptList() {
@@ -155,121 +88,69 @@ public class InventoryService {
     }
 
     public List<StockReceiptItem> getStockReceiptItemList() {
-        try {
-            String qryString = "SELECT e FROM StockReceiptItem e JOIN Product p ON e.product=p GROUP BY p.productName";
-            TypedQuery<StockReceiptItem> typedQuery = crudApi.getEm().createQuery(qryString, StockReceiptItem.class);
-            return typedQuery.getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+       return crudApi.getEm().createQuery("SELECT e FROM StockReceiptItem e JOIN Product p ON e.product=p WHERE e.companyBranch = :companyBranch GROUP BY p.productName", StockReceiptItem.class)
+               .setParameter(StockReceipt._companyBranch, appSession.getCompanyBranch())
+               .getResultList();
     }
 
     public List<PurchaseOrderItem> getPurchaseOrderItem(PurchaseOrder purchaseOrder) {
-        try {
-            TypedQuery<PurchaseOrderItem> typedQuery = crudApi.getEm().createQuery("SELECT e FROM PurchaseOrderItem e WHERE e.purchaseOrder=?1", PurchaseOrderItem.class);
-            typedQuery.setParameter(1, purchaseOrder);
-
-            return typedQuery.getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM PurchaseOrderItem e WHERE e.purchaseOrder= :purchaseOrder", PurchaseOrderItem.class)
+                .setParameter(PurchaseOrderItem._purchaseOrder, purchaseOrder)
+                .setParameter(PurchaseOrderItem._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
 
     public List<Sales> getSales() {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Sales e", Sales.class).getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+       return crudApi.getEm().createQuery("SELECT e FROM Sales e", Sales.class)
+               .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
+               .getResultList();
     }
     
     public List<Sales> getCreditSales() {
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.salesType = :salesType AND e.paymentStatus <> :paymentStatus  AND e.compound = :compound", Sales.class)
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.salesType = :salesType AND e.paymentStatus <> :paymentStatus  AND e.compound = :compound AND e.companyBranch = :companyBranch", Sales.class)
                     .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
                     .setParameter(Sales._paymentStatus, PaymentStatus.FULLY_PAID)
                     .setParameter(Sales._compound, false)
+                    .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
                     .getResultList();
     }
 
     public List<Sales> getTotalSumPerDateRange(DateRangeUtil dateRange) {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2 ", Sales.class)
-                    .setParameter(1, dateRange.getFromDate())
-                    .setParameter(2, dateRange.getToDate())
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN :valueDate AND :valueDate AND e.companyBranch = :companyBranch", Sales.class)
+                    .setParameter(Sales._valueDate, dateRange.getFromDate())
+                    .setParameter(Sales._valueDate, dateRange.getToDate())
+                    .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
                     .getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
     }
-    public Customer customertExist(String phone)
-    {
-        try
-        {
-            String qryString = "SELECT e FROM Customer e WHERE e.phone=?1";
-            TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
-                    .setParameter(1, phone);
-            
-                    return typedQuery.getResultStream().findFirst().orElse(null);
-                    
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return null;
+    public Customer customertExist(String phone){
+       return crudApi.getEm().createQuery("SELECT e FROM Customer e WHERE e.phone= :phone", Customer.class)
+                    .setParameter(Customer._phone, phone)
+                    .getResultStream().findFirst().orElse(null);
     }
 
     public List<TransferItem> getTransferItemList(BatchTransfer batchTransfer) {
-        try {
-            TypedQuery<TransferItem> typedQuery = crudApi.getEm().createQuery("SELECT e FROM TransferItem e WHERE e.batchTransfer=:batchTransfer", TransferItem.class);
-            typedQuery.setParameter("batchTransfer", batchTransfer);
-            return typedQuery.getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM TransferItem e WHERE e.batchTransfer=:batchTransfer AND e.companyBranch = :companyBranch", TransferItem.class)
+                    .setParameter(TransferItem._batchTransfer, batchTransfer)
+                    .setParameter(TransferItem._companyBranch, appSession.getCompanyBranch())
+                    .getResultList();
     }
 
     public List<BatchTransfer> getBatchTransferList() {
-        try {
-            TypedQuery<BatchTransfer> typedQuery = crudApi.getEm().createQuery("SELECT e FROM BatchTransfer e", BatchTransfer.class);
-            return typedQuery.getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM BatchTransfer e WHERE e.companyBranch = :companyBranch", BatchTransfer.class)
+               .setParameter(TransferItem._companyBranch, appSession.getCompanyBranch())
+               .getResultList();
     }
     
     public List<TransferItem> getTransferItemList() {
-        try {
-            TypedQuery<TransferItem> typedQuery = crudApi.getEm().createQuery("SELECT e FROM TransferItem e", TransferItem.class);
-            return typedQuery.getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM TransferItem e WHERE e.companyBranch = :companyBranch", TransferItem.class)
+                .setParameter(TransferItem._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
     
     public List<Inventory> getInventoryList() {
-        try {
-//            TypedQuery<Inventory> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Inventory e GROUP BY e.stockReceiptItem ORDER BY e.stockReceiptItem ASC", Inventory.class);
-            TypedQuery<Inventory> typedQuery = crudApi.getEm().createQuery("SELECT e FROM Inventory e ORDER BY e.stockReceiptItem ASC", Inventory.class);
-            return typedQuery.getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.companyBranch = :companyBranch ORDER BY e.stockReceiptItem ASC", Inventory.class)
+               .setParameter(TransferItem._companyBranch, appSession.getCompanyBranch())
+               .getResultList();
     }
 
     public Inventory postToInventory(BatchTransfer batchTransfer) {
@@ -292,37 +173,21 @@ public class InventoryService {
     }
 
     public List<StockReceiptItem> getStockReceiptItemList(StockReceipt stockReceipt) {
-        try {
-            TypedQuery<StockReceiptItem> typedQuery = crudApi.getEm().createQuery("SELECT e FROM StockReceiptItem e WHERE e.stockReceipt=?1", StockReceiptItem.class);
-            typedQuery.setParameter(1, stockReceipt);
-
-            return typedQuery.getResultList();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM StockReceiptItem e WHERE e.stockReceipt=?1", StockReceiptItem.class)
+                .setParameter(StockReceiptItem._stockReceipt, stockReceipt)
+                .setParameter(StockReceiptItem._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
-    public List<StockReturn> getStockReturnList()
-    {
-        try
-        {
-            String qryString = "SELECT e FROM StockReturn e WHERE  e.companyBranch=?1";
-            TypedQuery<StockReturn> typedQuery = crudApi.getEm().createQuery(qryString, StockReturn.class);
-                                typedQuery.setParameter(1, appSession.getCompanyBranch());
-                            return typedQuery.getResultList();
-            
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+    public List<StockReturn> getStockReturnList(){
+        return crudApi.getEm().createQuery("SELECT e FROM StockReturn e WHERE e.companyBranch= :companyBranch", StockReturn.class)
+            .setParameter(StockReturn._companyBranch, appSession.getCompanyBranch())
+            .getResultList();
     }
 
     public List<ReturnItem> getReturnItems(StockReturn stockReturn) {
-        return crudApi.getEm().createQuery("SELECT e FROM ReturnItem e WHERE e.stockReturn=:stockReturn", ReturnItem.class)
-                        .setParameter(ReturnItem._stockReturn, stockReturn)
-                        .getResultList();
+        return crudApi.getEm().createQuery("SELECT e FROM ReturnItem e WHERE e.stockReturn=:stockReturn AND e.companyBranch= :companyBranch", ReturnItem.class)
+                .setParameter(ReturnItem._stockReturn, stockReturn)
+                .setParameter(ReturnItem._companyBranch,  appSession.getCompanyBranch())
+                .getResultList();
     }
 }

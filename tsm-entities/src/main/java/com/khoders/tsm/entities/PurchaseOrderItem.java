@@ -26,6 +26,7 @@ public class PurchaseOrderItem extends UserAccountRecord implements Serializable
     @ManyToOne
     private Product product;
     
+    public static final String _purchaseOrder = "purchaseOrder";
     @JoinColumn(name = "purchase_order", referencedColumnName = "id")
     @ManyToOne
     private PurchaseOrder purchaseOrder;

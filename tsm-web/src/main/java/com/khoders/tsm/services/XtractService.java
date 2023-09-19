@@ -207,6 +207,7 @@ public class XtractService
                         unitMeasurement.setUnits(details.getUnitsMeasurement());
                         unitMeasurement.genCode();
                         unitMeasurement.setUserAccount(appSession.getCurrentUser());
+                        unitMeasurement.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                         crudApi.save(unitMeasurement);
                     }
                 }

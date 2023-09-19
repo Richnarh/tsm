@@ -28,6 +28,7 @@ public class TransferItem extends UserAccountRecord implements Serializable{
     @ManyToOne
     private StockReceiptItem stockReceiptItem;
     
+    public static final String _batchTransfer = "batchTransfer";
     @JoinColumn(name = "batch_transfer")
     @ManyToOne
     private BatchTransfer batchTransfer;

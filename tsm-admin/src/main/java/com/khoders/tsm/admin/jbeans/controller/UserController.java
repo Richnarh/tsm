@@ -45,6 +45,6 @@ public class UserController implements Serializable
     {
         
 //      Faces.redirect("http://localhost:8080/tsm-web/access.xhtml?id="+userAccount.getId());
-        Faces.redirect("http://209.145.49.185:8080/tsm/access.xhtml?id="+userAccount.getId());
+        Faces.redirect("http://185.218.125.78:8080/tsm/access.xhtml?id="+userAccount.getId());
     }
 }

@@ -42,153 +42,125 @@ public class SalesService
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
 
-    public List<SalesTax> getSalesTaxList(Sales sales)
-    {
-        try
-        {
-          String query = "SELECT e FROM SalesTax e WHERE e.sales = :sales AND e.userAccount = :userAccount ORDER BY e.reOrder ASC";
-        
-        TypedQuery<SalesTax> typedQuery = crudApi.getEm().createQuery(query, SalesTax.class)
-                                .setParameter(SalesTax._sales, sales)
-                                .setParameter(SalesTax._userAccount, appSession.getCurrentUser());
-                return typedQuery.getResultList();      
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+    public List<SalesTax> getSalesTaxList(Sales sales){
+      return crudApi.getEm().createQuery("SELECT e FROM SalesTax e WHERE e.sales = :sales AND e.userAccount = :userAccount ORDER BY e.reOrder ASC", SalesTax.class)
+              .setParameter(SalesTax._sales, sales)
+              .setParameter(SalesTax._userAccount, appSession.getCurrentUser())
+              .getResultList();
     }
     
-    public List<Tax> getTaxList()
-    {
-        try
-        {
-            return crudApi.getEm().createQuery("SELECT e FROM Tax e ORDER BY e.reOrder ASC", Tax.class).getResultList();
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return Collections.emptyList();
+    public List<Tax> getTaxList(){
+       return crudApi.getEm().createQuery("SELECT e FROM Tax e ORDER BY e.reOrder ASC", Tax.class).getResultList();
     }
         
     public Customer walkinCustomer() {
-        String qryString = "SELECT e FROM Customer e WHERE e.customerName = :customerName";
-        TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
-                .setParameter(Customer._customerName, CustomerType.WALK_IN_CUSTOMER.getLabel());
-        return typedQuery.getResultStream().findFirst().orElse(null);
+        return crudApi.getEm().createQuery("SELECT e FROM Customer e WHERE e.customerName = :customerName", Customer.class)
+                .setParameter(Customer._customerName, CustomerType.WALK_IN_CUSTOMER.getLabel())
+                .getResultStream().findFirst().orElse(null);
     }
     
     public Customer backLogSupplier() {
-        String qryString = "SELECT e FROM Customer e WHERE e.customerName = :customerName";
-        TypedQuery<Customer> typedQuery = crudApi.getEm().createQuery(qryString, Customer.class)
-                .setParameter(Customer._customerName, CustomerType.BACK_LOG_SUPPLIER.getLabel());
-        return typedQuery.getResultStream().findFirst().orElse(null);
+        return crudApi.getEm().createQuery("SELECT e FROM Customer e WHERE e.customerName = :customerName", Customer.class)
+                .setParameter(Customer._customerName, CustomerType.BACK_LOG_SUPPLIER.getLabel())
+                .getResultStream().findFirst().orElse(null);
     }
     
     public List<SaleItem> getSales(Sales sales){
-        return crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales", SaleItem.class)
+        return crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales AND e.companyBranch = :companyBranch", SaleItem.class)
                         .setParameter(SaleItem._sales, sales)
+                        .setParameter(SaleItem._companyBranch, appSession.getCompanyBranch())
                         .getResultList();
     }
     public Sales getSale(String receiptNumber){
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber = :receiptNumber", Sales.class)
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber = :receiptNumber AND e.companyBranch = :companyBranch", Sales.class)
                         .setParameter(Sales._receiptNumber, receiptNumber)
+                        .setParameter(SaleItem._companyBranch, appSession.getCompanyBranch())
                         .getResultStream().findFirst().orElse(null);
     }
     
-    public List<Sales> getSales(SaleSource saleSource)
-    {
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN ?1 AND ?2 AND e.saleSource = ?3", Sales.class)
-                   .setParameter(1, LocalDate.now())
-                   .setParameter(2, LocalDate.now())
-                   .setParameter(3, saleSource)
+    public List<Sales> getSales(SaleSource saleSource){
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.valueDate BETWEEN :valueDate AND :valueDate AND e.saleSource = :saleSource AND e.companyBranch = :companyBranch", Sales.class)
+                   .setParameter(Sales._valueDate, LocalDate.now())
+                   .setParameter(Sales._valueDate, LocalDate.now())
+                   .setParameter(Sales._saleSource, saleSource)
+                   .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
                    .getResultList();
     }
     
     public List<Sales> getSalesByDates(DateRangeUtil dateRange, SaleSource saleSource){
-        try {
-            if(dateRange.getFromDate() == null || dateRange.getToDate() == null)
-            {
-                String  queryString = "SELECT e FROM Sales e WHERE e.saleSource = :saleSource ORDER BY e.valueDate DESC";
-                return  crudApi.getEm().createQuery(queryString, Sales.class)
-                        .setParameter(Sales._saleSource, saleSource)
-                        .getResultList();
-            }
-            
-            String qryString = "SELECT e FROM Sales e WHERE e.saleSource = :saleSource AND e.valueDate BETWEEN ?1 AND ?2 ORDER BY e.valueDate DESC";
-            
-            return crudApi.getEm().createQuery(qryString, Sales.class)
+        if(dateRange.getFromDate() == null || dateRange.getToDate() == null) {
+            return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.saleSource = :saleSource AND e.companyBranch = :companyBranch ORDER BY e.valueDate DESC", Sales.class)
                     .setParameter(Sales._saleSource, saleSource)
-                    .setParameter(1, dateRange.getFromDate())
-                    .setParameter(2, dateRange.getToDate())
+                    .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
                     .getResultList();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return Collections.emptyList();
+            
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.saleSource = :saleSource AND e.valueDate BETWEEN :valueDate AND :valueDate AND e.companyBranch = :companyBranch ORDER BY e.valueDate DESC", Sales.class)
+                .setParameter(Sales._saleSource, saleSource)
+                .setParameter(Sales._valueDate, dateRange.getFromDate())
+                .setParameter(Sales._valueDate, dateRange.getToDate())
+                .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
     
     public List<Inventory> queryPackagePrice(StockReceiptItem receiptItem){
-        try
-        {
-            return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem =:stockReceiptItem", Inventory.class)
-                    .setParameter(Inventory._stockReceiptItem, receiptItem)
-                    .getResultList();
-            
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+         return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem =:stockReceiptItem AND e.companyBranch = :companyBranch", Inventory.class)
+                 .setParameter(Inventory._stockReceiptItem, receiptItem)
+                 .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
+                 .getResultList();
     }
-    public Inventory queryPackagePrice(UnitMeasurement unitMeasurement, StockReceiptItem StockReceiptItem)
-    {
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.unitMeasurement = :unitMeasurement AND e.stockReceiptItem = :StockReceiptItem", Inventory.class)
-                    .setParameter(Inventory._unitMeasurement, unitMeasurement)
-                    .setParameter(Inventory._stockReceiptItem, StockReceiptItem)
-                    .getResultStream().findFirst().orElse(null);
+    
+    public Inventory queryPackagePrice(UnitMeasurement unitMeasurement, StockReceiptItem StockReceiptItem){
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.unitMeasurement = :unitMeasurement AND e.stockReceiptItem = :StockReceiptItem AND e.companyBranch = :companyBranch", Inventory.class)
+                .setParameter(Inventory._unitMeasurement, unitMeasurement)
+                .setParameter(Inventory._stockReceiptItem, StockReceiptItem)
+                .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
+                .getResultStream().findFirst().orElse(null);
     }
 
     public List<CreditPayment> getCreditSales(CompoundSale compoundSale) {
-        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.compoundSale = :compoundSale ORDER BY e.paymentDate DESC", CreditPayment.class)
+        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.compoundSale = :compoundSale AND e.companyBranch = :companyBranch ORDER BY e.paymentDate DESC", CreditPayment.class)
                     .setParameter(CreditPayment._compoundSale, compoundSale)
+                    .setParameter(CreditPayment._companyBranch, appSession.getCompanyBranch())
                     .getResultList();
     }
     public List<CreditPayment> getCreditSales(Sales sales) {
-        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = :sales ORDER BY e.paymentDate DESC", CreditPayment.class)
-                    .setParameter(CreditPayment._sales, sales)
-                    .getResultList();
+        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.sales = :sales AND e.companyBranch = :companyBranch ORDER BY e.paymentDate DESC", CreditPayment.class)
+                .setParameter(CreditPayment._sales, sales)
+                .setParameter(CreditPayment._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
 
     public List<Sales> getCompoundSales(Customer customer) {
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.salesType = :salesType AND e.compound = :compound", Sales.class)
-                    .setParameter(Sales._customer, customer)
-                    .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
-                    .setParameter(Sales._compound, false)
-                    .getResultList();
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.salesType = :salesType AND e.compound = :compound AND e.companyBranch = :companyBranch", Sales.class)
+                .setParameter(Sales._customer, customer)
+                .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
+                .setParameter(Sales._compound, false)
+                .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
     
     public CompoundSale getCompoundSale(Customer customer) {
-        return crudApi.getEm().createQuery("SELECT e FROM CompoundSale e WHERE e.customer = :customer AND e.paymentStatus <> :paymentStatus", CompoundSale.class)
-                    .setParameter(CompoundSale._customer, customer)
-                    .setParameter(CompoundSale._paymentStatus, PaymentStatus.FULLY_PAID)
-                    .getResultStream().findFirst().orElse(null);
+        return crudApi.getEm().createQuery("SELECT e FROM CompoundSale e WHERE e.customer = :customer AND e.paymentStatus <> :paymentStatus AND e.companyBranch = :companyBranch", CompoundSale.class)
+                .setParameter(CompoundSale._customer, customer)
+                .setParameter(CompoundSale._paymentStatus, PaymentStatus.FULLY_PAID)
+                .setParameter(CompoundSale._companyBranch, appSession.getCompanyBranch())
+                .getResultStream().findFirst().orElse(null);
     }
 
     public List<CompoundSale> getCompoundSales() {
-        return crudApi.getEm().createQuery("SELECT e FROM CompoundSale e", CompoundSale.class)
-                    .getResultList();
+        return crudApi.getEm().createQuery("SELECT e FROM CompoundSale e WHERE e.companyBranch = :companyBranch", CompoundSale.class)
+                .setParameter(CompoundSale._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
     
     public Sales getCreditSales(Customer customer) {
-        Sales sales = crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.salesType = :salesType AND e.compound = :compound", Sales.class)
-                    .setParameter(Sales._customer, customer)
-                    .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
-                    .setParameter(Sales._compound, false)
-                    .getResultStream().findFirst().orElse(null);
-        return sales;
+        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.customer = :customer AND e.salesType = :salesType AND e.compound = :compound AND e.companyBranch = :companyBranch", Sales.class)
+                .setParameter(Sales._customer, customer)
+                .setParameter(Sales._salesType, SalesType.CREDIT_SALES)
+                .setParameter(Sales._compound, false)
+                .setParameter(Sales._companyBranch, appSession.getCompanyBranch())
+                .getResultStream().findFirst().orElse(null);
     }
     
     public List<Sales> getCustomerSales(Customer selectedCustomer) {
@@ -199,10 +171,10 @@ public class SalesService
     }
 
     public List<CreditPayment> getCreditPayments(Customer customer) {
-        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.customer = :customer AND  e.companyBranch = :companyBranch", CreditPayment.class)
-                    .setParameter(CreditPayment._customer, customer)
-                    .setParameter(CreditPayment._companyBranch, appSession.getCompanyBranch())
-                    .getResultList();
+        return crudApi.getEm().createQuery("SELECT e FROM CreditPayment e WHERE e.customer = :customer AND e.companyBranch = :companyBranch", CreditPayment.class)
+                .setParameter(CreditPayment._customer, customer)
+                .setParameter(CreditPayment._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
     
     public Customer defaultCustomer(CustomerType customerType){
@@ -217,8 +189,8 @@ public class SalesService
     }
     public List<DeliveryInfo> getWaybills(String receiptNumber) {
         return crudApi.getEm().createQuery("SELECT e FROM DeliveryInfo e WHERE e.receiptNumber = :receiptNumber", DeliveryInfo.class)
-                    .setParameter(DeliveryInfo._receiptNumber, receiptNumber)
-                    .getResultList();
+                .setParameter(DeliveryInfo._receiptNumber, receiptNumber)
+                .getResultList();
     }
 
     public ShippingInfo getShippingInfo(String receiptNumber) {

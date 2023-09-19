@@ -22,9 +22,9 @@
                                     <div class="col-12 col-sm-12 col-lg-12 py-2">
                                         <h:form id="initForm" style="margin-bottom: 5px;">
                                             <div class="float-end">
-                                            <h:commandLink target="_blank" value="Print #{msg.product}s" class="btn btn-primary btn-sm"/>
+                                            <!--<h:commandLink target="_blank" value="Print {msg.product}s" class="btn btn-primary btn-sm"/>-->
                                             <p:commandButton id="reload" value="Reload" class="mx-3" icon="#{msg.refresh_icon}"
-                                                 action="#{productController.init()}" update=":mainPanel"/>
+                                                 action="#{productController.loadProducts()}" update=":mainPanel"/>
                                             
                                             <h:commandButton id="newProduct" value="#{msg.new} #{msg.product}" class="btn btn-outline-primary btn-sm"
                                                                  action="#{productController.initProduct()}">
