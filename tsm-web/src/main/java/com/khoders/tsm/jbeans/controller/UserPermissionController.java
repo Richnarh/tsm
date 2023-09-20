@@ -6,7 +6,7 @@
 package com.khoders.tsm.jbeans.controller;
 
 import com.khoders.tsm.entities.system.UserPage;
-import com.khoders.tsm.jbeans.dto.PageInfo;
+import com.khoders.tsm.dto.PageInfo;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.UserAccountService;
 import com.khoders.resource.jpa.CrudApi;

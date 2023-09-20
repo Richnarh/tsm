@@ -7,6 +7,7 @@ package com.khoders.tsm.admin.services;
 
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.Stringz;
+import com.khoders.tsm.entities.Location;
 import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.entities.system.CompanyProfile;
 import com.khoders.tsm.entities.system.Permission;
@@ -100,5 +101,10 @@ public class CompanyService
        }).collect(Collectors.toList());
          
        return tableList;
+    }
+    public List<Location> getLocationList() {
+        return crudApi.getEm().createQuery("SELECT e FROM Location e ORDER BY e.createdDate DESC", Location.class)
+//                .setParameter(Location._companyBranch, companyBranch)
+                .getResultList();
     }
 }

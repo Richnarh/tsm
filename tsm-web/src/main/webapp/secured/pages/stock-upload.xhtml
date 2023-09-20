@@ -25,7 +25,7 @@
                                                 <p:fileUpload value="#{stockUploadController.file}" mode="simple" skinSimple="true" required="true"/>
                                                 <p:commandButton icon="#{msg.upload_icon}" class="kbtn-default mx-2" action="#{stockUploadController.uploadStock()}" ajax="false" value="Upload Data"/>
                                                 
-                                                <p:commandButton rendered="#{stockUploadController.file != null}" icon="#{msg.cog_icon}" class="kbtn-default" value="Settins" oncomplete="PF('settingWindow').show()" resetValues="true"/>
+                                                <p:commandButton rendered="#{stockUploadController.file != null}" icon="#{msg.cog_icon}" class="kbtn-default" value="Settings" oncomplete="PF('settingWindow').show()" resetValues="true"/>
                                             </div> 
                                             <div class="col-md-2">
                                                 <span class="shadow-sm faded-shade">Count: #{stockUploadController.stockDetailList.size()}</span>

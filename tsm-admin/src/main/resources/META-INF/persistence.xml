@@ -35,5 +35,8 @@
     <class>com.khoders.tsm.entities.CompoundSale</class>
     <class>com.khoders.tsm.entities.ReturnItem</class>
     <class>com.khoders.tsm.entities.system.EventLog</class>
+    <class>com.khoders.tsm.entities.DeliveryInfo</class>
+    <class>com.khoders.tsm.entities.Payment</class>
+    <class>com.khoders.tsm.entities.ShippingInfo</class>
   </persistence-unit>
 </persistence>

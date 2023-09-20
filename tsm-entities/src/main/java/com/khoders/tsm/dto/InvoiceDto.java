@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.khoders.tsm.jbeans.dto;
+package com.khoders.tsm.dto;
 
 import java.time.LocalDate;
 import java.util.LinkedList;

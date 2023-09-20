@@ -17,7 +17,7 @@ import com.khoders.tsm.entities.CreditPayment;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.jbeans.ReportFiles;
-import com.khoders.tsm.jbeans.dto.CashReceipt;
+import com.khoders.tsm.dto.CashReceipt;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.SalesService;
 import com.khoders.tsm.services.XtractService;

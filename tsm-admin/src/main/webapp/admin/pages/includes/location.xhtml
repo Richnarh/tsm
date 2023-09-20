@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <div class="container">
+        <h:form id="location" class="spaced-form">
+            <div class="row">
+                <div class="col-md-4">
+                    <h:panelGrid columns="2">
+                        <span>#{msg.branch}</span>
+                        <p:selectOneMenu required="true" value="#{locationController.location.companyBranch}">
+                            <f:selectItem itemLabel="#{msg.choose}"/>
+                            <f:selectItems value="#{userCommons.companyBranchList}"/>
+                            <p:ajax listener="#{locationController.selectBranch()}" update="@form"/>
+                        </p:selectOneMenu>
+
+                        <span>#{msg.location}/Warehouse</span>
+                        <p:inputText required="true" value="#{locationController.location.locationName}"/>
+                        <span>#{msg.type}</span>
+                        <p:selectOneMenu value="#{locationController.location.locType}">
+                            <f:selectItem itemLabel="#{msg.choose}"/>
+                            <f:selectItems value="#{commonClass.locTypeList}"/>
+                        </p:selectOneMenu>
+                        <span>#{msg.main} Warehouse</span>
+                        <p:selectBooleanCheckbox value="#{locationController.location.mainWarehouse}"/>
+                    </h:panelGrid>
+
+                    <div class="pt-3">
+                        <p:commandButton icon="#{msg.check_icon_circle}" action="#{locationController.saveLocation()}" class="kbtn-success mx-2" value="#{locationController.optionText}" update="@form"/>
+                        <p:commandButton icon="#{msg.clear_icon}" action="#{locationController.clearLocation()}" class="kbtn-default" value="#{msg.clear}" immediate="true" update="@form"/>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <p:dataTable value="#{locationController.locationList}" var="location" paginator="true" paginatorPosition="bottom" rows="7">
+                        <p:column headerText="#{msg.location}" filterBy="#{location.locationName}" filterMatchMode="contains">
+                            <h:outputText value="#{location.locationName}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.type}">
+                            <h:outputText value="#{location.locType}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.main} Warehouse">
+                            <h:outputText value="#{location.mainWarehouse == true ? 'YES' : 'NO'}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.action}" style="width: 100px;">
+                            <p:menuButton value="#{msg.choose}">
+                                <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{locationController.editLocation(location)}"/>
+                                <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}" action="#{locationController.deleteLocation(location)}" update="@form" immediate="true"/>
+                            </p:menuButton>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+        </h:form>
+    </div>
+</html>
+

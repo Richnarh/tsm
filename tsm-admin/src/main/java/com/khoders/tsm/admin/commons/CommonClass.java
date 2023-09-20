@@ -7,6 +7,7 @@ package com.khoders.tsm.admin.commons;
 
 import com.khoders.resource.enums.AccessLevel;
 import com.khoders.resource.enums.Status;
+import com.khoders.tsm.enums.LocType;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -19,12 +20,17 @@ import javax.inject.Named;
  */
 @Named(value = "commonClass")
 @SessionScoped
-public class CommonClass implements Serializable
-{
-    public List<Status> getStatusList(){
+public class CommonClass implements Serializable {
+
+    public List<Status> getStatusList() {
         return Arrays.asList(Status.values());
     }
-    public List<AccessLevel> getAccessLevelList(){
+
+    public List<AccessLevel> getAccessLevelList() {
         return Arrays.asList(AccessLevel.values());
+    }
+
+    public List<LocType> getLocTypeList() {
+        return Arrays.asList(LocType.values());
     }
 }

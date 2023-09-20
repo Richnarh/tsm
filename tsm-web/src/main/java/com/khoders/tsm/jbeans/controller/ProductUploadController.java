@@ -8,7 +8,7 @@ package com.khoders.tsm.jbeans.controller;
 import com.khoders.tsm.entities.Packaging;
 import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.ProductType;
-import com.khoders.tsm.jbeans.dto.ProductDetails;
+import com.khoders.tsm.dto.ProductDetails;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.InventoryService;
 import com.khoders.tsm.services.StockService;

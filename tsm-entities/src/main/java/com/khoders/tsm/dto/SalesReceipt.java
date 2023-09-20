@@ -1,4 +1,4 @@
-package com.khoders.tsm.jbeans.dto;
+package com.khoders.tsm.dto;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;

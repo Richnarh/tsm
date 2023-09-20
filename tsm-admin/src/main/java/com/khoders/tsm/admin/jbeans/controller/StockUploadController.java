@@ -3,24 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.khoders.tsm.jbeans.controller;
+package com.khoders.tsm.admin.jbeans.controller;
 
 import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.PurchaseOrderItem;
-import com.khoders.tsm.listener.AppSession;
-import com.khoders.tsm.services.StockService;
 import com.khoders.resource.enums.DeliveryMethod;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.BeansUtil;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
+import com.khoders.tsm.DefaultService;
+import com.khoders.tsm.admin.listener.AppSession;
+import com.khoders.tsm.admin.services.StockService;
+import com.khoders.tsm.admin.services.XtractService;
+import com.khoders.tsm.dto.StockDetails;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Location;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
+import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.enums.ReceiptStatus;
-import com.khoders.tsm.dto.StockDetails;
-import com.khoders.tsm.services.XtractService;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -49,16 +51,19 @@ public class StockUploadController implements Serializable
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
     @Inject private StockService stockService;
+    @Inject private DefaultService ds;
     @Inject private XtractService xtractService;
         
     private StockDetails stockDetails = new StockDetails();
     private List<StockDetails> stockDetailList = new LinkedList<>();
+    private List<Location> locationList = new LinkedList<>();
     
     private PurchaseOrder selectedPurchaseOrder;
+    private CompanyBranch selectedBranch;
     
     private UploadedFile file = null;
     private boolean prepareOrder, recieveOrder, postToInventory;
-    private Location location,fromLocation,toLocation = null;
+    private Location location,toLocation;
     
     public String getFileExtension(String filename) {
     if(filename == null)
@@ -68,13 +73,36 @@ public class StockUploadController implements Serializable
     return filename.substring(filename.lastIndexOf(".") + 1, filename.length());
     }
     
-    public void uploadStock()
-    {
+    public void selectBranch(){
+        System.out.println("selectedBranch: "+selectedBranch);
+        locationList = stockService.getLocationList(selectedBranch);
+    }
+    public void refreshSettings(){
+        if(selectedBranch == null){
+            Msg.error("Select branch and refresh again.");
+            return;
+        }
+        locationList = stockService.getLocationList(selectedBranch);
+        Msg.info("seetings refreshed.");
+    }
+    public void refreshSettings(Location location){
+        this.location = location;
+    }
+    
+    public void uploadStock(){
         if (file.getSize() < 1){
             Msg.error("No excel file is selected!");
             return;
         }
-
+        if(selectedBranch == null){
+            Msg.error("Please select a branch.");
+            return;
+        }
+        System.out.println("toLocation: "+getToLocation());
+        System.out.println("location: "+getLocation());
+        System.out.println("postToInventory: "+isPostToInventory());
+        System.out.println("prepareOrder: "+isPrepareOrder());
+        System.out.println("recieveOrder: "+isRecieveOrder());
         try
         {
             String extension = getFileExtension(file.getFileName());
@@ -149,9 +177,22 @@ public class StockUploadController implements Serializable
            e.printStackTrace();
         }
     }
+    
+    public void saveSettings(){
+        this.toLocation = getToLocation();
+        this.location = getLocation();
+        this.postToInventory = isPostToInventory();
+        this.prepareOrder = isPrepareOrder();
+        this.recieveOrder = isRecieveOrder();
+        
+        System.out.println("toLocation: "+getToLocation());
+        System.out.println("location: "+getLocation());
+        System.out.println("postToInventory: "+isPostToInventory());
+        System.out.println("prepareOrder: "+isPrepareOrder());
+        System.out.println("recieveOrder: "+isRecieveOrder());
+    }
 
-    public void saveUpload()
-    {
+    public void saveUpload(){
         try
         {
             int c=0;
@@ -160,22 +201,24 @@ public class StockUploadController implements Serializable
             PurchaseOrder purchaseOrder = null;
             StockReceipt stockReceipt = null;
             
+            System.out.println("selectedBranch: "+selectedBranch);
+            
             if(location == null){
                 Msg.error("Please select warehouse");
                 return;
             }
-            boolean uploads = xtractService.saveUpload(stockDetailList);
+            boolean uploads = xtractService.saveUpload(stockDetailList,selectedBranch);
             if(uploads){
                 if(prepareOrder){
                     purchaseOrder = new PurchaseOrder();
-                    purchaseOrder.setCustomer(stockService.walkinCustomer());
+                    purchaseOrder.setCustomer(ds.walkinCustomer());
                     purchaseOrder.setDeliveryMethod(DeliveryMethod.AT_WAREHOUSE_SHOP);
                     purchaseOrder.setOrderCode(SystemUtils.generatePO());
                     purchaseOrder.setPurchasedDate(LocalDate.now());
                     purchaseOrder.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
                     purchaseOrder.genCode();
                     purchaseOrder.setUserAccount(appSession.getCurrentUser());
-                    purchaseOrder.setCompanyBranch(appSession.getCompanyBranch());
+                    purchaseOrder.setCompanyBranch(selectedBranch);
                     purchaseOrder.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                     purchaseOrder.setLocation(location);
                     crudApi.save(purchaseOrder);
@@ -195,7 +238,7 @@ public class StockUploadController implements Serializable
                     stockReceipt.setLocation(location);
                     stockReceipt.setReceivedBy(appSession.getCurrentUser());
                     stockReceipt.setUserAccount(appSession.getCurrentUser());
-                    stockReceipt.setCompanyBranch(appSession.getCompanyBranch());
+                    stockReceipt.setCompanyBranch(selectedBranch);
                     stockReceipt.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                     crudApi.save(stockReceipt);
                 }
@@ -206,12 +249,12 @@ public class StockUploadController implements Serializable
                         orderItem = new PurchaseOrderItem();
                         orderItem.setPurchaseOrder(purchaseOrder);
                         orderItem.setCostPrice(stockData.getCostPrice());
-                        orderItem.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
-                        orderItem.setProduct(stockService.getProduct(stockData.getProductName()));
+                        orderItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
+                        orderItem.setProduct(ds.getProduct(stockData.getProductName()));
                         orderItem.setQtyPurchased(stockData.getQtyInWarehouse());
                         orderItem.setSubTotal(stockData.getCostPrice() * stockData.getQtyInWarehouse());
                         orderItem.setUserAccount(appSession.getCurrentUser());
-                        orderItem.setCompanyBranch(appSession.getCompanyBranch());
+                        orderItem.setCompanyBranch(selectedBranch);
                         orderItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                         crudApi.save(orderItem);
                     }
@@ -220,27 +263,27 @@ public class StockUploadController implements Serializable
                         receiptItem.setStockReceipt(stockReceipt);
                         receiptItem.setPurchaseOrderItem(orderItem);
                         receiptItem.setCostPrice(stockData.getCostPrice());
-                        receiptItem.setProduct(stockService.getProduct(stockData.getProductName()));
+                        receiptItem.setProduct(ds.getProduct(stockData.getProductName()));
                         receiptItem.setPkgQuantity(stockData.getQtyInWarehouse());
                         receiptItem.setWprice(stockData.getWprice());
                         receiptItem.setUserAccount(appSession.getCurrentUser());
-                        receiptItem.setCompanyBranch(appSession.getCompanyBranch());
+                        receiptItem.setCompanyBranch(selectedBranch);
                         receiptItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                         receiptItem.setReceiptStatus(ReceiptStatus.RECEIVED);
-                        receiptItem.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
+                        receiptItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
                         crudApi.save(receiptItem);
                     }
                     if(postToInventory){
-                        Inventory inventory = stockService.getProduct(receiptItem, stockService.getUnits(stockData.getUnitsMeasurement()));
+                        Inventory inventory = ds.getProduct(receiptItem, ds.getUnits(stockData.getUnitsMeasurement()));
                         if (inventory == null) {
                             inventory = new Inventory();
                             inventory.setStockReceiptItem(receiptItem);
-                            inventory.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
+                            inventory.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
                             inventory.setPackagePrice(stockData.getRetailPrice());
                             inventory.setUnitsInPackage(stockData.getUnitsInPackage());
                             inventory.setWprice(stockData.getWprice());
                             inventory.setUserAccount(appSession.getCurrentUser());
-                            inventory.setCompanyBranch(appSession.getCompanyBranch());
+                            inventory.setCompanyBranch(selectedBranch);
                             inventory.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                             inventory.setLocation(toLocation);
                             inventory.setQtyInShop(stockData.getQtyInShop());
@@ -252,7 +295,7 @@ public class StockUploadController implements Serializable
                     
                 }
                 Msg.info("Upload saved successfully!");
-                appSession.logEvent("Create Stocks", null, "Save Stock Uploads");
+//                appSession.logEvent("Create Stocks", null, "Save Stock Uploads");
             }
         } catch (Exception e)
         {
@@ -265,7 +308,6 @@ public class StockUploadController implements Serializable
         file = null;
         stockDetails = new StockDetails();
         location = new Location();
-        fromLocation = new Location();
         toLocation = new Location();
         prepareOrder = false;
         recieveOrder = false;
@@ -330,20 +372,24 @@ public class StockUploadController implements Serializable
         this.location = location;
     }
 
-    public Location getFromLocation() {
-        return fromLocation;
-    }
-
-    public void setFromLocation(Location fromLocation) {
-        this.fromLocation = fromLocation;
-    }
-
     public Location getToLocation() {
         return toLocation;
     }
 
     public void setToLocation(Location toLocation) {
         this.toLocation = toLocation;
+    }
+
+    public CompanyBranch getSelectedBranch() {
+        return selectedBranch;
+    }
+
+    public void setSelectedBranch(CompanyBranch selectedBranch) {
+        this.selectedBranch = selectedBranch;
+    }
+
+    public List<Location> getLocationList() {
+        return locationList;
     }
     
 }

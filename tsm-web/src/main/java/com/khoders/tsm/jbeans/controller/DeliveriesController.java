@@ -16,7 +16,7 @@ import com.khoders.tsm.entities.DeliveryInfo;
 import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.ShippingInfo;
 import com.khoders.tsm.jbeans.ReportFiles;
-import com.khoders.tsm.jbeans.dto.SalesReceipt;
+import com.khoders.tsm.dto.SalesReceipt;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.SalesService;
 import com.khoders.tsm.services.XtractService;

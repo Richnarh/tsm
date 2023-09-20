@@ -6,7 +6,6 @@
 package com.khoders.tsm.admin.commons;
 
 import com.khoders.resource.jpa.CrudApi;
-import com.khoders.resource.utilities.Stringz;
 import com.khoders.tsm.admin.services.CompanyService;
 import com.khoders.tsm.admin.services.PermissionService;
 import com.khoders.tsm.entities.system.CompanyBranch;
@@ -16,7 +15,6 @@ import com.khoders.tsm.entities.system.UserAccount;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
