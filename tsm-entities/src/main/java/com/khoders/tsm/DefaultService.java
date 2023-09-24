@@ -56,25 +56,20 @@ public class DefaultService {
     }
 
     public StockReceipt getStockReceipt(String orderCode) {
-        try {
-            return crudApi.getEm().createQuery("SELECT e FROM StockReceipt e WHERE e.receiptNo=:receiptNo", StockReceipt.class)
+        return crudApi.getEm().createQuery("SELECT e FROM StockReceipt e WHERE e.receiptNo=:receiptNo", StockReceipt.class)
                     .setParameter(StockReceipt._receiptNo, orderCode)
                     .getResultStream().findAny().orElse(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
-    public Inventory getProduct(StockReceiptItem receiptItem, UnitMeasurement unitMeasurement) {
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:stockReceiptItem AND e.unitMeasurement=:unitMeasurement", Inventory.class)
-                .setParameter(Inventory._stockReceiptItem, receiptItem)
+    public Inventory getProduct(Product product, UnitMeasurement unitMeasurement) {
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.product=:product AND e.unitMeasurement=:unitMeasurement", Inventory.class)
+                .setParameter(Inventory._product, product)
                 .setParameter(Inventory._unitMeasurement, unitMeasurement)
                 .getResultStream().findFirst().orElse(null);
     }
     public ProductType getProductType(String prdtType){
-       return crudApi.getEm().createQuery("SELECT e FROM ProductType e WHERE e.productTypeName = :productTypeName", ProductType.class)
-                                            .setParameter(ProductType._productTypeName, prdtType)
-                                            .getResultStream().findFirst().orElse(null);
+        return crudApi.getEm().createQuery("SELECT e FROM ProductType e WHERE e.productTypeName = :productTypeName", ProductType.class)
+                .setParameter(ProductType._productTypeName, prdtType)
+                .getResultStream().findFirst().orElse(null);
     }
     public UnitMeasurement getUnits(String units) {
         return crudApi.getEm().createQuery("SELECT e FROM UnitMeasurement e WHERE e.units = :units", UnitMeasurement.class)

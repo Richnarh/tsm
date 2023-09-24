@@ -17,12 +17,12 @@ import com.khoders.tsm.admin.listener.AppSession;
 import com.khoders.tsm.admin.services.StockService;
 import com.khoders.tsm.admin.services.XtractService;
 import com.khoders.tsm.dto.StockDetails;
-import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Location;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.enums.ReceiptStatus;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -63,7 +64,13 @@ public class StockUploadController implements Serializable
     
     private UploadedFile file = null;
     private boolean prepareOrder, recieveOrder, postToInventory;
-    private Location location,toLocation;
+    private Location location,toLocation,selectedLocation;
+    
+    @PostConstruct
+    public void init(){
+        location = new Location();
+        toLocation = new Location();
+    }
     
     public String getFileExtension(String filename) {
     if(filename == null)
@@ -90,21 +97,15 @@ public class StockUploadController implements Serializable
     }
     
     public void uploadStock(){
-        if (file.getSize() < 1){
-            Msg.error("No excel file is selected!");
-            return;
-        }
         if(selectedBranch == null){
             Msg.error("Please select a branch.");
             return;
         }
-        System.out.println("toLocation: "+getToLocation());
-        System.out.println("location: "+getLocation());
-        System.out.println("postToInventory: "+isPostToInventory());
-        System.out.println("prepareOrder: "+isPrepareOrder());
-        System.out.println("recieveOrder: "+isRecieveOrder());
-        try
-        {
+        if (file.getSize() < 1){
+            Msg.error("No excel file is selected!");
+            return;
+        }
+        try{
             String extension = getFileExtension(file.getFileName());
             logger.log(Level.INFO, "type ==> {0}", extension);
 
@@ -172,9 +173,8 @@ public class StockUploadController implements Serializable
 //                appSession.logEvent("Stock Upload", null, "Inventory Uploads");
                 System.out.println("Iteration "+c+" done!");
             }
-        } catch (Exception e)
+        } catch (IOException e)
         {
-           e.printStackTrace();
         }
     }
     
@@ -185,121 +185,109 @@ public class StockUploadController implements Serializable
         this.prepareOrder = isPrepareOrder();
         this.recieveOrder = isRecieveOrder();
         
-        System.out.println("toLocation: "+getToLocation());
-        System.out.println("location: "+getLocation());
-        System.out.println("postToInventory: "+isPostToInventory());
-        System.out.println("prepareOrder: "+isPrepareOrder());
-        System.out.println("recieveOrder: "+isRecieveOrder());
+        
     }
 
     public void saveUpload(){
-        try
-        {
-            int c=0;
-            if(stockDetailList.isEmpty()) return;
-            
+        if (selectedBranch == null) {
+            Msg.error("Please select a branch.");
+            return;
+        }
+        try {
+            int c = 0;
+            if (stockDetailList.isEmpty()) {
+                return;
+            }
+
             PurchaseOrder purchaseOrder = null;
             StockReceipt stockReceipt = null;
             
-            System.out.println("selectedBranch: "+selectedBranch);
-            
-            if(location == null){
-                Msg.error("Please select warehouse");
+            if (selectedLocation == null) {
+                Msg.error("Please select main warehouse.");
                 return;
             }
-            boolean uploads = xtractService.saveUpload(stockDetailList,selectedBranch);
-            if(uploads){
-                if(prepareOrder){
-                    purchaseOrder = new PurchaseOrder();
-                    purchaseOrder.setCustomer(ds.walkinCustomer());
-                    purchaseOrder.setDeliveryMethod(DeliveryMethod.AT_WAREHOUSE_SHOP);
-                    purchaseOrder.setOrderCode(SystemUtils.generatePO());
-                    purchaseOrder.setPurchasedDate(LocalDate.now());
-                    purchaseOrder.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
-                    purchaseOrder.genCode();
-                    purchaseOrder.setUserAccount(appSession.getCurrentUser());
-                    purchaseOrder.setCompanyBranch(selectedBranch);
-                    purchaseOrder.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                    purchaseOrder.setLocation(location);
-                    crudApi.save(purchaseOrder);
-                }
-                if(recieveOrder && purchaseOrder != null){
-                    stockReceipt = new StockReceipt();
-                    if(location == null){
-                        Msg.error("Receipt location not set.");
-                        return;
-                    }
-                    stockReceipt.setReceiptNo(SystemUtils.generateIN());
-                    stockReceipt.setRefNo(purchaseOrder.getOrderCode());
-                    stockReceipt.setBatchNo(SystemUtils.generateCode());
-                    stockReceipt.setTotalAmount(purchaseOrder.getTotalAmount());
-                    stockReceipt.setPurchaseOrder(purchaseOrder);
-                    stockReceipt.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
-                    stockReceipt.setLocation(location);
-                    stockReceipt.setReceivedBy(appSession.getCurrentUser());
-                    stockReceipt.setUserAccount(appSession.getCurrentUser());
-                    stockReceipt.setCompanyBranch(selectedBranch);
-                    stockReceipt.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                    crudApi.save(stockReceipt);
-                }
+            
+            boolean uploads = xtractService.saveUpload(stockDetailList, selectedBranch);
+            if (uploads) {
+                purchaseOrder = new PurchaseOrder();
+                purchaseOrder.setCustomer(ds.walkinCustomer());
+                purchaseOrder.setDeliveryMethod(DeliveryMethod.AT_WAREHOUSE_SHOP);
+                purchaseOrder.setOrderCode(SystemUtils.generatePO());
+                purchaseOrder.setPurchasedDate(LocalDate.now());
+                purchaseOrder.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
+                purchaseOrder.genCode();
+                purchaseOrder.setUserAccount(appSession.getCurrentUser());
+                purchaseOrder.setCompanyBranch(selectedBranch);
+                purchaseOrder.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                purchaseOrder.setLocation(selectedLocation);
+                crudApi.save(purchaseOrder);
+
+                stockReceipt = new StockReceipt();
+                stockReceipt.setReceiptNo(SystemUtils.generateIN());
+                stockReceipt.setRefNo(purchaseOrder.getOrderCode());
+                stockReceipt.setBatchNo(SystemUtils.generateCode());
+                stockReceipt.setTotalAmount(purchaseOrder.getTotalAmount());
+                stockReceipt.setPurchaseOrder(purchaseOrder);
+                stockReceipt.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
+                stockReceipt.setLocation(selectedLocation);
+                stockReceipt.setReceivedBy(appSession.getCurrentUser());
+                stockReceipt.setUserAccount(appSession.getCurrentUser());
+                stockReceipt.setCompanyBranch(selectedBranch);
+                stockReceipt.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                crudApi.save(stockReceipt);
+
                 for (StockDetails stockData : stockDetailList) {
                     PurchaseOrderItem orderItem = null;
                     StockReceiptItem receiptItem = null;
-                    if(prepareOrder && purchaseOrder != null){
-                        orderItem = new PurchaseOrderItem();
-                        orderItem.setPurchaseOrder(purchaseOrder);
-                        orderItem.setCostPrice(stockData.getCostPrice());
-                        orderItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
-                        orderItem.setProduct(ds.getProduct(stockData.getProductName()));
-                        orderItem.setQtyPurchased(stockData.getQtyInWarehouse());
-                        orderItem.setSubTotal(stockData.getCostPrice() * stockData.getQtyInWarehouse());
-                        orderItem.setUserAccount(appSession.getCurrentUser());
-                        orderItem.setCompanyBranch(selectedBranch);
-                        orderItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                        crudApi.save(orderItem);
-                    }
-                    if(recieveOrder && stockReceipt != null){
-                        receiptItem = new StockReceiptItem();
-                        receiptItem.setStockReceipt(stockReceipt);
-                        receiptItem.setPurchaseOrderItem(orderItem);
-                        receiptItem.setCostPrice(stockData.getCostPrice());
-                        receiptItem.setProduct(ds.getProduct(stockData.getProductName()));
-                        receiptItem.setPkgQuantity(stockData.getQtyInWarehouse());
-                        receiptItem.setWprice(stockData.getWprice());
-                        receiptItem.setUserAccount(appSession.getCurrentUser());
-                        receiptItem.setCompanyBranch(selectedBranch);
-                        receiptItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                        receiptItem.setReceiptStatus(ReceiptStatus.RECEIVED);
-                        receiptItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
-                        crudApi.save(receiptItem);
-                    }
-                    if(postToInventory){
-                        Inventory inventory = ds.getProduct(receiptItem, ds.getUnits(stockData.getUnitsMeasurement()));
-                        if (inventory == null) {
-                            inventory = new Inventory();
-                            inventory.setStockReceiptItem(receiptItem);
-                            inventory.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
-                            inventory.setPackagePrice(stockData.getRetailPrice());
-                            inventory.setUnitsInPackage(stockData.getUnitsInPackage());
-                            inventory.setWprice(stockData.getWprice());
-                            inventory.setUserAccount(appSession.getCurrentUser());
-                            inventory.setCompanyBranch(selectedBranch);
-                            inventory.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                            inventory.setLocation(toLocation);
-                            inventory.setQtyInShop(stockData.getQtyInShop());
-                            inventory.setDescription("Inventory Upload on: "+LocalDate.now());
-                            inventory.setDataSource("Inventory Upload dated: "+LocalDate.now());
-                            crudApi.save(inventory);
-                        }
-                    }
-                    
+                    orderItem = new PurchaseOrderItem();
+                    orderItem.setPurchaseOrder(purchaseOrder);
+                    orderItem.setCostPrice(stockData.getCostPrice());
+                    orderItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
+                    orderItem.setProduct(ds.getProduct(stockData.getProductName()));
+                    orderItem.setQtyPurchased(stockData.getQtyInWarehouse());
+                    orderItem.setSubTotal(stockData.getCostPrice() * stockData.getQtyInWarehouse());
+                    orderItem.setUserAccount(appSession.getCurrentUser());
+                    orderItem.setCompanyBranch(selectedBranch);
+                    orderItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                    crudApi.save(orderItem);
+
+                    receiptItem = new StockReceiptItem();
+                    receiptItem.setStockReceipt(stockReceipt);
+                    receiptItem.setPurchaseOrderItem(orderItem);
+                    receiptItem.setCostPrice(stockData.getCostPrice());
+                    receiptItem.setProduct(ds.getProduct(stockData.getProductName()));
+                    receiptItem.setPkgQuantity(stockData.getQtyInWarehouse());
+                    receiptItem.setWprice(stockData.getWprice());
+                    receiptItem.setUserAccount(appSession.getCurrentUser());
+                    receiptItem.setCompanyBranch(selectedBranch);
+                    receiptItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+                    receiptItem.setReceiptStatus(ReceiptStatus.RECEIVED);
+                    receiptItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
+                    crudApi.save(receiptItem);
+
+                    // shop
+//                    Inventory inventory = ds.getProduct(receiptItem, ds.getUnits(stockData.getUnitsMeasurement()));
+//                    if (inventory == null) {
+//                        inventory = new Inventory();
+//                        inventory.setStockReceiptItem(receiptItem);
+//                        inventory.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
+//                        inventory.setPackagePrice(stockData.getRetailPrice());
+//                        inventory.setUnitsInPackage(stockData.getUnitsInPackage());
+//                        inventory.setWprice(stockData.getWprice());
+//                        inventory.setUserAccount(appSession.getCurrentUser());
+//                        inventory.setCompanyBranch(selectedBranch);
+//                        inventory.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+//                        inventory.setLocation(toLocation);
+//                        inventory.setQtyInShop(stockData.getQtyInShop());
+//                        inventory.setDescription("Inventory Upload on: " + LocalDate.now());
+//                        inventory.setDataSource("Inventory Upload dated: " + LocalDate.now());
+//                        crudApi.save(inventory);
+//                    }
                 }
                 Msg.info("Upload saved successfully!");
 //                appSession.logEvent("Create Stocks", null, "Save Stock Uploads");
             }
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+        } catch (Exception e) {
         }
     }
     public void clear()
@@ -312,6 +300,7 @@ public class StockUploadController implements Serializable
         prepareOrder = false;
         recieveOrder = false;
         postToInventory = false;
+        selectedBranch = null;
         file = null;
         SystemUtils.resetJsfUI();
     }
@@ -390,6 +379,14 @@ public class StockUploadController implements Serializable
 
     public List<Location> getLocationList() {
         return locationList;
+    }
+
+    public Location getSelectedLocation() {
+        return selectedLocation;
+    }
+
+    public void setSelectedLocation(Location selectedLocation) {
+        this.selectedLocation = selectedLocation;
     }
     
 }

@@ -39,7 +39,7 @@
                                 <div class="card-body">
                                     <h:panelGrid columns="2">
                                         <span>Selected Product <span class="text-danger">*</span></span>
-                                        <h:outputText class="field-shade" value="#{inventoryController.selectedStockReceiptItem.product.productName}"/>
+                                        <h:outputText class="field-shade" value="#{inventoryController.product.productName}"/>
 
                                         <span>Unit of measurement <span class="text-danger">*</span></span>
                                         <p:selectOneMenu value="#{inventoryController.inventory.unitMeasurement}" required="true" filter="true" filterMatchMode="contains">
@@ -68,7 +68,7 @@
                                 <p:dataTable value="#{inventoryController.segmentedList}" var="segment">
                                     <f:facet name="header">Snapshot of selected product</f:facet>
                                     <p:column headerText="Product">
-                                        <h:outputText value="#{segment.stockReceiptItem.product.productName}"/>
+                                        <h:outputText value="#{segment.product.productName}"/>
                                     </p:column>
                                     <p:column headerText="Units" style="width: 100px;">
                                         <h:outputText value="#{segment.unitMeasurement.units}"/>
@@ -115,8 +115,8 @@
                                     </h:panelGrid>
                                 </p:rowExpansion>
 
-                                <p:column headerText="Product" filterBy="#{inventory.stockReceiptItem.product.productName}" filterMatchMode="contains">
-                                    <h:outputText value="#{inventory.stockReceiptItem.product.productName}"/>
+                                <p:column headerText="Product" filterBy="#{inventory.product.productName}" filterMatchMode="contains">
+                                    <h:outputText value="#{inventory.product.productName}"/>
                                 </p:column>
                                 <p:column headerText="Units" style="width: 100px;">
                                     <h:outputText value="#{inventory.unitMeasurement.units}"/>

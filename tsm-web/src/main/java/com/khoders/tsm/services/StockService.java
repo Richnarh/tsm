@@ -66,6 +66,12 @@ public class StockService {
                 .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
                 .getResultStream().findFirst().orElse(null);
     }
+    public Inventory getProduct(UnitMeasurement unitMeasurement) {
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.unitMeasurement=:unitMeasurement AND e.companyBranch = :companyBranch", Inventory.class)
+                .setParameter(Inventory._unitMeasurement, unitMeasurement)
+                .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
+                .getResultStream().findFirst().orElse(null);
+    }
     public ProductType getProductType(String prdtType){
        return crudApi.getEm().createQuery("SELECT e FROM ProductType e WHERE e.productTypeName = :productTypeName", ProductType.class)
                 .setParameter(ProductType._productTypeName, prdtType)

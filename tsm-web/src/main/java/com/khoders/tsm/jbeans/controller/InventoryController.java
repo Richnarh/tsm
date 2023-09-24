@@ -7,6 +7,7 @@ import com.khoders.resource.utilities.CollectionList;
 import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
+import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.listener.AppSession;
@@ -38,6 +39,7 @@ public class InventoryController implements Serializable
    private List<StockReceiptItem> stockReceiptItemList = new LinkedList<>();
    private String optionText;
    private StockReceiptItem selectedStockReceiptItem = null;
+   private Product product = null;
    private UnitMeasurement selectedUnit = null;
    
    @PostConstruct
@@ -59,7 +61,7 @@ public class InventoryController implements Serializable
        clearInventory();
    }
    public void selectProduct(StockReceiptItem stockReceiptItem){
-       selectedStockReceiptItem=stockReceiptItem;
+       product=stockReceiptItem.getProduct();
        segmentedList = stockService.inventoryProduct(selectedStockReceiptItem);
        
        inventory.setWprice(stockReceiptItem.getWprice());
@@ -69,8 +71,7 @@ public class InventoryController implements Serializable
        selectedUnit = inventory.getUnitMeasurement();
    }
    
-   public void saveInventory()
-   {
+   public void saveInventory(){
        if(selectedStockReceiptItem == null){
            Msg.error("Please select a product");
            return;
@@ -102,12 +103,10 @@ public class InventoryController implements Serializable
           clearInventory();
        } catch (Exception e)
        {
-          e.printStackTrace();
        }
    }
    
-   public void deleteInventory(Inventory inventory)
-   {
+   public void deleteInventory(Inventory inventory){
        try
        {
          if(crudApi.delete(inventory))
@@ -117,13 +116,12 @@ public class InventoryController implements Serializable
          }  
        } catch (Exception e)
        {
-         e.printStackTrace();
        }
    }
    
    public void editInventory(Inventory inventory){
        this.inventory = inventory;
-       selectedStockReceiptItem = inventory.getStockReceiptItem();
+       product = inventory.getProduct();
        this.optionText = "Update";
    }
 
@@ -189,6 +187,14 @@ public class InventoryController implements Serializable
     public List<Inventory> getSegmentedList()
     {
         return segmentedList;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
     
 }

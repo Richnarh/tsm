@@ -21,16 +21,19 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "location")
 public class Location  extends UserAccountRecord implements Serializable{
+    public static final String _locationName = "locationName";
     @Column(name = "location_name")
     private String locationName;
     
     @Column(name = "address")
     private String address;
     
+    public static final String _locType = "locType";
     @Column(name = "loc_type")
     @Enumerated(EnumType.STRING)
     private LocType locType;
     
+    public static final String _mainWarehouse = "mainWarehouse";
     @Column(name = "main_warehouse")
     private boolean mainWarehouse;
     

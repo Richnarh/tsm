@@ -69,7 +69,6 @@ public class BatchTransferController implements Serializable{
             }
             clearBatchTransfer();
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
      
@@ -85,7 +84,6 @@ public class BatchTransferController implements Serializable{
                 Msg.info(Msg.SUCCESS_MESSAGE);
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
     
@@ -108,7 +106,6 @@ public class BatchTransferController implements Serializable{
                 clearTransfer();
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
      

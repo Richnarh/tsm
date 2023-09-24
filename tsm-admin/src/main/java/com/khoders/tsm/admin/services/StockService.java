@@ -13,6 +13,7 @@ import com.khoders.tsm.entities.system.UserAccount;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Location;
+import com.khoders.tsm.enums.LocType;
 import java.util.Collections;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -167,7 +168,6 @@ public class StockService
            
         } catch (Exception e)
         {
-            e.printStackTrace();
         }
         
         return Collections.emptyList();
@@ -208,7 +208,6 @@ public class StockService
            
         } catch (Exception e)
         {
-           e.printStackTrace();
         }
         
         return Collections.emptyList();
@@ -218,5 +217,12 @@ public class StockService
         return crudApi.getEm().createQuery("SELECT e FROM Location e WHERE e.companyBranch = :companyBranch ORDER BY e.createdDate DESC", Location.class)
                  .setParameter(Location._companyBranch, companyBranch)
                  .getResultList();
+    }
+
+    public Location findLocationByBranch(CompanyBranch selectedBranch, LocType locType) {
+       return crudApi.getEm().createQuery("SELECT e FROM Location e WHERE e.locType = :locType AND e.companyBranch = :companyBranch ORDER BY e.createdDate DESC", Location.class)
+                 .setParameter(Location._locType, locType)
+                 .setParameter(Location._companyBranch, selectedBranch)
+                 .getResultStream().findFirst().orElse(null);
     }
 }

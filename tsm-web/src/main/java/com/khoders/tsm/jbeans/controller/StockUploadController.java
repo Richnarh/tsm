@@ -21,6 +21,7 @@ import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.enums.ReceiptStatus;
 import com.khoders.tsm.dto.StockDetails;
 import com.khoders.tsm.services.XtractService;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -144,9 +145,8 @@ public class StockUploadController implements Serializable
 //                appSession.logEvent("Stock Upload", null, "Inventory Uploads");
                 System.out.println("Iteration "+c+" done!");
             }
-        } catch (Exception e)
+        } catch (IOException e)
         {
-           e.printStackTrace();
         }
     }
 
@@ -256,7 +256,6 @@ public class StockUploadController implements Serializable
             }
         } catch (Exception e)
         {
-            e.printStackTrace();
         }
     }
     public void clear()

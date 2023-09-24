@@ -385,7 +385,7 @@ public class SalesController implements Serializable
                         crudApi.save(item);
                         
                         if(sales.getSalesType() == SalesType.INSTANT_SALES){
-                            Inventory inventory = stockService.getProduct(item.getInventory().getStockReceiptItem(), item.getInventory().getUnitMeasurement());
+                            Inventory inventory = stockService.getProduct(item.getInventory().getUnitMeasurement());
                             double qtyInShop = inventory.getQtyInShop();
                             double newQty = qtyInShop - item.getQuantity();
                             inventory.setQtyInShop(newQty);
@@ -412,7 +412,6 @@ public class SalesController implements Serializable
                 appSession.logEvent("Save Sales", EventModule.SALES, "Complete Sales");
         } catch (Exception e) 
         {
-            e.printStackTrace();
         }
     }
     private void savePayment(Sales sales){
@@ -527,7 +526,6 @@ public class SalesController implements Serializable
 
         }catch(Exception e)
         {
-            e.printStackTrace();
         }
     }
     

@@ -27,6 +27,11 @@ public class Inventory extends UserAccountRecord implements Serializable{
     @ManyToOne
     private StockReceiptItem stockReceiptItem;
     
+    public static final String _product = "product";
+    @JoinColumn(name = "product")
+    @ManyToOne
+    private Product product;
+    
     public static final String _location = "location";
     @JoinColumn(name = "location") // shop name
     @ManyToOne
@@ -140,16 +145,24 @@ public class Inventory extends UserAccountRecord implements Serializable{
     public void setQtyLeft(Double qtyLeft) {
         this.qtyLeft = qtyLeft;
     }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
     
     @Override
     public String toString() {
         if(unitMeasurement != null && unitsInPackage != null)
-           return stockReceiptItem+" ("+unitMeasurement.getUnits()+" - "+unitsInPackage+")";
+           return product+" ("+unitMeasurement.getUnits()+" - "+unitsInPackage+")";
         else if(unitMeasurement == null && unitsInPackage != null)
-            return stockReceiptItem+" ("+unitsInPackage+")";
+            return product+" ("+unitsInPackage+")";
         else if(unitMeasurement != null && unitsInPackage == null || unitsInPackage == 0.0)
-            return stockReceiptItem+" ("+unitMeasurement.getUnits()+")";
+            return product+" ("+unitMeasurement.getUnits()+")";
         else
-            return stockReceiptItem+"";
+            return product+"";
     }
 }

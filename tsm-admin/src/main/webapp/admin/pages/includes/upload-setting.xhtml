@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+
+    <div class="container-fluid">
+        <h:form class="spaced-form">
+        <p:commandLink value="Refresh Settings" action="{stockUploadController.refreshSettings()}" update="@form"/>
+        <div class="card-block">
+            <div class="form-group row py-2">
+                <label class="col-sm-4 col-form-label">Create Inventory</label>
+                <div class="col-md-8">
+                    <p:selectBooleanCheckbox immediate="true" value="{stockUploadController.postToInventory}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Create Purchase Order</label>
+                <div class="col-md-8">
+                    <p:selectBooleanCheckbox immediate="true" value="{stockUploadController.prepareOrder}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label">Create Stock Receipt</label>
+                <div class="col-md-8">
+                    <p:selectBooleanCheckbox immediate="true" value="{stockUploadController.recieveOrder}"/>
+                </div>
+            </div>
+            
+        </div>
+            <p:commandButton value="{msg.save}" immediate="true" icon="{msg.check_icon_circle}" action="{stockUploadController.saveSettings()}" update="@form"/>
+        </h:form>
+        
+        
+        <ui:remove>
+            <div class="col-md-6 mx-auto py-2">
+            <span>Post to Shop</span>
+            <p:selectOneMenu style="width: 18rem" immediate="true" value="#{stockUploadController.toLocation}">
+                <f:selectItem itemLabel="#{msg.choose}"/>
+                <f:selectItems value="#{stockUploadController.locationList}"/>
+            </p:selectOneMenu>
+
+            <span>Receive to warehouse</span>
+            <p:selectOneMenu style="width: 18rem" immediate="true" value="#{stockUploadController.location}">
+                <f:selectItem itemLabel="#{msg.choose}"/>
+                <f:selectItems value="#{stockUploadController.locationList}"/>
+            </p:selectOneMenu>
+
+            <h:panelGrid columns="2" class="spaced-form">
+                <span>Create Inventory</span>
+                <p:selectBooleanCheckbox value="#{stockUploadController.postToInventory}"/>
+
+                <span>Create Purchase Order</span>
+                <p:selectBooleanCheckbox value="#{stockUploadController.prepareOrder}"/>
+
+                <span>Create Stock Receipt</span>
+                <p:selectBooleanCheckbox value="#{stockUploadController.recieveOrder}"/>
+            </h:panelGrid>
+        </div>
+        </ui:remove>
+    </div>
+</html>
+

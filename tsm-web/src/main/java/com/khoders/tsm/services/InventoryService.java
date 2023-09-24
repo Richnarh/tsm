@@ -54,7 +54,9 @@ public class InventoryService {
     }
 
     public List<Location> getLocationList() {
-        return crudApi.getEm().createQuery("SELECT e FROM Location e ORDER BY e.createdDate DESC", Location.class).getResultList();
+        return crudApi.getEm().createQuery("SELECT e FROM Location e WHERE e.companyBranch = :companyBranch ORDER BY e.createdDate DESC", Location.class)
+                .setParameter(Location._companyBranch, appSession.getCompanyBranch())
+                .getResultList();
     }
     
     public List<Packaging> getPackagingList() {
@@ -148,7 +150,7 @@ public class InventoryService {
     }
     
     public List<Inventory> getInventoryList() {
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.companyBranch = :companyBranch ORDER BY e.stockReceiptItem ASC", Inventory.class)
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.companyBranch = :companyBranch ORDER BY e.product.productName ASC", Inventory.class)
                .setParameter(TransferItem._companyBranch, appSession.getCompanyBranch())
                .getResultList();
     }
