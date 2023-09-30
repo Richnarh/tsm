@@ -16,15 +16,15 @@
                 <div class="card shadow-sm">
                     <h5 class="card-header">Warehouse/Shop</h5>
                     <div class="card-body">
-                        <h:form id="location" class="spaced-form">
-                            <div class="row">
-                                <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h:form id="location" class="spaced-form">
                                     <h:panelGrid columns="2">
                                         <span>#{msg.branch}</span>
                                         <p:selectOneMenu required="true" value="#{locationController.location.companyBranch}">
                                             <f:selectItem itemLabel="#{msg.choose}"/>
                                             <f:selectItems value="#{userCommons.companyBranchList}"/>
-                                            <p:ajax listener="#{locationController.selectBranch()}" update="@form"/>
+                                            <p:ajax listener="#{locationController.selectBranch()}" update="@form,:locationTable"/>
                                         </p:selectOneMenu>
 
                                         <span>shop/Warehouse</span>
@@ -42,11 +42,12 @@
                                         <p:commandButton icon="#{msg.check_icon_circle}" action="#{locationController.saveLocation()}" class="kbtn-success mx-2" value="#{locationController.optionText}" update="@form"/>
                                         <p:commandButton icon="#{msg.clear_icon}" action="#{locationController.clearLocation()}" class="kbtn-default" value="#{msg.clear}" immediate="true" update="@form"/>
                                     </div>
-                                </div>
-
-                                <div class="col-md-8">
+                                </h:form>
+                            </div>
+                            <div class="col-md-8">
+                                <h:form id="locationTable">
                                     <p:dataTable value="#{locationController.locationList}" var="location" paginator="true" paginatorPosition="bottom" rows="7">
-                                        <p:column headerText="#{msg.location}" filterBy="#{location.locationName}" filterMatchMode="contains">
+                                        <p:column headerText="Warehouse/Shop" filterBy="#{location.locationName}" filterMatchMode="contains">
                                             <h:outputText value="#{location.locationName}"/>
                                         </p:column>
                                         <p:column headerText="#{msg.type}">
@@ -57,14 +58,14 @@
                                         </p:column>
                                         <p:column headerText="#{msg.action}" style="width: 100px;">
                                             <p:menuButton value="#{msg.choose}">
-                                                <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{locationController.editLocation(location)}" update="@form"/>
+                                                <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{locationController.editLocation(location)}" update=":location"/>
                                                 <p:menuitem icon="#{msg.delete_icon}" class="text-danger" value="#{msg.delete}" action="#{locationController.deleteLocation(location)}" update="@form" immediate="true"/>
                                             </p:menuButton>
                                         </p:column>
                                     </p:dataTable>
-                                </div>
+                                </h:form>
                             </div>
-                        </h:form>
+                        </div>
                     </div>
                 </div>
             </ui:define>
