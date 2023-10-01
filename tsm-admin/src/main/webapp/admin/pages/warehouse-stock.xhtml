@@ -27,13 +27,10 @@
                                                     <p:selectOneMenu style="width: 18rem" value="#{stockUploadController.selectedBranch}">
                                                         <f:selectItem itemLabel="#{msg.choose}"/>
                                                         <f:selectItems value="#{userCommons.companyBranchList}"/>
-                                                        <p:ajax listener="#{stockUploadController.selectBranch()}" update="@form"/>
+                                                        <p:ajax listener="#{stockUploadController.getWarehouse()}" update="@form"/>
                                                     </p:selectOneMenu>
-                                                    <span>Main #{msg.warehouse} &nbsp;</span>
-                                                    <p:selectOneMenu style="width: 18rem" value="#{stockUploadController.selectedLocation}">
-                                                        <f:selectItem itemLabel="#{msg.choose}"/>
-                                                        <f:selectItems value="#{userCommons.locationList}"/>
-                                                    </p:selectOneMenu>
+                                                    <p:outputLabel rendered="#{stockUploadController.selectedWarehouse != null}">Your upload will be saved to: &nbsp;</p:outputLabel>
+                                                    <p:outputLabel rendered="#{stockUploadController.selectedWarehouse != null}" class="faded-shade" value="#{stockUploadController.selectedWarehouse != null ? stockUploadController.selectedWarehouse : 'No warehouse created for the seleted branch'}"/>
                                                 </h:panelGrid>
                                             </div>
 

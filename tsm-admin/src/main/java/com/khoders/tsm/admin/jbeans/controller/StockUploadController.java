@@ -21,6 +21,7 @@ import com.khoders.tsm.entities.Location;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.system.CompanyBranch;
+import com.khoders.tsm.enums.LocType;
 import com.khoders.tsm.enums.ReceiptStatus;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +31,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,13 +64,7 @@ public class StockUploadController implements Serializable
     
     private UploadedFile file = null;
     private boolean prepareOrder, recieveOrder, postToInventory;
-    private Location location,toLocation,selectedLocation;
-    
-    @PostConstruct
-    public void init(){
-        location = new Location();
-        toLocation = new Location();
-    }
+    private Location selectedWarehouse;
     
     public String getFileExtension(String filename) {
     if(filename == null)
@@ -84,6 +78,9 @@ public class StockUploadController implements Serializable
         System.out.println("selectedBranch: "+selectedBranch);
         locationList = stockService.getLocationList(selectedBranch);
     }
+    public void getWarehouse() {
+        selectedWarehouse = stockService.findLocationByBranch(selectedBranch, LocType.WAREHOUSE);
+    }
     public void refreshSettings(){
         if(selectedBranch == null){
             Msg.error("Select branch and refresh again.");
@@ -91,9 +88,6 @@ public class StockUploadController implements Serializable
         }
         locationList = stockService.getLocationList(selectedBranch);
         Msg.info("seetings refreshed.");
-    }
-    public void refreshSettings(Location location){
-        this.location = location;
     }
     
     public void uploadStock(){
@@ -178,16 +172,6 @@ public class StockUploadController implements Serializable
         }
     }
     
-    public void saveSettings(){
-        this.toLocation = getToLocation();
-        this.location = getLocation();
-        this.postToInventory = isPostToInventory();
-        this.prepareOrder = isPrepareOrder();
-        this.recieveOrder = isRecieveOrder();
-        
-        
-    }
-
     public void saveUpload(){
         if (selectedBranch == null) {
             Msg.error("Please select a branch.");
@@ -202,7 +186,7 @@ public class StockUploadController implements Serializable
             PurchaseOrder purchaseOrder = null;
             StockReceipt stockReceipt = null;
             
-            if (selectedLocation == null) {
+            if (selectedWarehouse == null) {
                 Msg.error("Please select main warehouse.");
                 return;
             }
@@ -219,7 +203,7 @@ public class StockUploadController implements Serializable
                 purchaseOrder.setUserAccount(appSession.getCurrentUser());
                 purchaseOrder.setCompanyBranch(selectedBranch);
                 purchaseOrder.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-                purchaseOrder.setLocation(selectedLocation);
+                purchaseOrder.setLocation(selectedWarehouse);
                 crudApi.save(purchaseOrder);
 
                 stockReceipt = new StockReceipt();
@@ -229,7 +213,7 @@ public class StockUploadController implements Serializable
                 stockReceipt.setTotalAmount(purchaseOrder.getTotalAmount());
                 stockReceipt.setPurchaseOrder(purchaseOrder);
                 stockReceipt.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
-                stockReceipt.setLocation(selectedLocation);
+                stockReceipt.setLocation(selectedWarehouse);
                 stockReceipt.setReceivedBy(appSession.getCurrentUser());
                 stockReceipt.setUserAccount(appSession.getCurrentUser());
                 stockReceipt.setCompanyBranch(selectedBranch);
@@ -295,8 +279,6 @@ public class StockUploadController implements Serializable
         stockDetailList = new LinkedList<>();
         file = null;
         stockDetails = new StockDetails();
-        location = new Location();
-        toLocation = new Location();
         prepareOrder = false;
         recieveOrder = false;
         postToInventory = false;
@@ -353,22 +335,6 @@ public class StockUploadController implements Serializable
         this.postToInventory = postToInventory;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public Location getToLocation() {
-        return toLocation;
-    }
-
-    public void setToLocation(Location toLocation) {
-        this.toLocation = toLocation;
-    }
-
     public CompanyBranch getSelectedBranch() {
         return selectedBranch;
     }
@@ -381,12 +347,12 @@ public class StockUploadController implements Serializable
         return locationList;
     }
 
-    public Location getSelectedLocation() {
-        return selectedLocation;
+    public Location getSelectedWarehouse() {
+        return selectedWarehouse;
     }
 
-    public void setSelectedLocation(Location selectedLocation) {
-        this.selectedLocation = selectedLocation;
+    public void setSelectedWarehouse(Location selectedWarehouse) {
+        this.selectedWarehouse = selectedWarehouse;
     }
     
 }
