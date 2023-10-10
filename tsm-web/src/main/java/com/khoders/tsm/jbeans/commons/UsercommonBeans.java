@@ -43,6 +43,7 @@ public class UsercommonBeans implements Serializable
     private List<PurchaseOrder> purchaseOrderList = new LinkedList<>();
     private List<TransferItem> transferItemList = new LinkedList<>();
     private List<Inventory> inventoryList = new LinkedList<>();
+    private List<Inventory> shopList = new LinkedList<>();
     private List<Packaging> packagingList = new LinkedList<>();
     private List<UnitMeasurement> unitMeasurementList = new LinkedList<>();
     private List<Sales> creditSalesList = new LinkedList<>();
@@ -59,6 +60,7 @@ public class UsercommonBeans implements Serializable
         locationList = inventoryService.getLocationList();
         transferItemList = inventoryService.getTransferItemList();
         inventoryList = inventoryService.getInventoryList();
+        shopList = inventoryService.getShopList();
         packagingList = inventoryService.getPackagingList();
         unitMeasurementList = inventoryService.getUnitMeasurementList();
         creditSalesList = inventoryService.getCreditSales();
@@ -120,6 +122,10 @@ public class UsercommonBeans implements Serializable
 
     public List<Sales> getCreditSalesList() {
         return creditSalesList;
+    }
+
+    public List<Inventory> getShopList() {
+        return shopList;
     }
     
 }

@@ -22,10 +22,12 @@ import com.khoders.tsm.entities.system.UserAccount;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
+import com.khoders.tsm.DefaultService;
 import com.khoders.tsm.entities.Packaging;
 import com.khoders.tsm.entities.ReturnItem;
 import com.khoders.tsm.entities.StockReturn;
 import com.khoders.tsm.entities.UnitMeasurement;
+import com.khoders.tsm.enums.LocType;
 import com.khoders.tsm.enums.SalesType;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -40,6 +42,7 @@ public class InventoryService {
 
     @Inject private CrudApi crudApi;
     @Inject private AppSession appSession;
+    @Inject private DefaultService ds;
 
     public List<Product> getProducts() {
         return crudApi.getEm().createQuery("SELECT e FROM Product e ORDER BY e.productName ASC", Product.class).getResultList();
@@ -139,7 +142,7 @@ public class InventoryService {
 
     public List<BatchTransfer> getBatchTransferList() {
         return crudApi.getEm().createQuery("SELECT e FROM BatchTransfer e WHERE e.companyBranch = :companyBranch", BatchTransfer.class)
-               .setParameter(TransferItem._companyBranch, appSession.getCompanyBranch())
+               .setParameter(BatchTransfer._companyBranch, appSession.getCompanyBranch())
                .getResultList();
     }
     
@@ -151,8 +154,21 @@ public class InventoryService {
     
     public List<Inventory> getInventoryList() {
         return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.companyBranch = :companyBranch ORDER BY e.product.productName ASC", Inventory.class)
-               .setParameter(TransferItem._companyBranch, appSession.getCompanyBranch())
+               .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
                .getResultList();
+    }
+    public List<Inventory> getShopList() {
+        Location shop = getShop();
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.location = :location AND e.companyBranch = :companyBranch ORDER BY e.product.productName ASC", Inventory.class)
+               .setParameter(Inventory._location, shop)
+               .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
+               .getResultList();
+    }
+    
+    public Location getShop(){
+        Location location = ds.getObj(Location.class, Location._locType,  Location._companyBranch, LocType.SHOP, appSession.getCompanyBranch());
+        System.out.println("location: "+location);
+        return location;
     }
 
     public Inventory postToInventory(BatchTransfer batchTransfer) {

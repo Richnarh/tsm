@@ -10,7 +10,7 @@
         <span>#{msg.product} <span class="text-danger">*</span> </span>                                
         <p:selectOneMenu style="width: 100%" filter="true" value="#{wholeSaleController.saleItem.inventory}" filterMatchMode="contains" required="true">
             <f:selectItem itemLabel="#{msg.choose} Product"/>
-            <f:selectItems value="#{usercommonBeans.inventoryList}"/>
+            <f:selectItems value="#{usercommonBeans.shopList}"/>
             <p:ajax listener="#{wholeSaleController.wholeSalePrice()}" update="wholesalePrice, qtyRem"/>
         </p:selectOneMenu>
 

@@ -102,18 +102,36 @@ public class DefaultService {
         return typedQuery.getResultStream().findFirst().orElse(null);
     }
     
-    public <T> T getObj(Class<T> clazz, String fName, String fValue) {
-        T obj = (T) crudApi.getEm().createQuery("SELECT e FROM " + clazz.getSimpleName() + " e WHERE e." + fName + "=:"+fValue, clazz)
-                .setParameter(fName, fValue)
-                .getResultStream().findFirst().orElse(null);
-
-        return obj;
+    public <T> T getObj(Class<T> clazz, String fName, Object fValue) {
+        return getObj(clazz, fName, null, fValue, null);
     }
     
+    public <T> T getObj(Class<T> clazz, String fName, String fName2, Object fValue, Object fValue2) {
+        Query query = null;
+        if(fName2 == null && fValue2 == null){
+            query = crudApi.getEm().createQuery("SELECT e FROM " + clazz.getSimpleName() + " e WHERE e." + fName + "=:"+fName, clazz);
+            query.setParameter(fName, fValue);
+        }else{
+            query = crudApi.getEm().createQuery("SELECT e FROM " + clazz.getSimpleName() + " e WHERE e." + fName + "=:"+fName +" AND e."+fName2 + "=:"+fName2, clazz);
+            query.setParameter(fName, fValue);
+            query.setParameter(fName2, fValue2);
+        }
+        
+        return (T) singleQry(query);
+    }
+    
+    private Object singleQry(Query qry){
+       return qry.getResultStream().findFirst().orElse(null);
+    }
+    
+    private Object getResultList(Query qry){
+       return qry.getResultList();
+    }
     public Sales getSales(String receiptNumber) {
-        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber=:receiptNumber", Sales.class)
-                .setParameter("receiptNumber", receiptNumber)
-                .getResultStream().findFirst().orElse(null);
+        return getObj(Sales.class, receiptNumber, Sales._receiptNumber);
+//        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber=:receiptNumber", Sales.class)
+//                .setParameter("receiptNumber", receiptNumber)
+//                .getResultStream().findFirst().orElse(null);
     }
     public List<SaleItem> getSales(Sales sales) {
             return crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales", SaleItem.class)

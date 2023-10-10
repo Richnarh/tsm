@@ -23,6 +23,7 @@ public class UserAccountRecord extends RefNo{
     private UserAccount userAccount;
     
     public static final String _companyBranch = "companyBranch";
+    public static final String _companyBranchId = CompanyBranch._id;
     @ManyToOne
     @JoinColumn(name = "company_branch", referencedColumnName = "id")
     private CompanyBranch companyBranch;
