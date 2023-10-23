@@ -162,7 +162,7 @@ public class ShopUploadController implements Serializable {
                     if (inventory == null) {
                         inventory = new Inventory();
                         inventory.setProduct(ds.getProduct(stockData.getProductName()));
-                        inventory.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
+                        inventory.setUnitMeasurement(stockData.getUnitsMeasurement() != null ? ds.getUnits(stockData.getUnitsMeasurement()) : ds.getUnits("Piece/Single"));
                         inventory.setPackagePrice(stockData.getRetailPrice());
                         inventory.setUnitsInPackage(stockData.getUnitsInPackage());
                         inventory.setWprice(stockData.getWprice());

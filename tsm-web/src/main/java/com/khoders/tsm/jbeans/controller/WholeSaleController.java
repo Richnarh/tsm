@@ -486,10 +486,10 @@ public class WholeSaleController implements Serializable
             
         }else{
             System.out.println("Calculating vat...");
-            System.out.println("Amount: "+salesTaxDtoList.get(0).getTaxAmount() +"\t Rate: "+salesTaxDtoList.get(0).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(0).getTaxName());
-            System.out.println("Amount: "+salesTaxDtoList.get(1).getTaxAmount() +"\t Rate: "+salesTaxDtoList.get(1).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(1).getTaxName());
-            System.out.println("Amount: "+salesTaxDtoList.get(2).getTaxRate() +"\t Rate: "+salesTaxDtoList.get(2).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(2).getTaxName());
-            
+//            System.out.println("Amount: "+salesTaxDtoList.get(0).getTaxAmount() +"\t Rate: "+salesTaxDtoList.get(0).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(0).getTaxName());
+//            System.out.println("Amount: "+salesTaxDtoList.get(1).getTaxAmount() +"\t Rate: "+salesTaxDtoList.get(1).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(1).getTaxName());
+//            System.out.println("Amount: "+salesTaxDtoList.get(2).getTaxRate() +"\t Rate: "+salesTaxDtoList.get(2).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(2).getTaxName());
+//            
             SalesTaxDto nhil = salesTaxDtoList.get(0);
             SalesTaxDto covid19 = salesTaxDtoList.get(1);
             SalesTaxDto salesVat = salesTaxDtoList.get(2);
