@@ -100,7 +100,7 @@
 
                     <div class="pt-2">
                         <p:commandButton icon="#{msg.check_icon}" value="Save All" action="#{salesController.saveAll()}" class="kbtn-success" immediate="true" ajax="false" update="@form, :invoiceItemForm, "/>
-                        <p:commandButton icon="#{msg.cog_icon}" value="Process Cost" action="#{salesController.processSale()}" class="kbtn-info mx-3" immediate="true" update="@form, :invoiceItemForm"/>
+                        <p:commandButton icon="#{msg.cog_icon}" value="Calculate Sales" action="#{salesController.calculateSale()}" class="kbtn-info mx-3" immediate="true" update="@form, :invoiceItemForm"/>
                     </div>
                 </div>
             </div>

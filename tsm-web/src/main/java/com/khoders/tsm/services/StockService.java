@@ -59,9 +59,9 @@ public class StockService {
                 .setParameter(StockReceipt._companyBranch, appSession.getCompanyBranch())
                 .getResultStream().findAny().orElse(null);
     }
-    public Inventory getProduct(StockReceiptItem receiptItem, UnitMeasurement unitMeasurement) {
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:stockReceiptItem AND e.unitMeasurement=:unitMeasurement AND e.companyBranch = :companyBranch", Inventory.class)
-                .setParameter(Inventory._stockReceiptItem, receiptItem)
+    public Inventory getProduct(Product product, UnitMeasurement unitMeasurement) {
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.product=:product AND e.unitMeasurement=:unitMeasurement AND e.companyBranch = :companyBranch", Inventory.class)
+                .setParameter(Inventory._product, product)
                 .setParameter(Inventory._unitMeasurement, unitMeasurement)
                 .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
                 .getResultStream().findFirst().orElse(null);
@@ -96,9 +96,9 @@ public class StockService {
                 .getResultStream().findFirst().orElse(null);
     }
 
-    public List<Inventory> inventoryProduct(StockReceiptItem receiptItem) {
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.stockReceiptItem=:stockReceiptItem AND e.companyBranch = :companyBranch", Inventory.class)
-                .setParameter(Inventory._stockReceiptItem, receiptItem)
+    public List<Inventory> inventoryProduct(Product product) {
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.product = :product AND e.companyBranch = :companyBranch", Inventory.class)
+                .setParameter(Inventory._product, product)
                 .setParameter(Inventory._companyBranch, appSession.getCompanyBranch())
                 .getResultList();
     }

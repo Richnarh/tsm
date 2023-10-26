@@ -8,7 +8,6 @@ import com.khoders.resource.utilities.Msg;
 import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Product;
-import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.listener.AppSession;
 import com.khoders.tsm.services.StockService;
@@ -36,9 +35,8 @@ public class InventoryController implements Serializable
    private Inventory inventory = new Inventory();
    private List<Inventory> inventoryList = new LinkedList<>();
    private List<Inventory> segmentedList = new LinkedList<>();
-   private List<StockReceiptItem> stockReceiptItemList = new LinkedList<>();
+   private List<Product> productList = new LinkedList<>();
    private String optionText;
-   private StockReceiptItem selectedStockReceiptItem = null;
    private Product product = null;
    private UnitMeasurement selectedUnit = null;
    
@@ -48,7 +46,7 @@ public class InventoryController implements Serializable
    }
    
    public void initProduct(){     
-     stockReceiptItemList = inventoryService.getStockReceiptItemList();
+     productList = inventoryService.getProducts();
    }
    
    public void initInventory(){
@@ -57,14 +55,12 @@ public class InventoryController implements Serializable
    public void resetPage(){
        inventoryList = new LinkedList<>();
        segmentedList = new LinkedList<>();
-       stockReceiptItemList = new LinkedList<>();
+       productList = new LinkedList<>();
        clearInventory();
    }
-   public void selectProduct(StockReceiptItem stockReceiptItem){
-       product=stockReceiptItem.getProduct();
-       segmentedList = stockService.inventoryProduct(selectedStockReceiptItem);
-       
-       inventory.setWprice(stockReceiptItem.getWprice());
+   public void selectProduct(Product product){
+       this.product=product;
+       segmentedList = stockService.inventoryProduct(product);
    }
    
    public void updateUnit(){
@@ -72,14 +68,14 @@ public class InventoryController implements Serializable
    }
    
    public void saveInventory(){
-       if(selectedStockReceiptItem == null){
+       if(product == null){
            Msg.error("Please select a product");
            return;
        }
        try
        {
            if(optionText.equals("Save Changes")){
-              Inventory newPackage = stockService.getProduct(selectedStockReceiptItem, inventory.getUnitMeasurement());
+              Inventory newPackage = stockService.getProduct(product, inventory.getUnitMeasurement());
               if (newPackage != null){
                   Msg.error("product and the package already exist");
                   return;
@@ -95,7 +91,7 @@ public class InventoryController implements Serializable
                return;
            }
           inventory.genCode();
-          inventory.setStockReceiptItem(selectedStockReceiptItem);
+          inventory.setProduct(product);
           if(crudApi.save(inventory) != null){
               inventoryList = CollectionList.washList(inventoryList, inventory);
                Msg.info(Msg.SUCCESS_MESSAGE);
@@ -130,23 +126,11 @@ public class InventoryController implements Serializable
         inventory = new Inventory();
         inventory.setUserAccount(appSession.getCurrentUser());
         inventory.setCompanyBranch(appSession.getCompanyBranch());
-        selectedStockReceiptItem = null;
+        product = null;
         optionText = "Save Changes";
         SystemUtils.resetJsfUI();
     }
 
-    public void updateWp(){
-         stockReceiptItemList.forEach(item ->{
-            inventoryList = inventoryService.getInventoryList();
-            inventoryList.forEach(i -> {
-                if(i.getStockReceiptItem().getId().equals(item.getId())){
-                    i.setWprice(item.getWprice());
-                    crudApi.save(i);
-                }
-                
-            });
-        });
-    }
     public Inventory getInventory()
     {
         return inventory;
@@ -167,18 +151,6 @@ public class InventoryController implements Serializable
         return optionText;
     }
 
-    public List<StockReceiptItem> getStockReceiptItemList() {
-        return stockReceiptItemList;
-    }
-
-    public StockReceiptItem getSelectedStockReceiptItem() {
-        return selectedStockReceiptItem;
-    }
-
-    public void setSelectedStockReceiptItem(StockReceiptItem selectedStockReceiptItem) {
-        this.selectedStockReceiptItem = selectedStockReceiptItem;
-    }
-    
     public UnitMeasurement getSelectedUnit()
     {
         return selectedUnit;
@@ -195,6 +167,10 @@ public class InventoryController implements Serializable
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
     }
     
 }

@@ -84,9 +84,9 @@ public class XtractService
         for (SaleItem posCart : cartList)
         {
             SaleItemDto itemDto = new SaleItemDto();
-            if(posCart.getInventory() != null && posCart.getInventory().getStockReceiptItem() != null)
+            if(posCart.getInventory() != null && posCart.getInventory() != null)
             {
-              itemDto.setProduct(posCart.getInventory().getStockReceiptItem().getProduct().getProductName());
+              itemDto.setProduct(posCart.getInventory().getProduct().getProductName());
             }
             itemDto.setQuantity(posCart.getQuantity());
             itemDto.setUnitPrice(posCart.getUnitPrice());
@@ -308,8 +308,8 @@ public class XtractService
             dto.setQuantity(saleItem.getQuantity());
             dto.setUnitPrice(saleItem.getUnitPrice());
             dto.setSubTotal(saleItem.getSubTotal());
-            if (saleItem.getInventory().getStockReceiptItem() != null && saleItem.getInventory().getStockReceiptItem().getProduct() != null) {
-                dto.setProduct(saleItem.getInventory().getStockReceiptItem().getProduct().getProductName());
+            if (saleItem.getInventory() != null && saleItem.getInventory().getProduct() != null) {
+                dto.setProduct(saleItem.getInventory().getProduct().getProductName());
             }
             if (saleItem.getInventory().getUnitMeasurement() != null) {
                 dto.setProductPackage(saleItem.getInventory().getUnitMeasurement().getUnits());

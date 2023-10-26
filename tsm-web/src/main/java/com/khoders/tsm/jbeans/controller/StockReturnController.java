@@ -134,7 +134,7 @@ public class StockReturnController implements Serializable
             if (crudApi.save(returnItem) != null){
                 returnItemList = CollectionList.washList(returnItemList, returnItem);
                 
-                Inventory newInventory = stockService.getProduct(returnItem.getSaleItem().getInventory().getStockReceiptItem(), returnItem.getSaleItem().getInventory().getUnitMeasurement());
+                Inventory newInventory = stockService.getProduct(returnItem.getSaleItem().getInventory().getProduct(), returnItem.getSaleItem().getInventory().getUnitMeasurement());
                 double qtyInShop = newInventory.getQtyInShop();
                 newInventory.setQtyInShop(qtyInShop+returnItem.getQtyReturn());
                 crudApi.save(newInventory);
@@ -144,7 +144,6 @@ public class StockReturnController implements Serializable
             }
             clearReturnItem();
         }catch (Exception e){
-            e.printStackTrace();
         }
     }
     

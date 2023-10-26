@@ -21,9 +21,9 @@
                                                  action="#{inventoryController.initProduct()}" update="@form"/>
                                  <p:commandButton value="Reset Page" class="my-2 kbtn-danger float-end" icon="#{msg.close_icon}"
                                              action="#{inventoryController.resetPage()}" ajax="false"/>
-                                <p:dataTable value="#{inventoryController.stockReceiptItemList}" var="stockReceiptItem" scrollable="true" scrollHeight="400">
-                                    <p:column headerText="#{msg.product}" filterBy="#{stockReceiptItem.product.productName}" filterMatchMode="contains">
-                                        <h:commandLink styleClass="ptext-link" value="#{stockReceiptItem.product.productName} #{stockReceiptItem.product.packaging.packagingName}" action="#{inventoryController.selectProduct(stockReceiptItem)}">
+                                <p:dataTable value="#{inventoryController.productList}" var="product" scrollable="true" scrollHeight="400">
+                                    <p:column headerText="#{msg.product}" filterBy="#{product.productName}" filterMatchMode="contains">
+                                        <h:commandLink styleClass="ptext-link" value="#{product.productName} #{product.packaging.packagingName}" action="#{inventoryController.selectProduct(product)}">
                                             <p:ajax update=":inventoryForm, :segmentTable"/>
                                         </h:commandLink>
                                     </p:column>
@@ -61,7 +61,6 @@
                                     <br/>
                                     <p:commandButton value="#{inventoryController.optionText}" class="kbtn-success mx-3" icon="#{msg.check_icon}" action="#{inventoryController.saveInventory()}"  update=":inventoryTable, :segmentTable, @form"/>
                                     <p:commandButton value="#{msg.clear}" class="kbtn-default mx-3" icon="#{msg.clear_icon}" action="#{inventoryController.clearInventory()}" immediate="true" update="@form"/>
-                                    <!--<p:commandButton value="Update WP" class="kbtn-default" immediate="true" action="{inventoryController.updateWp()}" ajax="false"/>-->
                                 </div>
                              </h:form>
                             <h:form id="segmentTable">

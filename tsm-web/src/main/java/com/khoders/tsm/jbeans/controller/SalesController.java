@@ -273,15 +273,16 @@ public class SalesController implements Serializable
         if(totalPayable == 0.0) totalPayable = totalAmount;
     }
     
-    public void processSale(){
+    public void calculateSale(){
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
         
         if (enableTax) {
             processSale = true;
             taxCalculation();
             System.out.println("taxCalculation.......");
+        }else{
+             totalPayable = totalAmount;
         }
-        if(totalPayable == 0.0) totalPayable = totalAmount;
     }
     
     public void saveAll()
@@ -317,49 +318,6 @@ public class SalesController implements Serializable
                 if(sales.getCustomer() == null){
                     sales.setCustomer(salesService.walkinCustomer());
                 }
-                if (sales.getSalesType() != null) {
-                switch (sales.getSalesType()) {
-                    case CREDIT_SALES:
-                        if (sales.getCustomer().equals(salesService.walkinCustomer())) {
-                            Msg.error("Walk-In-Customer not allowed for credit sales");
-                            return;
-                        }
-                        if (sales.getCustomer().equals(salesService.backLogSupplier())) {
-                            Msg.error("Back-Log-Supplier not allowed for credit sales");
-                            return;
-                        }
-                        System.out.println("CREDIT_SALES selling....");
-                        Sales creditSale = salesService.getCreditSales(sales.getCustomer());
-                        if (creditSale != null) {
-                            creditSale.setCompound(true);
-                            crudApi.save(creditSale);
-                            System.out.println("Credit selling....True");
-                        }
-                        break;
-                    case INVOICE_SALES:
-                        if (sales.getCustomer().equals(salesService.walkinCustomer())) {
-                            Msg.error("Walk-In-Customer not allowed for invoice sales");
-                            return;
-                        }
-                        if (sales.getCustomer().equals(salesService.backLogSupplier())) {
-                            Msg.error("Back-Log-Supplier not allowed for invoice sales");
-                            return;
-                        }
-                        break;
-                    case PROFORMA_INVOICE_SALES:
-                        if (sales.getCustomer().equals(salesService.walkinCustomer())) {
-                            Msg.error("Walk-In-Customer not allowed for proforma invoice sales");
-                            return;
-                        }
-                        if (sales.getCustomer().equals(salesService.backLogSupplier())) {
-                            Msg.error("Back-Log-Supplier not allowed for proforma invoice sales");
-                            return;
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
                 
                 sales.genCode();
                 sales.setPaymentStatus(PaymentStatus.PENDING);
@@ -390,7 +348,7 @@ public class SalesController implements Serializable
                             double newQty = qtyInShop - item.getQuantity();
                             inventory.setQtyInShop(newQty);
                             
-                            System.out.println("Product: "+inventory.getStockReceiptItem());
+                            System.out.println("Product: "+inventory.getProduct());
                             System.out.println("Old qty: "+qtyInShop);
                             System.out.println("New qty: "+newQty);
                             System.out.println("............\n");
@@ -412,6 +370,7 @@ public class SalesController implements Serializable
                 appSession.logEvent("Save Sales", EventModule.SALES, "Complete Sales");
         } catch (Exception e) 
         {
+            e.printStackTrace();
         }
     }
     private void savePayment(Sales sales){

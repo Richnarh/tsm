@@ -269,20 +269,18 @@ public class WholeSaleController implements Serializable
         }
         if(totalPayable == 0.0) totalPayable = totalAmount;
     }
-    public void processSale() {
+    public void calculateSale() {
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
 
         if (enableTax) {
             processSale = true;
             taxCalculation();
             System.out.println("taxCalculation.......");
-        }
-        if (totalPayable == 0.0) {
+        }else{
             totalPayable = totalAmount;
         }
     }
-    public void saveAll()
-    {
+    public void saveAll(){
         if (saleItemList.isEmpty()) {
             Msg.error("Cannot process an empty sale");
             return;
@@ -307,105 +305,61 @@ public class WholeSaleController implements Serializable
             Msg.error("Please this transaction cannot be altered!");
             return;
         }
-        try 
-        {
-                if(sales.getCustomer() == null){
-                    sales.setCustomer(salesService.walkinCustomer());
-                }
-                if (sales.getSalesType() != null) {
-                switch (sales.getSalesType()) {
-                    case CREDIT_SALES:
-                        if (sales.getCustomer().equals(salesService.walkinCustomer())) {
-                            Msg.error("Walk-In-Customer not allowed for credit sales");
-                            return;
-                        }
-                        if (sales.getCustomer().equals(salesService.backLogSupplier())) {
-                            Msg.error("Back-Log-Supplier not allowed for credit sales");
-                            return;
-                        }
-                        System.out.println("CREDIT_SALES selling....");
-                        Sales creditSale = salesService.getCreditSales(sales.getCustomer());
-                        if (creditSale != null) {
-                            creditSale.setCompound(true);
-                            crudApi.save(creditSale);
-                            System.out.println("Credit selling....True");
-                        }
-                        break;
-                    case INVOICE_SALES:
-                        if (sales.getCustomer().equals(salesService.walkinCustomer())) {
-                            Msg.error("Walk-In-Customer not allowed for invoice sales");
-                            return;
-                        }
-                        if (sales.getCustomer().equals(salesService.backLogSupplier())) {
-                            Msg.error("Back-Log-Supplier not allowed for invoice sales");
-                            return;
-                        }
-                        break;
-                    case PROFORMA_INVOICE_SALES:
-                        if (sales.getCustomer().equals(salesService.walkinCustomer())) {
-                            Msg.error("Walk-In-Customer not allowed for proforma invoice sales");
-                            return;
-                        }
-                        if (sales.getCustomer().equals(salesService.backLogSupplier())) {
-                            Msg.error("Back-Log-Supplier not allowed for proforma invoice sales");
-                            return;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+        try {
+            if (sales.getCustomer() == null) {
+                sales.setCustomer(salesService.walkinCustomer());
             }
-                sales.genCode();
-                sales.setPaymentStatus(PaymentStatus.PENDING);
-                sales.setSaleSource(SaleSource.WHOLESALE);
-                sales.setCompound(false);
-                sales.setPurchaseDate(LocalDateTime.now());
-                sales.setTotalAmount(totalAmount);
-                sales.genReceipt();
-                sales.setUserAccount(appSession.getCurrentUser());
-                sales.setCompanyBranch(appSession.getCompanyBranch());
-                sales.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
-                sales.setLastModifiedDate(LocalDateTime.now());
-                sales.setQtyPurchased(qtyBought);
-                
-                if (crudApi.save(sales) != null){
-                    for (SaleItem item : saleItemList){
-                        item.genCode();
-                        item.setSales(sales);
-                        item.setCompanyBranch(appSession.getCompanyBranch());
-                        item.setUserAccount(appSession.getCurrentUser());
-                        item.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
-                        item.setLastModifiedDate(LocalDateTime.now());
-                        crudApi.save(item);
-                        
-                        if(sales.getSalesType() == SalesType.INSTANT_SALES){
-                            Inventory inventory = stockService.getProduct(item.getInventory().getStockReceiptItem(), item.getInventory().getUnitMeasurement());
-                            double qtyInShop = inventory.getStockReceiptItem().getPkgQuantity();
-                            double newQty = qtyInShop - item.getQuantity();
-                            inventory.setQtyInShop(newQty);
-                            
-                            System.out.println("Product: "+inventory.getStockReceiptItem());
-                            System.out.println("Old qty: "+qtyInShop);
-                            System.out.println("New qty: "+newQty);
-                            System.out.println("............\n");
-                            crudApi.save(inventory);
-                            System.out.println("Qty updated: ");
-                        }
+
+            sales.genCode();
+            sales.setPaymentStatus(PaymentStatus.PENDING);
+            sales.setSaleSource(SaleSource.WHOLESALE);
+            sales.setCompound(false);
+            sales.setPurchaseDate(LocalDateTime.now());
+            sales.setTotalAmount(totalAmount);
+            sales.genReceipt();
+            sales.setUserAccount(appSession.getCurrentUser());
+            sales.setCompanyBranch(appSession.getCompanyBranch());
+            sales.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
+            sales.setLastModifiedDate(LocalDateTime.now());
+            sales.setQtyPurchased(qtyBought);
+
+            if (crudApi.save(sales) != null) {
+                for (SaleItem item : saleItemList) {
+                    item.genCode();
+                    item.setSales(sales);
+                    item.setCompanyBranch(appSession.getCompanyBranch());
+                    item.setUserAccount(appSession.getCurrentUser());
+                    item.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
+                    item.setLastModifiedDate(LocalDateTime.now());
+                    crudApi.save(item);
+
+                    if (sales.getSalesType() == SalesType.INSTANT_SALES) {
+                        Inventory inventory = stockService.getProduct(item.getInventory().getProduct(), item.getInventory().getUnitMeasurement());
+                        double qtyInShop = inventory.getQtyInShop();
+                        double newQty = qtyInShop - item.getQuantity();
+                        inventory.setQtyInShop(newQty);
+
+                        System.out.println("Product: " + inventory.getProduct());
+                        System.out.println("Old qty: " + qtyInShop);
+                        System.out.println("New qty: " + newQty);
+                        System.out.println("............\n");
+                        crudApi.save(inventory);
+                        System.out.println("Qty updated: ");
                     }
                 }
-                
-                salesList = CollectionList.washList(salesList, sales);
-                
-                System.out.println("Executing......");
-                if(enableTax){
-                    taxCalculation();
-                    System.out.println("taxCalculation.......");
-                }
-                savePayment(sales);
-                Msg.info("Transaction saved successfully!");
-                appSession.logEvent("Save Sales", EventModule.SALES, "Complete Sales");
-        } catch (Exception e) 
-        {
+            }
+
+            salesList = CollectionList.washList(salesList, sales);
+
+            System.out.println("Executing......");
+            if (enableTax) {
+                taxCalculation();
+                System.out.println("taxCalculation.......");
+            }
+            savePayment(sales);
+            Msg.info("Transaction saved successfully!");
+            appSession.logEvent("Save Sales", EventModule.SALES, "Complete Sales");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -418,13 +372,11 @@ public class WholeSaleController implements Serializable
         });
         System.out.println("Payment save complete");
     }
-    public void taxCalculation()
-    {
+    public void taxCalculation(){
         System.out.println("Executing taxCalculation......");
         System.out.println("taxList......"+taxList.size());
         salesTaxDtoList = new LinkedList<>();
-        for (Tax tax : taxList)
-        {
+        for (Tax tax : taxList){
             SalesTax salesTax = new SalesTax();
 
             double calc = processSale ? totalAmount : sales.getTotalAmount() * (tax.getTaxRate()/100);
@@ -524,7 +476,6 @@ public class WholeSaleController implements Serializable
 
         }catch(Exception e)
         {
-            e.printStackTrace();
         }
     }
     

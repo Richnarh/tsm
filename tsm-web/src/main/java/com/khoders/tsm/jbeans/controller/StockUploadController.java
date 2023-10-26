@@ -231,10 +231,10 @@ public class StockUploadController implements Serializable
                         crudApi.save(receiptItem);
                     }
                     if(postToInventory){
-                        Inventory inventory = stockService.getProduct(receiptItem, stockService.getUnits(stockData.getUnitsMeasurement()));
+                        Inventory inventory = stockService.getProduct(receiptItem.getProduct(), stockService.getUnits(stockData.getUnitsMeasurement()));
                         if (inventory == null) {
                             inventory = new Inventory();
-                            inventory.setStockReceiptItem(receiptItem);
+                            inventory.setProduct(receiptItem.getProduct());
                             inventory.setUnitMeasurement(stockService.getUnits(stockData.getUnitsMeasurement()));
                             inventory.setPackagePrice(stockData.getRetailPrice());
                             inventory.setUnitsInPackage(stockData.getUnitsInPackage());
