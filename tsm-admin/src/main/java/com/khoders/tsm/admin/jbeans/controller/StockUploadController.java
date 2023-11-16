@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class StockUploadController implements Serializable
     
     private PurchaseOrder selectedPurchaseOrder;
     private CompanyBranch selectedBranch;
+    private String receiptNo;
     
     private UploadedFile file = null;
     private boolean prepareOrder, recieveOrder, postToInventory;
@@ -210,6 +212,7 @@ public class StockUploadController implements Serializable
                 stockReceipt.setReceiptNo(SystemUtils.generateIN());
                 stockReceipt.setRefNo(purchaseOrder.getOrderCode());
                 stockReceipt.setBatchNo(SystemUtils.generateCode());
+                stockReceipt.setReceiptNo(receiptNo != null ? receiptNo : SystemUtils.generateReceipt());
                 stockReceipt.setTotalAmount(purchaseOrder.getTotalAmount());
                 stockReceipt.setPurchaseOrder(purchaseOrder);
                 stockReceipt.setTotalAmount(stockDetailList.stream().mapToDouble(StockDetails::getCostPrice).sum());
@@ -221,9 +224,7 @@ public class StockUploadController implements Serializable
                 crudApi.save(stockReceipt);
 
                 for (StockDetails stockData : stockDetailList) {
-                    PurchaseOrderItem orderItem = null;
-                    StockReceiptItem receiptItem = null;
-                    orderItem = new PurchaseOrderItem();
+                    PurchaseOrderItem orderItem = new PurchaseOrderItem();
                     orderItem.setPurchaseOrder(purchaseOrder);
                     orderItem.setCostPrice(stockData.getCostPrice());
                     orderItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
@@ -235,7 +236,7 @@ public class StockUploadController implements Serializable
                     orderItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                     crudApi.save(orderItem);
 
-                    receiptItem = new StockReceiptItem();
+                    StockReceiptItem receiptItem = new StockReceiptItem();
                     receiptItem.setStockReceipt(stockReceipt);
                     receiptItem.setPurchaseOrderItem(orderItem);
                     receiptItem.setCostPrice(stockData.getCostPrice());
@@ -247,26 +248,8 @@ public class StockUploadController implements Serializable
                     receiptItem.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                     receiptItem.setReceiptStatus(ReceiptStatus.RECEIVED);
                     receiptItem.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
+                    receiptItem.setLastModifiedDate(LocalDateTime.now());
                     crudApi.save(receiptItem);
-
-                    // shop
-//                    Inventory inventory = ds.getProduct(receiptItem, ds.getUnits(stockData.getUnitsMeasurement()));
-//                    if (inventory == null) {
-//                        inventory = new Inventory();
-//                        inventory.setStockReceiptItem(receiptItem);
-//                        inventory.setUnitMeasurement(ds.getUnits(stockData.getUnitsMeasurement()));
-//                        inventory.setPackagePrice(stockData.getRetailPrice());
-//                        inventory.setUnitsInPackage(stockData.getUnitsInPackage());
-//                        inventory.setWprice(stockData.getWprice());
-//                        inventory.setUserAccount(appSession.getCurrentUser());
-//                        inventory.setCompanyBranch(selectedBranch);
-//                        inventory.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
-//                        inventory.setLocation(toLocation);
-//                        inventory.setQtyInShop(stockData.getQtyInShop());
-//                        inventory.setDescription("Inventory Upload on: " + LocalDate.now());
-//                        inventory.setDataSource("Inventory Upload dated: " + LocalDate.now());
-//                        crudApi.save(inventory);
-//                    }
                 }
                 Msg.info("Upload saved successfully!");
 //                appSession.logEvent("Create Stocks", null, "Save Stock Uploads");
@@ -353,6 +336,14 @@ public class StockUploadController implements Serializable
 
     public void setSelectedWarehouse(Location selectedWarehouse) {
         this.selectedWarehouse = selectedWarehouse;
+    }
+
+    public String getReceiptNo() {
+        return receiptNo;
+    }
+
+    public void setReceiptNo(String receiptNo) {
+        this.receiptNo = receiptNo;
     }
     
 }

@@ -71,6 +71,6 @@ public class Location  extends UserAccountRecord implements Serializable{
 
     @Override
     public String toString() {
-        return locationName;
+        return locationName +" "+locType.getLabel();
     }
 }

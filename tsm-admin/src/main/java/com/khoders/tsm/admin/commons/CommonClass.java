@@ -7,6 +7,7 @@ package com.khoders.tsm.admin.commons;
 
 import com.khoders.resource.enums.AccessLevel;
 import com.khoders.resource.enums.Status;
+import com.khoders.tsm.enums.ListingType;
 import com.khoders.tsm.enums.LocType;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -32,5 +33,8 @@ public class CommonClass implements Serializable {
 
     public List<LocType> getLocTypeList() {
         return Arrays.asList(LocType.values());
+    }
+    public List<ListingType> getListingTypeList() {
+        return Arrays.asList(ListingType.values());
     }
 }

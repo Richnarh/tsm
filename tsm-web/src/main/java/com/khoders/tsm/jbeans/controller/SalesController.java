@@ -152,13 +152,13 @@ public class SalesController implements Serializable
         qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getQtyInShop() != null ? (int)saleItem.getInventory().getQtyInShop().doubleValue() : 0;
     }
     
-    public void wholeSalePrice(){
-        
-        saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
-        
-        qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getQtyInShop() != null ? (int)saleItem.getInventory().getQtyInShop().doubleValue() : 0;
-    }
-    
+//    public void wholeSalePrice(){
+//        
+//        saleItem.setUnitPrice(saleItem.getInventory().getPackagePrice());
+//        
+//        qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getQtyInShop() != null ? (int)saleItem.getInventory().getQtyInShop().doubleValue() : 0;
+//    }
+//    
     public void addWp(){
         if(saleItem.getInventory() == null){
             Msg.error("Please select product");
@@ -285,8 +285,8 @@ public class SalesController implements Serializable
         }
     }
     
-    public void saveAll()
-    {
+    public void saveAll(){
+        StringBuilder sb = null;
         if (saleItemList.isEmpty()) {
             Msg.error("Cannot process an empty sale");
             return;
@@ -343,6 +343,11 @@ public class SalesController implements Serializable
                         crudApi.save(item);
                         
                         if(sales.getSalesType() == SalesType.INSTANT_SALES){
+                            if(item.getInventory().getUnitMeasurement() == null){
+                                sb = new StringBuilder();
+                                sb.append("Set units for products: ").append(item.getInventory().getProduct());
+                                break;
+                            }
                             Inventory inventory = stockService.getProduct(item.getInventory().getUnitMeasurement());
                             double qtyInShop = inventory.getQtyInShop();
                             double newQty = qtyInShop - item.getQuantity();
@@ -357,7 +362,10 @@ public class SalesController implements Serializable
                         }
                     }
                 }
-                
+                if (sb != null) {
+                    Msg.error(sb.toString());
+                    return;
+                }
                 salesList = CollectionList.washList(salesList, sales);
                 
                 System.out.println("Executing......");

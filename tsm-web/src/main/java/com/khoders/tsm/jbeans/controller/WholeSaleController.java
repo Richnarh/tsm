@@ -163,7 +163,7 @@ public class WholeSaleController implements Serializable
         
         saleItem.setUnitPrice(saleItem.getInventory().getWprice());
         
-        qtyRem = saleItem.getInventory()!= null && saleItem.getInventory().getStockReceiptItem() != null ? (int)saleItem.getInventory().getStockReceiptItem().getPkgQuantity().doubleValue() : 0;
+        qtyRem = saleItem.getInventory() != null && saleItem.getInventory().getQtyInShop() != null ? (int)saleItem.getInventory().getQtyInShop().doubleValue() : 0;
     }
      
     public void selectSalesType(){
@@ -188,37 +188,36 @@ public class WholeSaleController implements Serializable
         saleItem.setUnitPrice(inv.getWprice());
         saleItem.setInventory(inventory);
     }
-    public void addSaleItem()
-    {
-        try
-        {
-            if (saleItem.getQuantity() <= 0)
-            {
-                Msg.error("Please enter quantity");
-                return;
-            }
-            
-            if (saleItem != null && saleItem.getUnitPrice() == null || saleItem.getUnitPrice() <= 0.0) {
-                Msg.error("Please enter price");
-                return;
-            }
-
-            if (saleItem != null) {
-               
-                double salesAmount = saleItem.getQuantity() * saleItem.getUnitPrice();
-                
-                saleItem.genCode();
-                saleItem.setSubTotal(salesAmount);
-                saleItem.setId(crudApi.genId());
-                saleItemList.add(saleItem);                
-                saleItemList = CollectionList.washList(saleItemList, saleItem);
-                
-                Msg.info("One item added to cart");
-            }
-            clear();
-        } catch (Exception e) {
-            e.printStackTrace();
+    
+    public void addSaleItem(){
+        if (saleItem.getQuantity() <= 0) {
+            Msg.error("Please enter quantity");
+            return;
         }
+
+        if (saleItem != null && saleItem.getUnitPrice() == null || saleItem.getUnitPrice() <= 0.0) {
+            Msg.error("Please enter price");
+            return;
+        }
+        
+        if(qtyRem < 1){
+            Msg.error("There is not enough quantity to sell");
+            return;
+        }
+
+        if (saleItem != null) {
+
+            double salesAmount = saleItem.getQuantity() * saleItem.getUnitPrice();
+
+            saleItem.genCode();
+            saleItem.setSubTotal(salesAmount);
+            saleItem.setId(crudApi.genId());
+            saleItemList.add(saleItem);
+            saleItemList = CollectionList.washList(saleItemList, saleItem);
+
+            Msg.info("One item added to cart");
+        }
+        clear();
     }
     
     public void removeCartItem(SaleItem saleItem)
@@ -281,6 +280,7 @@ public class WholeSaleController implements Serializable
         }
     }
     public void saveAll(){
+        StringBuilder sb = null;
         if (saleItemList.isEmpty()) {
             Msg.error("Cannot process an empty sale");
             return;
@@ -290,7 +290,7 @@ public class WholeSaleController implements Serializable
                 Msg.error("Please add payment info");
                 return;
             }
-        }
+        }   
         totalAmount = saleItemList.stream().mapToDouble(SaleItem::getSubTotal).sum();
         double qtyBought = saleItemList.stream().mapToDouble(SaleItem::getQuantity).sum();
         double amtPaid = paymentList.stream().mapToDouble(Payment::getAmountPaid).sum();
@@ -334,6 +334,11 @@ public class WholeSaleController implements Serializable
                     crudApi.save(item);
 
                     if (sales.getSalesType() == SalesType.INSTANT_SALES) {
+                        if(item.getInventory().getUnitMeasurement() == null){
+                            sb = new StringBuilder();
+                            sb.append("Set units for products: ").append(item.getInventory().getProduct());
+                            break;
+                        }
                         Inventory inventory = stockService.getProduct(item.getInventory().getProduct(), item.getInventory().getUnitMeasurement());
                         double qtyInShop = inventory.getQtyInShop();
                         double newQty = qtyInShop - item.getQuantity();
@@ -348,9 +353,12 @@ public class WholeSaleController implements Serializable
                     }
                 }
             }
-
+            if(sb != null){
+                Msg.error(sb.toString());
+                return;
+            }
             salesList = CollectionList.washList(salesList, sales);
-
+            
             System.out.println("Executing......");
             if (enableTax) {
                 taxCalculation();
@@ -408,10 +416,8 @@ public class WholeSaleController implements Serializable
         calculateVat();
     }
     
-    private void calculateVat()
-    {
-        if(!salesTaxList.isEmpty())
-        {
+    private void calculateVat(){
+        if(!salesTaxList.isEmpty()){
             SalesTax nhil = salesTaxList.get(0);
 //            SalesTax getFund = salesTaxList.get(1);
             SalesTax covid19 = salesTaxList.get(1);
@@ -438,10 +444,6 @@ public class WholeSaleController implements Serializable
             
         }else{
             System.out.println("Calculating vat...");
-//            System.out.println("Amount: "+salesTaxDtoList.get(0).getTaxAmount() +"\t Rate: "+salesTaxDtoList.get(0).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(0).getTaxName());
-//            System.out.println("Amount: "+salesTaxDtoList.get(1).getTaxAmount() +"\t Rate: "+salesTaxDtoList.get(1).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(1).getTaxName());
-//            System.out.println("Amount: "+salesTaxDtoList.get(2).getTaxRate() +"\t Rate: "+salesTaxDtoList.get(2).getTaxRate() +"\t TaxName: "+salesTaxDtoList.get(2).getTaxName());
-//            
             SalesTaxDto nhil = salesTaxDtoList.get(0);
             SalesTaxDto covid19 = salesTaxDtoList.get(1);
             SalesTaxDto salesVat = salesTaxDtoList.get(2);
@@ -518,12 +520,16 @@ public class WholeSaleController implements Serializable
         SystemUtils.resetJsfUI();
     }
     
-    public void clearAll()
-    {
+    public void clearAll(){
+        optionText = "Save Changes";
         saleItem = new SaleItem();
+        payment = new Payment();
         saleItemList = new LinkedList<>();
+        paymentList = new LinkedList<>();
+        paymentItems = new LinkedList<>();
         saleItem.genCode();
         totalAmount = 0.0;
+        totalPayable = 0.0;
         sales.setCustomer(salesService.defaultCustomer(CustomerType.WALK_IN_CUSTOMER));
         saleItem.setUserAccount(appSession.getCurrentUser());
         saleItem.setCompanyBranch(appSession.getCompanyBranch());

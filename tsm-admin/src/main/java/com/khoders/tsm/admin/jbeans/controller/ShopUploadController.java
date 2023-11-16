@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -135,6 +136,7 @@ public class ShopUploadController implements Serializable {
 //                appSession.logEvent("Stock Upload", null, "Inventory Uploads");
                 System.out.println("Iteration " + c + " done!");
             }
+            System.out.println("File size: "+stockDetailList.size());
         } catch (IOException e) {
         }
     }
@@ -154,11 +156,18 @@ public class ShopUploadController implements Serializable {
                 Msg.error("Please create a shop for branch: " + selectedBranch.getBranchName());
                 return;
             }
+            
+            List<StockDetails> faiedList = new LinkedList<>();
+            List<StockDetails> successList = new LinkedList<>();
 
             boolean uploads = xtractService.saveUpload(stockDetailList, selectedBranch);
             if(uploads){ 
+                System.out.println("Saving...uploads: "+uploads);
+                int j = 0;
                 for (StockDetails stockData : stockDetailList) {
-                    Inventory inventory = ds.getProduct(ds.getProduct(stockData.getProductName()), ds.getUnits(stockData.getUnitsMeasurement()));
+                    System.out.println("Saving...."+ j++);
+                    Inventory inventory = ds.getProduct(ds.getProduct(stockData.getProductName()), stockData.getUnitsMeasurement() != null ? ds.getUnits(stockData.getUnitsMeasurement()) : ds.getUnits("Piece/Single"), selectedBranch);
+                    System.out.println("inventory: "+inventory);
                     if (inventory == null) {
                         inventory = new Inventory();
                         inventory.setProduct(ds.getProduct(stockData.getProductName()));
@@ -173,10 +182,16 @@ public class ShopUploadController implements Serializable {
                         inventory.setQtyInShop(stockData.getQtyInShop());
                         inventory.setDescription("Inventory Upload on: " + LocalDate.now());
                         inventory.setDataSource("Inventory Upload dated: " + LocalDate.now());
+                        inventory.setLastModifiedDate(LocalDateTime.now());
+                        inventory.setRefNo(SystemUtils.generateReceipt());
                         crudApi.save(inventory);
+                        successList.add(stockData);
+                    }else{
+                        faiedList.add(stockData);
                     }
                 }
-                Msg.info("Upload saved successfully!");
+                Msg.info(successList.size()+" saved successfully, (Items that do not exist in "+selectedBranch+" will be saved).");
+                Msg.warn(faiedList.size()+" already exist, this was not saved.");
             }
         } catch (Exception e) {
         }

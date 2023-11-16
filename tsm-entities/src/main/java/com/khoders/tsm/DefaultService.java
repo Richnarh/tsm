@@ -17,6 +17,7 @@ import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.entities.StockReceiptItem;
 import com.khoders.tsm.entities.UnitMeasurement;
+import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.enums.CustomerType;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -60,10 +61,11 @@ public class DefaultService {
                     .setParameter(StockReceipt._receiptNo, orderCode)
                     .getResultStream().findAny().orElse(null);
     }
-    public Inventory getProduct(Product product, UnitMeasurement unitMeasurement) {
-        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.product=:product AND e.unitMeasurement=:unitMeasurement", Inventory.class)
+    public Inventory getProduct(Product product, UnitMeasurement unitMeasurement, CompanyBranch companyBranch) {
+        return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.product=:product AND e.unitMeasurement=:unitMeasurement AND e.companyBranch=:companyBranch", Inventory.class)
                 .setParameter(Inventory._product, product)
                 .setParameter(Inventory._unitMeasurement, unitMeasurement)
+                .setParameter(Inventory._companyBranch, companyBranch)
                 .getResultStream().findFirst().orElse(null);
     }
     public ProductType getProductType(String prdtType){
