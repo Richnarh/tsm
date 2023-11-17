@@ -13,9 +13,13 @@ import com.khoders.tsm.entities.system.UserAccount;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
 import com.khoders.tsm.entities.Location;
+import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.enums.LocType;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
@@ -140,21 +144,23 @@ public class StockService
         return Collections.emptyList();
     }
     
-    public List<StockReceiptItem> getStockList(CompanyBranch companyBranch)
-    {
-        try
-        {
-          String qryString = "SELECT e FROM StockReceiptItem e WHERE e.companyBranch=?1 ORDER BY e.product ASC";
-          return crudApi.getEm().createQuery(qryString, StockReceiptItem.class)
-                  .setParameter(1, companyBranch)
+    public List<StockReceiptItem> getStockList(CompanyBranch companyBranch){
+       return crudApi.getEm().createQuery("SELECT e FROM StockReceiptItem e WHERE e.companyBranch=:companyBranch ORDER BY e.product ASC", StockReceiptItem.class)
+                  .setParameter(StockReceiptItem._companyBranch, companyBranch)
                   .getResultList();
-           
-        } catch (Exception e)
-        {
-            e.printStackTrace();
+    }
+    
+    public List<StockReceipt> getStockList(DateRangeUtil dateRange){
+        if(dateRange.getFromDate() == null && dateRange.getToDate() == null) {
+            return crudApi.findAll(StockReceipt.class).stream()
+                    .sorted(Comparator.comparing(StockReceipt::getCreatedDate).reversed())
+                    .collect(Collectors.toCollection(LinkedList::new));
         }
         
-        return Collections.emptyList();
+        return crudApi.getEm().createQuery("SELECT e FROM StockReceipt e WHERE e.valueDate BETWEEN :valueDate AND :valueDate ORDER BY e.valueDate DESC", StockReceipt.class)
+                .setParameter(StockReceipt._valueDate, dateRange.getFromDate())
+                .setParameter(StockReceipt._valueDate, dateRange.getToDate())
+                .getResultList();
     }
     
     public List<StockReceiptItem> getStockShortageList(CompanyBranch companyBranch)

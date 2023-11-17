@@ -9,6 +9,7 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.tsm.admin.services.CompanyService;
 import com.khoders.tsm.admin.services.PermissionService;
 import com.khoders.tsm.entities.Location;
+import com.khoders.tsm.entities.PurchaseOrder;
 import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.entities.system.CompanyProfile;
 import com.khoders.tsm.entities.system.AppPage;
@@ -39,6 +40,7 @@ public class UserCommons implements Serializable
    private List<AppPage> appPageList = new LinkedList<>();
    private List<String> tableList = new LinkedList<>();
    private List<Location> locationList = new LinkedList<>();
+   private List<PurchaseOrder> purchaseOrderList = new LinkedList<>();
    
    @PostConstruct
    public void init()
@@ -49,6 +51,7 @@ public class UserCommons implements Serializable
        appPageList = permissionService.getAppPageList();
        tableList = companyService.getTables();
        locationList = crudApi.findAll(Location.class);
+       purchaseOrderList = crudApi.findAll(PurchaseOrder.class);
    }
    
     public List<CompanyBranch> getCompanyBranchList()
@@ -77,6 +80,10 @@ public class UserCommons implements Serializable
 
     public List<Location> getLocationList() {
         return locationList;
+    }
+
+    public List<PurchaseOrder> getPurchaseOrderList() {
+        return purchaseOrderList;
     }
     
 }
