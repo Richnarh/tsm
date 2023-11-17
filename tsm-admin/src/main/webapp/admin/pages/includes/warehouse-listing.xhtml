@@ -48,7 +48,7 @@
 
                     <p:column headerText="#{msg.date}">
                         <h:outputText value="#{stockReceipt.valueDate}">
-                            <f:convertDateTime pattern="#{msg.formatted_date}"/>
+                            <f:convertDateTime type="localDate" pattern="#{msg.formatted_date}"/>
                         </h:outputText>
                     </p:column>
 

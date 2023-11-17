@@ -72,6 +72,7 @@ public class StockController implements Serializable{
         }
     }
     public void editStockReceipt(StockReceipt stockReceipt){
+        pageView.restToCreateView();
         this.stockReceipt = stockReceipt;
         this.optionText = "Update";
     }
