@@ -12,6 +12,7 @@ import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.entities.system.UserAccount;
 import com.khoders.resource.jpa.CrudApi;
 import com.khoders.resource.utilities.DateRangeUtil;
+import com.khoders.tsm.entities.Inventory;
 import com.khoders.tsm.entities.Location;
 import com.khoders.tsm.entities.StockReceipt;
 import com.khoders.tsm.enums.LocType;
@@ -153,7 +154,7 @@ public class StockService
     public List<StockReceipt> getStockList(DateRangeUtil dateRange){
         if(dateRange.getFromDate() == null && dateRange.getToDate() == null) {
             return crudApi.findAll(StockReceipt.class).stream()
-                    .sorted(Comparator.comparing(StockReceipt::getCreatedDate).reversed())
+                    .sorted(Comparator.comparing(StockReceipt::getValueDate).reversed())
                     .collect(Collectors.toCollection(LinkedList::new));
         }
         
@@ -163,8 +164,25 @@ public class StockService
                 .getResultList();
     }
     
-    public List<StockReceiptItem> getStockShortageList(CompanyBranch companyBranch)
-    {
+    public List<Inventory> getInventoryList(DateRangeUtil dateRange, CompanyBranch companyBranch){
+        if(dateRange.getFromDate() == null && dateRange.getToDate() == null && companyBranch == null) {
+            return crudApi.findAll(Inventory.class).stream()
+                    .sorted(Comparator.comparing(Inventory::getValueDate).reversed())
+                    .collect(Collectors.toCollection(LinkedList::new));
+        }else if(dateRange.getFromDate() == null && dateRange.getToDate() == null && companyBranch != null) {
+           return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.companyBranch =:companyBranch ORDER BY e.valueDate DESC", Inventory.class)
+                .setParameter(Inventory._companyBranch, companyBranch)
+                .getResultList(); 
+        }else{
+            return crudApi.getEm().createQuery("SELECT e FROM Inventory e WHERE e.companyBranch =:companyBranch AND e.valueDate BETWEEN :valueDate AND :valueDate ORDER BY e.valueDate DESC", Inventory.class)
+                    .setParameter(Inventory._companyBranch, companyBranch)
+                    .setParameter(Inventory._valueDate, dateRange.getFromDate())
+                    .setParameter(Inventory._valueDate, dateRange.getToDate())
+                    .getResultList();
+        }
+    }
+    
+    public List<StockReceiptItem> getStockShortageList(CompanyBranch companyBranch){
         try
         {
           String qryString = "SELECT e FROM StockReceiptItem e WHERE e.companyBranch=?1 AND e.pkgQuantity <= 1 ORDER BY e.product ASC";

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">  
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">  
 
     <div class="container-fluid">
         <h:panelGroup rendered="#{stockController.pageView.listView}">
@@ -19,8 +20,7 @@
                         <h:commandButton action="#{stockController.initStockListing()}" class="mx-2 btn btn-primary btn-sm" value="Search StockReceipt"/>
 
                         <div class="pull-right">
-                            <h:commandButton value="#{msg.new} #{msg.stock}" class="btn btn-primary btn-sm"
-                                             action="#{stockController.initStock()}">
+                            <h:commandButton value="#{msg.new} #{msg.stock}" class="btn btn-primary btn-sm" action="#{stockController.initStock()}">
                                 <p:ajax update=":mainPanel"/>
                             </h:commandButton>
                         </div>
@@ -72,6 +72,7 @@
                     <p:column headerText="#{msg.action}" style="width: 120px;">
                         <p:menuButton value="#{msg.choose}">
                             <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{stockController.editStockReceipt(stockReceipt)}" immediate="true" update=":mainPanel"/>
+                            <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.add}/#{msg.edit}" action="#{stockController.addEditStockReceipt(stockReceipt)}" immediate="true" update=":mainPanel"/>
                             <p:menuitem icon="#{msg.pdf_icon}" class="text-info" value="Export PDF"/>
                             <p:menuitem icon="#{msg.excel_icon}" class="text-info" value="Export XLS"/>
                             <p:menuitem icon="#{msg.excel_icon}" class="text-info" value="Export XLSX"/>
@@ -112,6 +113,10 @@
                     </h:commandButton>
                 </h:form>
             </center>
+        </h:panelGroup>
+        
+        <h:panelGroup rendered="#{stockController.pageView.detailView}">
+            <ui:include src="stock-items.xhtml"/>
         </h:panelGroup>
     </div>
 </html>

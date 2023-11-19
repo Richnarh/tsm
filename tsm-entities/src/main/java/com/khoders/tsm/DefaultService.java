@@ -119,16 +119,24 @@ public class DefaultService {
             query.setParameter(fName2, fValue2);
         }
         
-        return (T) singleQry(query);
+        return getSingleQry(query);
     }
     
-    private Object singleQry(Query qry){
-       return qry.getResultStream().findFirst().orElse(null);
+    public <T> List<T> getObjList(Class<T> clazz, String fName, Object fValue) {
+        Query query = crudApi.getEm().createQuery("SELECT e FROM " + clazz.getSimpleName() + " e WHERE e." + fName + "=:"+fName, clazz);
+        query.setParameter(fName, fValue);
+        
+        return getResultList(query);
     }
     
-    private Object getResultList(Query qry){
+    private <T> T getSingleQry(Query qry){
+       return (T) qry.getResultStream().findFirst().orElse(null);
+    }
+    
+    private <T> List<T> getResultList(Query qry){
        return qry.getResultList();
     }
+    
     public Sales getSales(String receiptNumber) {
         return getObj(Sales.class, receiptNumber, Sales._receiptNumber);
 //        return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber=:receiptNumber", Sales.class)

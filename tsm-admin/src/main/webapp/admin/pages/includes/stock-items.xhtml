@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">  
+
+    <div class="row wow zoomIn">
+        <div class="col-lg-4">
+            <h:form id="orderItemForm">
+                <h:panelGrid columns="2" class="spaced-form"> 
+                    <span>#{msg.product} <span class="text-danger">*</span> </span>
+                    <p:selectOneMenu value="#{stockController.receiptItem.product}" style="width: 200px;"
+                                     filter="true" filterMatchMode="contains" required="true">
+                        <f:selectItem itemLabel="#{msg.choose}"/>
+                        <f:selectItems value="#{userCommons.productList}"/>
+                    </p:selectOneMenu>
+
+                    <span>#{msg.package} <span class="text-danger">*</span> </span>
+                    <p:selectOneMenu id="packages" value="#{stockController.receiptItem.unitMeasurement}" style="width: 200px;"
+                                     filter="true" filterMatchMode="contains" required="true">
+                        <f:selectItem itemLabel="#{msg.choose}"/>
+                        <f:selectItems value="#{userCommons.unitMeasurementList}"/>
+                    </p:selectOneMenu>
+                    
+                    <span>#{msg.status} <span class="text-danger">*</span> </span>
+                    <p:selectOneMenu value="#{stockController.receiptItem.receiptStatus}" style="width: 200px;">
+                        <f:selectItem itemLabel="#{msg.choose}"/>
+                        <f:selectItems value="#{commonClass.receiptStatusList}"/>
+                    </p:selectOneMenu>
+
+                    <span>#{msg.quantity} <span class="text-danger">*</span> </span>
+                    <p:inputText value="#{stockController.receiptItem.pkgQuantity}" placeholder="Qty" style="width: 200px;" required="true"/>
+
+                    <span>#{msg.package} Factor <span class="text-danger">*</span> </span>
+                    <p:inputText value="#{stockController.receiptItem.pkgFactor}" placeholder="Qty in package" style="width: 200px;" required="true"/>
+
+                    <span>Package Cost <span class="text-danger">*</span> </span>
+                    <p:inputText value="#{stockController.receiptItem.costPrice}" style="width: 200px;" required="true"/>
+
+                    <span>#{msg.description}</span>
+                    <p:inputTextarea value="#{stockController.receiptItem.description}" style="width: 200px;"/>
+                </h:panelGrid>
+
+                <div class="py-3">
+                    <p:commandButton value="Add Item" icon="#{msg.add_icon}" class="kbtn-info mx-2" action="#{stockController.addStockItem()}" update=":receiptItemTable,:mainPanel"/>
+
+                    <p:commandButton value="#{msg.clear}" class="kbtn-default ml-3" icon="#{msg.clear_icon}" immediate="true" action="#{stockController.clearItem()}" update="@form"/>
+                </div>
+            </h:form>
+        </div>
+        <div class="col-lg-8">
+            <h:form id="receiptItemTable">
+                <p:dataTable value="#{stockController.stockReceiptItemtList}" var="receiptItem" paginator="true" paginatorPosition="bottom" rows="6">
+                    <p:column style="width: 10px">
+                        <p:rowToggler/>
+                    </p:column>
+
+                    <p:rowExpansion>
+                        <p:panelGrid columns="2">
+                            <span>#{msg.created_date}</span>
+                            <h:outputText value="#{receiptItem.createdDate}">
+                                <f:convertDateTime type="localDateTime" pattern="#{msg.formatted_date_time_am_pm}"/>
+                            </h:outputText>
+                            
+                            <span>Ref No.</span>
+                            <h:outputText value="#{receiptItem.refNo}"/>
+
+                            <span>#{msg.description}</span>
+                            <h:outputText value="#{receiptItem.description}"/>
+                        </p:panelGrid>
+                    </p:rowExpansion>
+
+                    <p:column headerText="#{msg.product}">
+                        #{receiptItem.product.productName}
+                    </p:column>
+
+                    <p:column headerText="#{msg.package}" style="width: 70px;">
+                        #{receiptItem.unitMeasurement.units}
+                    </p:column>
+
+                    <p:column headerText="#{msg.qty}" class="text-end" style="width: 60px;">
+                        #{receiptItem.pkgQuantity}
+                    </p:column>
+
+                    <p:column headerText="#{msg.cost}" class="text-end" style="width: 80px;">
+                        <h:outputText value="#{receiptItem.costPrice}">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Total" class="text-end" style="width: 90px;">
+                        <h:outputText value="#{receiptItem.costPrice * receiptItem.pkgQuantity}">
+                            <f:convertNumber pattern="#{msg.money_pattern}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="#{msg.action}" style="width: 80px;">
+                        <p:menuButton value="#{msg.manage}">
+                            <p:menuitem icon="#{msg.edit_icon}" class="text-info" value="#{msg.edit}" action="#{stockController.editStockItem(receiptItem)}" immediate="true" update=":orderItemForm, @form"/>
+                            <p:menuitem icon="#{msg.clear_icon}" class="text-danger" value="#{msg.remove}" action="#{stockController.removeStockItem(receiptItem)}" immediate="true" update="@form"/>
+                        </p:menuButton>
+                    </p:column>
+                </p:dataTable>
+                
+            </h:form>
+            <hr/>
+            <center>
+                <h:form>
+                    <p:commandButton icon="#{msg.check_icon}" value="Save All" action="#{stockController.saveAll()}" class="kbtn-success mr-5" update=":receiptItemTable"/>
+
+                    <h:commandButton value="#{msg.close}" class="btn btn-danger btn-sm float-end" immediate="true" action="#{stockController.closeStockPage()}">
+                        <p:ajax update=":mainPanel"/>
+                    </h:commandButton>
+                </h:form>
+            </center>
+            <br/>
+        </div>
+    </div>
+</html>
+

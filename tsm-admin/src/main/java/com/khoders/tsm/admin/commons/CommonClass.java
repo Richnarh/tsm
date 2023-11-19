@@ -9,6 +9,7 @@ import com.khoders.resource.enums.AccessLevel;
 import com.khoders.resource.enums.Status;
 import com.khoders.tsm.enums.ListingType;
 import com.khoders.tsm.enums.LocType;
+import com.khoders.tsm.enums.ReceiptStatus;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -36,5 +37,8 @@ public class CommonClass implements Serializable {
     }
     public List<ListingType> getListingTypeList() {
         return Arrays.asList(ListingType.values());
+    }
+    public List<ReceiptStatus> getReceiptStatusList() {
+        return Arrays.asList(ReceiptStatus.values());
     }
 }

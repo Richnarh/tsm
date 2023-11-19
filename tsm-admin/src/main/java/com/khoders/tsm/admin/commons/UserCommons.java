@@ -9,7 +9,9 @@ import com.khoders.resource.jpa.CrudApi;
 import com.khoders.tsm.admin.services.CompanyService;
 import com.khoders.tsm.admin.services.PermissionService;
 import com.khoders.tsm.entities.Location;
+import com.khoders.tsm.entities.Product;
 import com.khoders.tsm.entities.PurchaseOrder;
+import com.khoders.tsm.entities.UnitMeasurement;
 import com.khoders.tsm.entities.system.CompanyBranch;
 import com.khoders.tsm.entities.system.CompanyProfile;
 import com.khoders.tsm.entities.system.AppPage;
@@ -41,10 +43,11 @@ public class UserCommons implements Serializable
    private List<String> tableList = new LinkedList<>();
    private List<Location> locationList = new LinkedList<>();
    private List<PurchaseOrder> purchaseOrderList = new LinkedList<>();
+   private List<Product> productList = new LinkedList<>();
+   private List<UnitMeasurement> unitMeasurementList = new LinkedList<>();
    
    @PostConstruct
-   public void init()
-   {
+   public void init(){
        companyBranchList = companyService.getCompanyBranchList();
        companyProfileList = companyService.getCompanyProfileList();
        userAccountList = companyService.getUserAccountList();
@@ -52,6 +55,8 @@ public class UserCommons implements Serializable
        tableList = companyService.getTables();
        locationList = crudApi.findAll(Location.class);
        purchaseOrderList = crudApi.findAll(PurchaseOrder.class);
+       productList = crudApi.findAll(Product.class);
+       unitMeasurementList = crudApi.findAll(UnitMeasurement.class);
    }
    
     public List<CompanyBranch> getCompanyBranchList()
@@ -84,6 +89,14 @@ public class UserCommons implements Serializable
 
     public List<PurchaseOrder> getPurchaseOrderList() {
         return purchaseOrderList;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public List<UnitMeasurement> getUnitMeasurementList() {
+        return unitMeasurementList;
     }
     
 }

@@ -29,8 +29,8 @@
                             <ui:include src="includes/warehouse-listing.xhtml"/>
                         </h:panelGroup>
                         
-                        <h:panelGroup rendered="#{stockController.listingType == 'WAREHOUSE_STOCK_SUMMARY_LISTING'}">
-                            <!--<ui:include src="includes/stock-summary.xhtml"/>-->
+                        <h:panelGroup rendered="#{stockController.listingType == 'SHOP_INVENTORY_LISTING'}">
+                            <ui:include src="includes/inventory-listing.xhtml"/>
                         </h:panelGroup>
                     </div>
                 </h:panelGroup>
