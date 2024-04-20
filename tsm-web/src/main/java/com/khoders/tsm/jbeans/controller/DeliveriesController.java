@@ -13,7 +13,6 @@ import com.khoders.resource.utilities.SystemUtils;
 import com.khoders.tsm.entities.Customer;
 import com.khoders.tsm.entities.SaleItem;
 import com.khoders.tsm.entities.DeliveryInfo;
-import com.khoders.tsm.entities.Sales;
 import com.khoders.tsm.entities.ShippingInfo;
 import com.khoders.tsm.jbeans.ReportFiles;
 import com.khoders.tsm.dto.SalesReceipt;
@@ -67,14 +66,14 @@ public class DeliveriesController implements Serializable{
         DeliveryInfo deliveryInfo = new DeliveryInfo();
         deliveryInfo.setSaleItem(saleItem);
         deliveryInfo.setDeliveryDate(LocalDate.now());
-        deliveryInfo.setDeliveryStatus(DeliveryStatus.DELIVERED);
+        deliveryInfo.setDeliveryStatus(DeliveryStatus.FULLY_DELIVERED);
         deliveryInfo.setReceiptNumber(receiptNumber);
         deliveryInfo.setCompanyBranch(appSession.getCompanyBranch());
         deliveryInfo.setUserAccount(appSession.getCurrentUser());
         deliveryInfo.genCode();
         
         crudApi.save(deliveryInfo);
-        saleItem.setDeliveryStatus(DeliveryStatus.DELIVERED);
+        saleItem.setDeliveryStatus(DeliveryStatus.FULLY_DELIVERED);
        crudApi.save(saleItem);
     }
     
