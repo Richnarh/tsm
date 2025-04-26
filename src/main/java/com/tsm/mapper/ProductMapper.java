@@ -85,12 +85,15 @@ public class ProductMapper {
         
         product.setProductName(dto.getProductName());
         product.setDescription(dto.getDescription());
-        if(dto.getProductTypeId() == null){
-            throw new DataNotFoundException("ProductType Id is required");
+        if(dto.getProductTypeId() != null){
+            ProductType productType = crudApi.find(ProductType.class, dto.getProductTypeId());
+            product.setProductType(productType);
         }
-        ProductType productType = crudApi.find(ProductType.class, dto.getProductTypeId());
-        product.setProductType(productType);
-        product.setReorderLevel(dto.getReorderLevel());
+        
+        if(dto.getReorderLevel() != null){
+            product.setReorderLevel(dto.getReorderLevel());
+        }
+        
         return product;
     }
     

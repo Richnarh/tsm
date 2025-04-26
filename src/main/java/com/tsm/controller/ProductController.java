@@ -1,11 +1,18 @@
 package com.tsm.controller;
 
 import com.dolphindoors.resource.jaxrs.JaxResponse;
+import com.dolphindoors.resource.jpa.CrudApi;
 import com.dolphindoors.resource.utilities.Msg;
 import com.tsm.ApiEndpoint;
 import com.tsm.AppParam;
 import com.tsm.dto.ProductDto;
+import com.tsm.entities.Product;
+import com.tsm.entities.ProductType;
 import com.tsm.services.ProductService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
@@ -18,6 +25,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -25,6 +37,8 @@ import javax.ws.rs.core.Response;
  */
 @Path(ApiEndpoint.PRODUCT_ENDPOINT)
 public class ProductController {
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
+    @Inject private CrudApi crudApi;
     @Inject private ProductService productService;
     
     @POST
@@ -33,6 +47,60 @@ public class ProductController {
         ProductDto dto = productService.save(productDto, param);
         return JaxResponse.created(Msg.CREATED, dto);
     }
+    
+    @POST
+    @Path("/upload")
+    @Consumes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public Response upload(InputStream inputStream, @BeanParam AppParam param){
+        List<ProductDto> dtoList = new LinkedList<>();
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            sheet.removeRow(sheet.getRow(0));
+            for (Row row : sheet) {
+                if(row.getCell(0) == null) continue;
+                
+                Integer reorderLevel = null;
+                ProductType prodType = null;
+                String productType = null;
+                
+                String productName = row.getCell(0).getStringCellValue();
+                if(row.getCell(1) != null){
+                    productType = row.getCell(1).getStringCellValue();
+                }
+                if(row.getCell(2) != null){
+                    reorderLevel = (int)row.getCell(2).getNumericCellValue();
+                }
+                
+                if(productType != null){
+                    prodType = productService.getProductType(productType);
+                    if (prodType == null){
+                        prodType = new ProductType();
+                        prodType.genCode();
+                        prodType.setProductTypeName(productType);
+
+                        crudApi.save(prodType);
+                    }
+                }
+                
+                Product product = productService.getProduct(productName);
+                if(product == null){
+                    ProductDto dto = new ProductDto();
+                    dto.setProductName(productName);
+                    dto.setProductTypeId(prodType != null ? prodType.getId() : null);
+                    dto.setReorderLevel(reorderLevel);
+                    ProductDto prodDto = productService.save(dto, param);
+                    dtoList.add(prodDto);
+                }
+            }
+            
+        } catch (IOException e) {
+            e.getMessage();
+        }
+        log.info(dtoList.size() +" upload successful...");
+        return JaxResponse.ok(Msg.SUCCESS_MESSAGE);
+    }
+    
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public Response update(ProductDto productDto, @BeanParam AppParam param){

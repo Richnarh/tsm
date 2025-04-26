@@ -16,6 +16,7 @@ import com.tsm.entities.Packaging;
 import com.tsm.entities.PricePackage;
 import com.tsm.entities.Product;
 import com.tsm.entities.ProductType;
+import com.tsm.entities.UnitMeasurement;
 import com.tsm.mapper.ProductMapper;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -275,5 +276,17 @@ private static final Logger log = LoggerFactory.getLogger(ProductService.class);
             salesList.add(inventory);
         }
         return salesList;
+    }
+    
+    public ProductType getProductType(String prdtType){
+       return crudApi.getEm().createQuery("SELECT e FROM ProductType e WHERE e.productTypeName = :productTypeName", ProductType.class)
+                .setParameter(ProductType._productTypeName, prdtType)
+                .getResultStream().findFirst().orElse(null);
+    }
+    
+    public Product getProduct(String productName) {
+        return crudApi.getEm().createQuery("SELECT e FROM Product e WHERE e.productName=:productName", Product.class)
+                .setParameter(Product._productName, productName)
+                .getResultStream().findFirst().orElse(null);
     }
 }
