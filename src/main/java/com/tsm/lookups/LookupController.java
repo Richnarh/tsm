@@ -17,6 +17,7 @@ import com.dolphindoors.resource.utilities.Msg;
 import com.lestieshop.lookups.LookupSetup;
 import com.tsm.ApiEndpoint;
 import com.tsm.enums.ClientSource;
+import com.tsm.enums.Roles;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -76,6 +77,13 @@ public class LookupController {
         return JaxResponse.ok(Msg.RECORD_FOUND, LookupSetup.PrepareEnum(Title.values()));
     }
     
+    @GET
+    @Path("/roles")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response roles(){
+        return JaxResponse.ok(Msg.RECORD_FOUND, LookupSetup.PrepareEnum(Roles.values()));
+    }
+    
     // Entities
     @GET
     @Path("/inventory")
@@ -90,13 +98,7 @@ public class LookupController {
     public Response products(){
         return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.products());
     }
-    @GET
-    @Path("/company-profile")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response companyProfile(){
-        return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.companyProfile());
-    }
-    
+
     @GET
     @Path("/product-type")
     @Produces(MediaType.APPLICATION_JSON)
@@ -110,17 +112,18 @@ public class LookupController {
         return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.employees());
     }
     @GET
+    @Path("/company-branch")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response companyBranch(){
+        return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.companyBranch());
+    }
+    @GET
     @Path("/job-title")
     @Produces(MediaType.APPLICATION_JSON)
     public Response jobTitle(){
         return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.jobTitles());
     }
-    @GET
-    @Path("/users")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response users(){
-        return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.users());
-    }
+
     @GET
     @Path("/customers")
     @Produces(MediaType.APPLICATION_JSON)

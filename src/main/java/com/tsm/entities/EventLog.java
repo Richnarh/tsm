@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tsm.entities.system;
+package com.tsm.entities;
 
+import com.tsm.entities.system.CompanyRecord;
 import com.tsm.enums.EventModule;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "event_log")
-public class EventLog extends UserAccountRecord implements Serializable{
+public class EventLog extends CompanyRecord implements Serializable{
     public static final String _eventName = "eventName";
     @Column(name = "event_name")
     private String eventName;

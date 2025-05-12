@@ -29,6 +29,7 @@ public class ApiEndpoint{
     public static final String INVENTORY_ENDPOINT = VERSION + "inventory";
     public static final String PRODUCT_ENDPOINT = VERSION + "product";
     public static final String PRODUCT_TYPE_ENDPOINT = VERSION + "product-type";
+    public static final String COMPANY_BRANCH_ENDPOINT = VERSION + "company-branch";
     public static final String SMS_ENDPOINT = VERSION + "sms";
     public static final String GROUP_ENDPOINT = VERSION + "sms-group";
     public static final String GROUP_CONTACT_ENDPOINT = VERSION + "group-contact";

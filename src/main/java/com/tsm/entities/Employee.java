@@ -2,7 +2,7 @@ package com.tsm.entities;
 
 import com.dolphindoors.resource.enums.Status;
 import com.dolphindoors.resource.enums.Title;
-import com.dolphindoors.resource.jpa.BaseModel;
+import com.tsm.entities.system.CompanyRecord;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "employee")
-public class Employee extends BaseModel implements Serializable{
+public class Employee extends CompanyRecord implements Serializable{
     
     @Column(name = "title")
     @Enumerated(EnumType.STRING)
@@ -40,9 +40,13 @@ public class Employee extends BaseModel implements Serializable{
     @Column(name = "phone_number")
     private String phoneNumber;
     
-    public static final String _email="email";
+    public static final String _email = "email";
     @Column(name = "email")
     private String email;
+    
+    public static final String _salt = "salt";
+    @Column(name = "salt")
+    private byte[] salt;
     
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
@@ -111,6 +115,12 @@ public class Employee extends BaseModel implements Serializable{
     public void setStatus(Status status) {
         this.status = status;
     }
-    
-    
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
 }

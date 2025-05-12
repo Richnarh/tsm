@@ -54,7 +54,7 @@ public class XtractService
         salesReceipt.setReceiptNumber(sales.getReceiptNumber());
         salesReceipt.setBranchName(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchName() : "");
         salesReceipt.setDate(LocalDateTime.now());
-        salesReceipt.setCashier(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
+//        salesReceipt.setCashier(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : "");
         salesReceipt.setPhoneNumber(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getTelephoneNo() : "");
         String paymentMethod = null;
         if(!salesService.payments(sales).isEmpty()){
@@ -153,7 +153,6 @@ public class XtractService
         }
         if (appSession.getCurrentUser().getCompanyBranch() != null)
         {
-            cashReceipt.setWebsite(appSession.getCurrentUser().getCompanyBranch().getCompanyProfile().getWebsite());
         }
         cashReceipt.setRefNo(creditPayment.getRefNo());
         cashReceipt.setAmountPaid(creditPayment.getAmountPaid());
@@ -182,7 +181,7 @@ public class XtractService
                         productType.setProductTypeName(details.getProductType());
                         productType.setUserAccount(appSession.getCurrentUser());
                         productType.setCompanyBranch(appSession.getCompanyBranch());
-                        productType.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+//                        productType.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                         crudApi.save(productType);
                     }
                 }
@@ -194,7 +193,7 @@ public class XtractService
                         product.setProductType(productType != null ? productType : null);
                         product.setUserAccount(appSession.getCurrentUser());
                         product.setCompanyBranch(appSession.getCompanyBranch());
-                        product.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+//                        product.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                         crudApi.save(product);
                     }
                 }
@@ -207,7 +206,7 @@ public class XtractService
                         unitMeasurement.setUnits(details.getUnitsMeasurement());
                         unitMeasurement.genCode();
                         unitMeasurement.setUserAccount(appSession.getCurrentUser());
-                        unitMeasurement.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
+//                        unitMeasurement.setLastModifiedBy(appSession.getCurrentUser() != null ? appSession.getCurrentUser().getFullname() : null);
                         crudApi.save(unitMeasurement);
                     }
                 }
@@ -235,7 +234,6 @@ public class XtractService
        waybill.setBranchName(appSession.getCompanyBranch().getBranchName());
        waybill.setTelNumber(appSession.getCompanyBranch().getTelephoneNo());
        waybill.setCompanyAddress(appSession.getCompanyBranch().getBranchAddress());
-       waybill.setWebsite(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null ? appSession.getCompanyBranch().getCompanyProfile().getWebsite() : "");
        
         double sum = 0.0;
         for (DeliveryInfo info : deliveryInfos) {
@@ -281,9 +279,6 @@ public class XtractService
         invoiceDto.setInvoiceNotes(sales.getNotes());
         invoiceDto.setReceiptNumber(sales.getReceiptNumber());
         invoiceDto.setCompanyAddress(appSession.getCompanyBranch() != null ? appSession.getCompanyBranch().getBranchAddress() : "");
-        if(appSession.getCompanyBranch() != null && appSession.getCompanyBranch().getCompanyProfile() != null){
-            invoiceDto.setWebsite(appSession.getCompanyBranch().getCompanyProfile().getWebsite());
-        }
         
         if(sales.getCustomer() != null){
             invoiceDto.setCustomerName(sales.getCustomer().getCustomerName());

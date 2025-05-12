@@ -26,8 +26,8 @@ public class CorsFilter implements ContainerResponseFilter{
     public void filter(final ContainerRequestContext requestContext,final ContainerResponseContext responseContext) throws IOException{
         log.debug("Writing CORS headers");
         
-        responseContext.getHeaders().add("Access-Control-Allow-Origin", "*");
-        responseContext.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+        responseContext.getHeaders().add("Access-Control-Allow-Origin", "http://localhost:4300");
+        responseContext.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization,companyId");
         responseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
         responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
         responseContext.getHeaders().add("Access-Control-Max-Age", "1209600");

@@ -1,6 +1,6 @@
 package com.tsm.dto;
 
-import com.dolphindoors.resource.enums.PaymentStatus;
+import com.dolphindoors.resource.enums.PaymentMethod;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -16,11 +16,12 @@ public class SalesDto extends Base{
     private String customerId;
     private String receiptNumber;
     private Double totalAmount;
+    private Double totalPayable;
     private Double qtyPurchased;
     private LocalDate dueDate;
-    private PaymentStatus paymentStatus;
     private String notes;
     private String address;
+    private PaymentMethod paymentMethod;
     
     private CustomerDto customerDto;
     private List<SaleItemDto> saleItemList = new LinkedList<>();
@@ -97,14 +98,6 @@ public class SalesDto extends Base{
         this.dueDate = dueDate;
     }
 
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
     public String getNotes() {
         return notes;
     }
@@ -119,6 +112,22 @@ public class SalesDto extends Base{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public Double getTotalPayable() {
+        return totalPayable;
+    }
+
+    public void setTotalPayable(Double totalPayable) {
+        this.totalPayable = totalPayable;
     }
 
 }

@@ -9,13 +9,16 @@ package com.tsm.dto;
  *
  * @author richa
  */
-public class SaleItemDto
-{
+public class SaleItemDto extends Base{
     private double unitPrice;
-    private double quantity;
+    private Integer quantity;
     private double subTotal;
     private String product;
     private String productPackage;
+    private String inventoryId;
+    private String inventory;
+    private String salesId;
+    private String sales;
 
     public double getUnitPrice()
     {
@@ -27,16 +30,14 @@ public class SaleItemDto
         this.unitPrice = unitPrice;
     }
 
-    public double getQuantity()
-    {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity)
-    {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-
+    
     public double getSubTotal()
     {
         return subTotal;
@@ -65,6 +66,38 @@ public class SaleItemDto
     public void setProductPackage(String productPackage)
     {
         this.productPackage = productPackage;
+    }
+
+    public String getInventoryId() {
+        return inventoryId;
+    }
+
+    public void setInventoryId(String inventoryId) {
+        this.inventoryId = inventoryId;
+    }
+
+    public String getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(String inventory) {
+        this.inventory = inventory;
+    }
+
+    public String getSalesId() {
+        return salesId;
+    }
+
+    public void setSalesId(String salesId) {
+        this.salesId = salesId;
+    }
+
+    public String getSales() {
+        return sales;
+    }
+
+    public void setSales(String sales) {
+        this.sales = sales;
     }
     
 }

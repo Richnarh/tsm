@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author richardnarh
  */
 public class ConfigMapper {
-    private static final Logger log = LoggerFactory.getLogger(UserMapper.class);
+    private static final Logger log = LoggerFactory.getLogger(ConfigMapper.class);
     @Inject private CrudApi crudApi;
     
         

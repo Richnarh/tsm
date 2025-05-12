@@ -29,7 +29,7 @@ public class Inventory extends UserAccountRecord implements Serializable{
     private Product product;
     
     @Column(name = "inventory_code", unique = true)
-    private String inventoryCode = JUtils.generate(5).toUpperCase();
+    private String inventoryCode = JUtils.generate(6).toUpperCase();
     
     @Column(name = "description")
     @Lob
@@ -37,6 +37,9 @@ public class Inventory extends UserAccountRecord implements Serializable{
     
     @Column(name = "quantity")
     private Integer quantity;
+    
+    @Column(name = "quantity_sold")
+    private Integer quantitySold;
     
 //    public static final String _defaultPackage = "defaultPackage";
 //    @JoinColumn(name = "default_package")
@@ -73,6 +76,14 @@ public class Inventory extends UserAccountRecord implements Serializable{
 
     public void setInventoryCode(String inventoryCode) {
         this.inventoryCode = inventoryCode;
+    }
+
+    public Integer getQuantitySold() {
+        return quantitySold;
+    }
+
+    public void setQuantitySold(Integer quantitySold) {
+        this.quantitySold = quantitySold;
     }
 
     @Override

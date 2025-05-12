@@ -8,8 +8,6 @@ package com.tsm.entities.system;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -22,9 +20,6 @@ public class CompanyBranch extends RefNo implements Serializable
 {    
     @Column(name = "branch_name")
     private String branchName;
-    
-    @Column(name = "box_address")
-    private String boxAddress;
 
     @Column(name = "gps_address")
     private String gpsAddress;
@@ -34,17 +29,7 @@ public class CompanyBranch extends RefNo implements Serializable
 
     @Column(name = "telephone_no")
     private String telephoneNo;
-    
-    @Column(name = "enable_tax")
-    private boolean enableTax;
-    
-    @Column(name = "credit_limit")
-    private double creditLimit;
-    
-    @JoinColumn(name = "company_profile", referencedColumnName = "id")
-    @ManyToOne
-    private CompanyProfile companyProfile;
-    
+
     public String getBranchName()
     {
         return branchName;
@@ -53,16 +38,6 @@ public class CompanyBranch extends RefNo implements Serializable
     public void setBranchName(String branchName)
     {
         this.branchName = branchName;
-    }
-
-    public String getBoxAddress()
-    {
-        return boxAddress;
-    }
-
-    public void setBoxAddress(String boxAddress)
-    {
-        this.boxAddress = boxAddress;
     }
 
     public String getGpsAddress()
@@ -85,16 +60,6 @@ public class CompanyBranch extends RefNo implements Serializable
         this.telephoneNo = telephoneNo;
     }
 
-    public CompanyProfile getCompanyProfile()
-    {
-        return companyProfile;
-    }
-
-    public void setCompanyProfile(CompanyProfile companyProfile)
-    {
-        this.companyProfile = companyProfile;
-    }
-
     public String getBranchAddress()
     {
         return branchAddress;
@@ -105,23 +70,6 @@ public class CompanyBranch extends RefNo implements Serializable
         this.branchAddress = branchAddress;
     }
 
-    public boolean isEnableTax() {
-        return enableTax;
-    }
-
-    public void setEnableTax(boolean enableTax) {
-        this.enableTax = enableTax;
-    }
-
-    public double getCreditLimit() {
-        return creditLimit;
-    }
-
-    public void setCreditLimit(double creditLimit) {
-        this.creditLimit = creditLimit;
-    }
-    
-    
     @Override
     public String toString()
     {

@@ -49,8 +49,8 @@ public class SalesService {
     @Inject private XtractService xs;
     @Inject private AppSession appSession;
     
-    public SalesDto saveAll(SalesDto salesDto) {
-        log.info("Saving proforma sales");
+    public SalesDto saveAll(SalesDto salesDto, AppParam param) {
+        log.info("Saving sales");
         Customer customer = null;
         if(salesDto.getCustomerId() == null){
             customer = mapper.toEntity(salesDto.getCustomerDto());
@@ -62,7 +62,7 @@ public class SalesService {
                 crudApi.save(customer);
             }
         }
-        Sales sales = mapper.toEntity(salesDto);
+        Sales sales = mapper.toEntity(salesDto, param);
         sales.setCustomer(customer);
         SalesDto dto = null;
         CustomerDto customerDto = null;
@@ -158,13 +158,13 @@ public class SalesService {
     public List<SaleItem> getSales(Sales sales){
         return crudApi.getEm().createQuery("SELECT e FROM SaleItem e WHERE e.sales=:sales AND e.companyBranch = :companyBranch", SaleItem.class)
                         .setParameter(SaleItem._sales, sales)
-                        .setParameter(SaleItem._companyBranch, appSession.getCompanyBranch())
+//                        .setParameter(SaleItem._companyBranch, appSession.getCompanyBranch())
                         .getResultList();
     }
     public Sales getSale(String receiptNumber){
         return crudApi.getEm().createQuery("SELECT e FROM Sales e WHERE e.receiptNumber = :receiptNumber AND e.companyBranch = :companyBranch", Sales.class)
                         .setParameter(Sales._receiptNumber, receiptNumber)
-                        .setParameter(SaleItem._companyBranch, appSession.getCompanyBranch())
+//                        .setParameter(SaleItem._companyBranch, appSession.getCompanyBranch())
                         .getResultStream().findFirst().orElse(null);
     }
     

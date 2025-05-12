@@ -63,6 +63,7 @@ public class ProductController {
                 Integer reorderLevel = null;
                 ProductType prodType = null;
                 String productType = null;
+                ProductDto dto = new ProductDto();
                 
                 String productName = row.getCell(0).getStringCellValue();
                 if(row.getCell(1) != null){
@@ -71,6 +72,9 @@ public class ProductController {
                 if(row.getCell(2) != null){
                     reorderLevel = (int)row.getCell(2).getNumericCellValue();
                 }
+                if(row.getCell(3) != null){
+                    dto.setInvenQty((int)row.getCell(3).getNumericCellValue());
+                }
                 
                 if(productType != null){
                     prodType = productService.getProductType(productType);
@@ -78,25 +82,28 @@ public class ProductController {
                         prodType = new ProductType();
                         prodType.genCode();
                         prodType.setProductTypeName(productType);
-
                         crudApi.save(prodType);
                     }
+                    dto.setProductType(productType);
                 }
                 
                 Product product = productService.getProduct(productName);
+                
                 if(product == null){
-                    ProductDto dto = new ProductDto();
                     dto.setProductName(productName);
                     dto.setProductTypeId(prodType != null ? prodType.getId() : null);
                     dto.setReorderLevel(reorderLevel);
-                    ProductDto prodDto = productService.save(dto, param);
-                    dtoList.add(prodDto);
+                    productService.save(dto, param);
+                }else{
+                    dto.setProductName(productName);
                 }
+                dtoList.add(dto);
             }
             
         } catch (IOException e) {
             e.getMessage();
         }
+        productService.createInventory(dtoList);
         log.info(dtoList.size() +" upload successful...");
         return JaxResponse.ok(Msg.SUCCESS_MESSAGE);
     }

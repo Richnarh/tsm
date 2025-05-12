@@ -75,7 +75,6 @@ public class DeliveriesController implements Serializable{
         deliveryInfo.genCode();
         
         crudApi.save(deliveryInfo);
-        saleItem.setDeliveryStatus(DeliveryStatus.FULLY_DELIVERED);
        crudApi.save(saleItem);
     }
     

@@ -5,8 +5,10 @@
  */
 package com.tsm.entities;
 
+import com.dolphindoors.resource.enums.PaymentMethod;
 import com.dolphindoors.resource.enums.PaymentStatus;
 import com.dolphindoors.resource.utilities.JUtils;
+import com.tsm.entities.system.CompanyRecord;
 import com.tsm.entities.system.UserAccountRecord;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,7 +27,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sales")
-public class Sales extends UserAccountRecord {
+public class Sales extends CompanyRecord {
 
     @Column(name = "sales_date")
     private LocalDateTime salesDate;
@@ -42,16 +44,21 @@ public class Sales extends UserAccountRecord {
     @Column(name = "total_amount")
     private double totalAmount;
 
+    @Column(name = "total_payable")
+    private double totalPayable;
+
     @Column(name = "qty_purchased")
     private Double qtyPurchased;
-    
-    @Column(name = "due_date")
-    private LocalDate dueDate;
     
     public static final String _paymentStatus = "paymentStatus"; 
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+    
+    public static final String _paymentMethod = "paymentMethod"; 
+    @Column(name = "payment_method")
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
     
     public static final String _notes = "notes";    
     @Column(name = "notes")
@@ -90,14 +97,6 @@ public class Sales extends UserAccountRecord {
         this.customer = customer;
     }
  
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(LocalDate dueDate) {
-        this.dueDate = dueDate;
-    }
-
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
@@ -113,12 +112,36 @@ public class Sales extends UserAccountRecord {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    public LocalDateTime getSalesDate() {
+        return salesDate;
+    }
+
+    public void setSalesDate(LocalDateTime salesDate) {
+        this.salesDate = salesDate;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public double getTotalPayable() {
+        return totalPayable;
+    }
+
+    public void setTotalPayable(double totalPayable) {
+        this.totalPayable = totalPayable;
+    }
     
     public void genReceipt() {
         if (getReceiptNumber() != null) {
             setReceiptNumber(getReceiptNumber());
         } else {
-            setReceiptNumber(JUtils.generateRefNo());
+            setReceiptNumber(JUtils.generateReceipt());
         }
     }
 

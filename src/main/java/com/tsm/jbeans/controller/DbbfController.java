@@ -116,7 +116,6 @@ public class DbbfController implements Serializable{
         creditPayment.setDataSource("Credit sales with Ref. No.: "+compoundSale.getRefNo());
         creditPayment.setUserAccount(appSession.getCurrentUser());
         creditPayment.setCompanyBranch(appSession.getCompanyBranch());
-        creditPayment.setLastModifiedBy(appSession.getCurrentUser().getFullname());
         
         List<CreditPayment> cpList = salesService.getCreditSales(compoundSale);
         double totalAmountPaid = cpList.stream().mapToDouble(CreditPayment::getAmountPaid).sum();

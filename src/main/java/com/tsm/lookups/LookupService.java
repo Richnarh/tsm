@@ -15,7 +15,7 @@ import com.tsm.entities.Packaging;
 import com.tsm.entities.PricePackage;
 import com.tsm.entities.Product;
 import com.tsm.entities.ProductType;
-import com.tsm.entities.system.CompanyProfile;
+import com.tsm.entities.system.CompanyBranch;
 import com.tsm.entities.system.UserAccount;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,17 +30,6 @@ import javax.inject.Inject;
 public class LookupService {
     @Inject private CrudApi crudApi;
     
-    public List<LookupItem> companyProfile() {
-        List<LookupItem> itemList = new LinkedList<>();
-        crudApi.findAll(CompanyProfile.class).forEach(data -> {
-            LookupItem item = new LookupItem();
-            item.setId(data.getId());
-            item.setItemName(data.getCompanyEmail()+"-"+data.getTinNo());
-            itemList.add(item);
-        });
-        return itemList;
-    } 
-   
     public List<LookupItem> inventory() {
         List<LookupItem> itemList = new LinkedList<>();
         crudApi.findAll(Inventory.class).forEach(data -> {
@@ -74,16 +63,7 @@ public class LookupService {
         });
         return itemList;
     } 
-    public List<LookupItem> users() {
-        List<LookupItem> itemList = new LinkedList<>();
-        crudApi.findAll(UserAccount.class).forEach(data -> {
-            LookupItem item = new LookupItem();
-            item.setId(data.getId());
-            item.setItemName(data.getFullname() +" - "+data.getPhoneNumber());
-            itemList.add(item);
-        });
-        return itemList;
-    } 
+
     public List<LookupItem> employees() {
         List<LookupItem> itemList = new LinkedList<>();
         crudApi.findAll(Employee.class).forEach(data -> {
@@ -108,6 +88,17 @@ public class LookupService {
             LookupItem item = new LookupItem();
             item.setId(data.getId());
             item.setItemName(data.getTitleName());
+            itemList.add(item);
+        });
+        return itemList;
+    } 
+    
+    public List<LookupItem> companyBranch() {
+        List<LookupItem> itemList = new LinkedList<>();
+        crudApi.findAll(CompanyBranch.class).forEach(data -> {
+            LookupItem item = new LookupItem();
+            item.setId(data.getId());
+            item.setItemName(data.getBranchName());
             itemList.add(item);
         });
         return itemList;

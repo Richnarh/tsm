@@ -8,7 +8,6 @@ package com.tsm.services;
 import com.dolphindoors.resource.enums.PaymentStatus;
 import com.dolphindoors.resource.jpa.CrudApi;
 import com.dolphindoors.resource.utilities.DateUtil;
-import com.tsm.dto.SalesInventory;
 import com.tsm.entities.BatchTransfer;
 import com.tsm.entities.Customer;
 import com.tsm.entities.Inventory;
@@ -28,11 +27,9 @@ import com.tsm.entities.ReturnItem;
 import com.tsm.entities.StockReturn;
 import com.tsm.entities.UnitMeasurement;
 import com.tsm.enums.LocType;
-import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.Query;
 
 /**
  *
@@ -183,7 +180,7 @@ public class InventoryService {
 //            inventory.setSellingPrice(transferItem.getStockReceiptItem().getSellingPrice());
 //            inventory.setStockReceiptItem(transferItem.getStockReceiptItem());
             inventory.setUserAccount(appSession.getCurrentUser());
-            inventory.setLastModifiedBy(appSession.getCurrentUser().getEmailAddress());
+//            inventory.setLastModifiedBy(appSession.getCurrentUser().getEmailAddress());
 //            inventory.setQuantity(transferItem.getQtyTransferred());
             crudApi.save(inventory);
         }

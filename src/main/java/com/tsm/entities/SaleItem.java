@@ -5,13 +5,10 @@
  */
 package com.tsm.entities;
 
-import com.dolphindoors.resource.enums.DeliveryStatus;
-import com.tsm.entities.system.UserAccountRecord;
+import com.tsm.entities.system.RefNo;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -22,21 +19,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sale_item")
-public class SaleItem extends UserAccountRecord implements Serializable{
+public class SaleItem extends RefNo implements Serializable{
     
     @Column(name = "quantity")
-    private Double quantity;
+    private Integer quantity;
 
     @Column(name = "unit_price")
     private Double unitPrice;
     
     @Column(name = "sub_total")
     private Double subTotal;
-    
-    public static final String _customer = "customer";
-    @JoinColumn(name = "customer")
-    @ManyToOne
-    private Customer customer;
     
     public static final String _sales = "sales";
     @JoinColumn(name = "sales", referencedColumnName = "id")
@@ -48,24 +40,9 @@ public class SaleItem extends UserAccountRecord implements Serializable{
     @ManyToOne
     private Inventory inventory;
     
-    public static final String _deliveryStatus = "deliveryStatus";
-    @Column(name = "delivery_status")
-    @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
-    
     @Column(name = "description")
     private String description;
     
-    public Customer getCustomer()
-    {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer)
-    {
-        this.customer = customer;
-    }
-
     public String getDescription()
     {
         return description;
@@ -76,14 +53,14 @@ public class SaleItem extends UserAccountRecord implements Serializable{
         this.description = description;
     }
 
-    public Double getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Double quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-
+    
     public Double getUnitPrice() {
         return unitPrice;
     }
@@ -116,14 +93,6 @@ public class SaleItem extends UserAccountRecord implements Serializable{
     public void setSales(Sales sales)
     {
         this.sales = sales;
-    }
-
-    public DeliveryStatus getDeliveryStatus() {
-        return deliveryStatus;
-    }
-
-    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
     }
 
     @Override

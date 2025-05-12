@@ -1,7 +1,6 @@
 package com.tsm.services;
 
 import com.dolphindoors.resource.jpa.CrudApi;
-import com.dolphindoors.resource.utilities.JUtils;
 import com.tsm.AppParam;
 import com.tsm.dto.CustomerDto;
 import com.tsm.dto.InventoryDto;
@@ -16,7 +15,6 @@ import com.tsm.entities.Packaging;
 import com.tsm.entities.PricePackage;
 import com.tsm.entities.Product;
 import com.tsm.entities.ProductType;
-import com.tsm.entities.UnitMeasurement;
 import com.tsm.mapper.ProductMapper;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -39,7 +37,6 @@ private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     
     public ProductDto save(ProductDto productDto, AppParam param) {
         log.info("saving products");
-        System.out.println("Saving....Products");
         Product product = mapper.toEntity(productDto, param);
         ProductDto dto = null;
         if(crudApi.save(product) != null){
@@ -244,6 +241,7 @@ private static final Logger log = LoggerFactory.getLogger(ProductService.class);
         Customer customer = crudApi.find(Customer.class, productTypeId);
         return mapper.toDto(customer);
     }
+    
     public boolean deleteCustomer(String customerId) {
         Customer customer = crudApi.find(Customer.class, customerId);
         return customer != null ? crudApi.delete(customer) : false;
@@ -259,7 +257,7 @@ private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     String queryString = "SELECT inv.product, p.product_name, inv.quantity, pp.selling_price, inv.default_package, pp.packaging \n" +
                             "FROM inventory inv \n" +
                             "JOIN price_package pp ON inv.id = pp.inventory \n" +
-                            "JOIN product p ON inv.product = p.id ";
+                            "JOIN product p ON inv.product = p.id";
         
         Query query = crudApi.getEm().createNativeQuery(queryString);
         
@@ -288,5 +286,16 @@ private static final Logger log = LoggerFactory.getLogger(ProductService.class);
         return crudApi.getEm().createQuery("SELECT e FROM Product e WHERE e.productName=:productName", Product.class)
                 .setParameter(Product._productName, productName)
                 .getResultStream().findFirst().orElse(null);
+    }
+    
+    public void createInventory(List<ProductDto> dtoList){
+        for (ProductDto dto : dtoList) {
+            Inventory inventory = new Inventory();
+            Product product = getProduct(dto.getProductName());
+            inventory.setProduct(product);
+            inventory.setQuantity(dto.getInvenQty());
+            inventory.genCode();
+            crudApi.save(inventory);
+        }
     }
 }

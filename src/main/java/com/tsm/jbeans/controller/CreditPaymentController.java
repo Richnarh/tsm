@@ -179,7 +179,6 @@ public class CreditPaymentController implements Serializable{
         creditPayment.setDataSource("Credit sales with receipt # "+selectedSale.getReceiptNumber());
         creditPayment.setUserAccount(appSession.getCurrentUser());
         creditPayment.setCompanyBranch(appSession.getCompanyBranch());
-        creditPayment.setLastModifiedBy(appSession.getCurrentUser().getFullname());
         
         List<CreditPayment> cpList = salesService.getCreditSales(compoundSale);
         double totalAmountPaid = cpList.stream().mapToDouble(CreditPayment::getAmountPaid).sum();

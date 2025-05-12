@@ -5,22 +5,19 @@
  */
 package com.tsm.dto;
 
-import com.dolphindoors.resource.enums.AccessLevel;
+import com.tsm.enums.Roles;
 
 /**
  *
  * @author Pascal
  */
 public class UserDto extends Base{
-    private String userId;
+    private String employee;
     private String employeeId;
-    private String employeeName;
-    private String phoneNumber;
-    private String email;
-    private String status;
-    private AccessLevel accessLevel;
-    private String frame;
+    private String userId;
+    private Roles roles;
     private String password;
+    private String companyId;
     
     public String getUserId() {
         return userId;
@@ -38,59 +35,35 @@ public class UserDto extends Base{
         this.employeeId = employeeId;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
+    public String getEmployee() {
+        return employee;
     }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
+    public void setEmployee(String employee) {
+        this.employee = employee;
     }
     
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
-    }
-
-    public void setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
-    }
-    
-    public String getFrame() {
-        return frame;
-    }
-
-    public void setFrame(String frame) {
-        this.frame = frame;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public Roles getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Roles roles) {
+        this.roles = roles;
     }
 }

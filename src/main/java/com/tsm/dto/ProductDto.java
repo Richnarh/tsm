@@ -11,6 +11,8 @@ public class ProductDto extends Base{
     private String productTypeId;
     private String productType;
     private String description;
+    
+    private Integer invenQty;
 
     public String getProductName() {
         return productName;
@@ -58,6 +60,14 @@ public class ProductDto extends Base{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getInvenQty() {
+        return invenQty;
+    }
+
+    public void setInvenQty(Integer invenQty) {
+        this.invenQty = invenQty;
     }
     
 }

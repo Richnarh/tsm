@@ -18,7 +18,7 @@ import javax.ws.rs.QueryParam;
 public class AppParam{
     @HeaderParam("userAccountId")
     private String userAccountId;
-    @HeaderParam("branchId")
+    @HeaderParam("companyId")
     private String companyBranchId;
     @QueryParam("paymentStatus")
     private String paymentStatus;
