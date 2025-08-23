@@ -112,7 +112,7 @@ public class LookupController {
         return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.employees());
     }
     @GET
-    @Path("/company-branch")
+    @Path("/companies")
     @Produces(MediaType.APPLICATION_JSON)
     public Response companyBranch(){
         return JaxResponse.ok(Msg.RECORD_FOUND, lookupService.companyBranch());

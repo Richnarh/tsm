@@ -19,6 +19,7 @@ public class ApiEndpoint{
     public static final String TAX_ENDPOINT = VERSION + "tax";
     public static final String PACKAGING_ENDPOINT = VERSION + "packaging";
     public static final String PRICE_PACKAGE_ENDPOINT = VERSION + "price-package";
+    public static final String CREDIT_PAYMENT = VERSION + "credit-payment";
     
     // Admin
     public static final String USER_ENDPOINT = VERSION + "users";

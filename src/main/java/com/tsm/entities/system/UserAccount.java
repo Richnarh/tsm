@@ -1,7 +1,5 @@
 package com.tsm.entities.system;
 
-import com.dolphindoors.resource.enums.Status;
-import com.dolphindoors.resource.jpa.BaseModel;
 import com.tsm.entities.Employee;
 import com.tsm.enums.Roles;
 import javax.persistence.Column;

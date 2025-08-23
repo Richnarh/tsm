@@ -15,6 +15,7 @@ public class SaleItemDto extends Base{
     private double subTotal;
     private String product;
     private String productPackage;
+    private String productPackageId;
     private String inventoryId;
     private String inventory;
     private String salesId;
@@ -99,5 +100,12 @@ public class SaleItemDto extends Base{
     public void setSales(String sales) {
         this.sales = sales;
     }
-    
+
+    public String getProductPackageId() {
+        return productPackageId;
+    }
+
+    public void setProductPackageId(String productPackageId) {
+        this.productPackageId = productPackageId;
+    }
 }

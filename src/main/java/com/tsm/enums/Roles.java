@@ -14,7 +14,7 @@ import com.dolphindoors.resource.utilities.MsgResolver;
 public enum Roles implements MsgResolver
 {
     SALES_MANAGER("SALES_MANAGER", "Sales Manager"),
-    CASHIER("CASHIER", "Cashier"),
+    SALES_REPRESENTATIVE("SALES_REPRESENTATIVE", "Sales Representative"),
     SUPER_ADMINISTRATOR("SUPER_ADMINISTRATOR", "Super Administrator");
     
     private final String label;

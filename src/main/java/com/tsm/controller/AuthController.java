@@ -14,8 +14,10 @@ import com.tsm.dto.AuthRequest;
 import com.tsm.dto.UserDto;
 import com.tsm.entities.Employee;
 import com.tsm.entities.system.UserAccount;
+import com.dolphindoors.resource.utilities.QryOperator;
 import com.tsm.mapper.EmployeeMapper;
 import com.tsm.services.EmployeeService;
+import com.dolphindoors.resource.jpa.QueryBuilder;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -34,25 +36,30 @@ import org.slf4j.LoggerFactory;
 @Path(ApiEndpoint.AUTH_ENDPOINT)
 public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
-    @Inject
-    private CrudApi crudApi;
+    @Inject private CrudApi crudApi;
     @Inject private EmployeeMapper mapper;
     @Inject private EmployeeService es;
 
     @POST
     @Path(value = "/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response doLogin(AuthRequest authRequest) {
+    public Response doLogin(AuthRequest authRequest) { 
         log.info("Signing in...");
         Employee employee = es.getEmployee(authRequest.getEmailAddress());
         String password = JUtils.hashPassword(authRequest.getPassword().toCharArray(), employee.getSalt());
-        UserAccount userAccount = crudApi.getEm().createQuery("SELECT e FROM UserAccount e WHERE e.employee =:employee AND e.password=:password", UserAccount.class)
-                    .setParameter(UserAccount._employee, employee)
-                    .setParameter(UserAccount._password, password)
-                    .getResultStream().findFirst().orElse(null);
         
-        if (userAccount != null) {
-            UserDto userDto = mapper.toDto(userAccount);
+//        UserAccount userAccount = crudApi.getEm().createQuery("SELECT e FROM UserAccount e WHERE e.employee =:employee AND e.password=:password", UserAccount.class)
+//                    .setParameter(UserAccount._employee, employee)
+//                    .setParameter(UserAccount._password, password)
+//                    .getResultStream().findFirst().orElse(null);
+        
+        UserAccount user = QueryBuilder.forClass(crudApi, UserAccount.class)
+                .where(UserAccount._employee, employee)
+                .where(UserAccount._password, password, QryOperator.AND)
+                .execute();
+        
+        if (user != null) {
+            UserDto userDto = mapper.toDto(user);
             return JaxResponse.ok(Msg.RECORD_FOUND, userDto);
         }
         return JaxResponse.error(Msg.FAILED, "Email/Password Incorrect");

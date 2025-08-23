@@ -32,7 +32,7 @@ public class RefNo extends BaseModel implements Serializable
             setRefNo(getRefNo());
         } else
         {
-            setRefNo(JUtils.generateCode());
+            setRefNo(JUtils.generate(7));
         }
     } 
 }

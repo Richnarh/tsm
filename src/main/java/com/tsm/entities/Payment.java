@@ -6,8 +6,7 @@
 package com.tsm.entities;
 
 import com.dolphindoors.resource.enums.PaymentMethod;
-import com.tsm.entities.Sales;
-import com.tsm.entities.system.UserAccountRecord;
+import com.tsm.entities.system.CompanyRecord;
 import com.tsm.enums.SaleSource;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +22,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "payment")
-public class Payment extends UserAccountRecord{
+public class Payment extends CompanyRecord{
     
     public static final String _paymentMethod = "paymentMethod";  
     @Column(name = "payment_method")

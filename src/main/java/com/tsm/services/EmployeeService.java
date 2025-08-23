@@ -29,7 +29,6 @@ public class EmployeeService {
     private static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
     @Inject private CrudApi crudApi;
     @Inject private EmployeeMapper mapper;
-    @Inject private DefaultService ds;
 
     public EmployeeDto save(EmployeeDto dto) {
         EmployeeDto empDto = null;

@@ -39,6 +39,10 @@ public class AppConfigController {
         AppConfigDto configDto = configService.save(dto);
         return JaxResponse.ok(Msg.UPDATED, configDto);
     }
+    @GET
+    public Response findAll(){
+        return JaxResponse.ok(configService.fetchAllConfigs());
+    }
     @PUT
     @Path("/{configName}/{configValue}")
     public Response updateByConfigName(@PathParam("configName") String configName, @PathParam("configValue") String configValue){ 
@@ -66,11 +70,7 @@ public class AppConfigController {
         return JaxResponse.ok(Msg.RECORD_FOUND,dto);
     }
     
-    @GET
-    @Path("/config-list")
-    public Response findAll(){
-        return JaxResponse.ok(configService.fetchAllConfigs());
-    }
+
     
     @DELETE
     @Path("/{configId}")

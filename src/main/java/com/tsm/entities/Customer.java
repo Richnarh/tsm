@@ -2,7 +2,7 @@ package com.tsm.entities;
 
 import com.dolphindoors.resource.enums.ClientType;
 import com.dolphindoors.resource.utilities.JUtils;
-import com.tsm.entities.system.UserAccountRecord;
+import com.tsm.entities.system.CompanyRecord;
 import com.tsm.enums.ClientSource;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "customer")
-public class Customer extends UserAccountRecord
+public class Customer extends CompanyRecord
 {
     public static final String _clientType = "clientType";
     @Column(name = "client_type")

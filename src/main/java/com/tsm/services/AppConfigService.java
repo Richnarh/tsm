@@ -5,6 +5,7 @@
  */
 package com.tsm.services;
 
+import com.dolphindoors.resource.jpa.QueryBuilder;
 import com.dolphindoors.resource.jpa.CrudApi;
 import com.tsm.dto.AppConfigDto;
 import com.tsm.entities.AppConfig;
@@ -25,7 +26,6 @@ public class AppConfigService {
     private static final Logger log = LoggerFactory.getLogger(AppConfigService.class);
     @Inject private CrudApi crudApi;
     @Inject private ConfigMapper mapper;
-    @Inject private DefaultService ds;
     
     public AppConfigDto save(AppConfigDto dto){
         log.debug("creating config");
@@ -58,13 +58,17 @@ public class AppConfigService {
     }
     
     public AppConfigDto findByConfigName(String configName) {
-        AppConfig appConfig = ds.getAppConfig(configName);
+        AppConfig appConfig = QueryBuilder.forClass(crudApi, AppConfig.class)
+                .where(AppConfig._configName, configName)
+                .execute();
         return mapper.toDto(appConfig);
     }
 
     public AppConfigDto update(String configName, String configValue) {
         AppConfigDto configDto = null;
-        AppConfig appConfig = ds.getAppConfig(configName);
+        AppConfig appConfig = QueryBuilder.forClass(crudApi, AppConfig.class)
+                .where(AppConfig._configName, configName)
+                .execute();
         appConfig.setConfigValue(configValue);
         if(crudApi.save(appConfig) != null){
             configDto = mapper.toDto(appConfig);

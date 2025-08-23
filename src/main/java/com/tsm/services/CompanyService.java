@@ -18,7 +18,6 @@ public class CompanyService {
     private static final Logger log = LoggerFactory.getLogger(CompanyService.class);
     @Inject private CrudApi crudApi;
     @Inject private CompanyMapper mapper;
-    @Inject private DefaultService ds;
     
     public CompanyBranchDto save(CompanyBranchDto dto) {
         CompanyBranchDto branchDto = null;

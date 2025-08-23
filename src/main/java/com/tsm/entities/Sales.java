@@ -9,8 +9,6 @@ import com.dolphindoors.resource.enums.PaymentMethod;
 import com.dolphindoors.resource.enums.PaymentStatus;
 import com.dolphindoors.resource.utilities.JUtils;
 import com.tsm.entities.system.CompanyRecord;
-import com.tsm.entities.system.UserAccountRecord;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,6 +47,9 @@ public class Sales extends CompanyRecord {
 
     @Column(name = "qty_purchased")
     private Double qtyPurchased;
+
+    @Column(name = "credit_sale")
+    private boolean creditSale;
     
     public static final String _paymentStatus = "paymentStatus"; 
     @Column(name = "payment_status")
@@ -135,6 +136,14 @@ public class Sales extends CompanyRecord {
 
     public void setTotalPayable(double totalPayable) {
         this.totalPayable = totalPayable;
+    }
+
+    public boolean isCreditSale() {
+        return creditSale;
+    }
+
+    public void setCreditSale(boolean creditSale) {
+        this.creditSale = creditSale;
     }
     
     public void genReceipt() {

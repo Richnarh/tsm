@@ -6,7 +6,7 @@
 package com.tsm.entities;
 
 import com.dolphindoors.resource.utilities.JUtils;
-import com.tsm.entities.system.UserAccountRecord;
+import com.tsm.entities.system.CompanyRecord;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "product")
-public class Product extends UserAccountRecord implements Serializable
+public class Product extends CompanyRecord implements Serializable
 {
     public static final String _productName = "productName";
     @Column(name = "product_name")

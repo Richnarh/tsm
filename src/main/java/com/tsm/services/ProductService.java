@@ -175,7 +175,7 @@ private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     
     // price packaging
     public PricePackagingDto save(PricePackagingDto packaging) {
-        log.debug("saving product type");
+        log.debug("saving pricepackage");
         PricePackage pd = mapper.toEntity(packaging);
         PricePackagingDto dto = null;
         if(crudApi.save(pd) != null){

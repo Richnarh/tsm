@@ -8,7 +8,6 @@ package com.tsm.services;
 import com.dolphindoors.resource.exception.DataNotFoundException;
 import com.dolphindoors.resource.jpa.CrudApi;
 import com.tsm.entities.system.CompanyBranch;
-import com.tsm.entities.system.UserAccount;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -19,21 +18,10 @@ import javax.inject.Inject;
 @Stateless
 public class AppService {
     @Inject private CrudApi crudApi;
-    @Inject private DefaultService ds;
-    
-    public UserAccount getUser(String userAccountId){
-        if(userAccountId == null){
-           throw new DataNotFoundException("userAccountId is required");
-        }
-        UserAccount user =  crudApi.find(UserAccount.class, userAccountId);
-        if(user == null){
-           throw new DataNotFoundException("User with the ID: "+userAccountId +" cannot be found!");
-        }
-        return user;
-    }
+
     public CompanyBranch getBranch(String branchId){
         if(branchId == null){
-           throw new DataNotFoundException("companyBranchId is required");
+           throw new DataNotFoundException("companyId is required");
         }
         CompanyBranch branch =  crudApi.find(CompanyBranch.class, branchId);
         if(branch == null){
@@ -43,7 +31,7 @@ public class AppService {
     }
     public String getBranchName(String branchId){
         if(branchId == null){
-           throw new DataNotFoundException("companyBranchId is required");
+           throw new DataNotFoundException("companyId is required");
         }
         CompanyBranch branch =  crudApi.find(CompanyBranch.class, branchId);
         if(branch == null){

@@ -22,6 +22,8 @@ public class SalesDto extends Base{
     private String notes;
     private String address;
     private PaymentMethod paymentMethod;
+    private boolean creditSale;
+    private LocalDateTime issuedDate;
     
     private CustomerDto customerDto;
     private List<SaleItemDto> saleItemList = new LinkedList<>();
@@ -130,4 +132,20 @@ public class SalesDto extends Base{
         this.totalPayable = totalPayable;
     }
 
+    public boolean isCreditSale() {
+        return creditSale;
+    }
+
+    public void setCreditSale(boolean creditSale) {
+        this.creditSale = creditSale;
+    }
+
+    public LocalDateTime getIssuedDate() {
+        return issuedDate;
+    }
+
+    public void setIssuedDate(LocalDateTime issuedDate) {
+        this.issuedDate = issuedDate;
+    }
+    
 }

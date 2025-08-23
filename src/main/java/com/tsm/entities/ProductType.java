@@ -5,7 +5,7 @@
  */
 package com.tsm.entities;
 
-import com.tsm.entities.system.UserAccountRecord;
+import com.tsm.entities.system.CompanyRecord;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "product_type")
-public class ProductType extends UserAccountRecord implements Serializable
+public class ProductType extends CompanyRecord implements Serializable
 {
     public static final String _productTypeName = "productTypeName";
     @Column(name = "product_type")

@@ -5,6 +5,7 @@
  */
 package com.tsm;
 
+import com.dolphindoors.resource.Pager;
 import com.dolphindoors.resource.utilities.DateUtil;
 import com.dolphindoors.resource.utilities.Pattern;
 import javax.ws.rs.DefaultValue;
@@ -15,9 +16,7 @@ import javax.ws.rs.QueryParam;
  *
  * @author Pascal
  */
-public class AppParam{
-    @HeaderParam("userAccountId")
-    private String userAccountId;
+public class AppParam implements Pager.Pageable{
     @HeaderParam("companyId")
     private String companyBranchId;
     @QueryParam("paymentStatus")
@@ -28,9 +27,11 @@ public class AppParam{
     private String toDate;
     @QueryParam("filterType")
     private String filterType;
+    @QueryParam("filter")
+    private String filter;
     
     @QueryParam("pageSize")
-    @DefaultValue("10")
+    @DefaultValue("20")
     private int pageSize;
     
     @QueryParam("pageNo")
@@ -38,14 +39,6 @@ public class AppParam{
     private int pageNo;
     
     private boolean ignorePagination;
-
-    public String getUserAccountId() {
-        return userAccountId;
-    }
-
-    public void setUserAccountId(String userAccountId) {
-        this.userAccountId = userAccountId;
-    }
 
     public String getCompanyBranchId() {
         return companyBranchId;
@@ -92,6 +85,63 @@ public class AppParam{
         this.filterType = filterType;
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public Pager getPager()
+    {
+        Pager pager = new Pager();
+        pager.setPageNo(pageNo);
+        pager.setPageSize(pageSize);
+        
+        return pager;
+    }
+    
+    @Override
+    public int getPageSize()
+    {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize)
+    {
+        this.pageSize = pageSize;
+    }
+
+    @Override
+    public int getPageNo()
+    {
+        if(pageNo == 0)
+        {
+            pageNo = 1;
+        }
+        return pageNo;
+    }
+    
+    @Override
+    public int getStart() {
+        return getPageNo() * pageSize;
+    }
+
+    public void setPageNo(int pageNo)
+    {
+        this.pageNo = pageNo;
+    }
+
+    public boolean isIgnorePagination()
+    {
+        return ignorePagination;
+    }
+
+    public void setIgnorePagination(boolean ignorePagination)
+    {
+        this.ignorePagination = ignorePagination;
+    }
 
     @Override
     public String toString()

@@ -61,4 +61,11 @@ public class SalesController {
         List<SaleItemDto> itemDtos = salesService.salesDetails(salesId);
         return JaxResponse.ok(itemDtos);
     }
+    
+    @GET
+    @Path("/credit-sales")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response creditSales(@BeanParam AppParam param){      
+       return JaxResponse.ok(Msg.RECORD_FOUND, salesService.getCreditSales(param));
+    }
 }

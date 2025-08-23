@@ -68,7 +68,7 @@ public class ProductMapper {
                 dto.setProductTypeId(inventory.getProduct().getProductType().getId());
             }
         }
-        dto.setValueDate(DateUtil.parseLocalDateString(inventory.getValueDate(), Pattern.ddMMyyyy));
+        dto.setValueDate(inventory.getValueDate());
         return dto;
     }
     
@@ -107,7 +107,7 @@ public class ProductMapper {
         dto.setProductType(product.getProductType() != null ? product.getProductType().getProductTypeName() : null);
         dto.setProductTypeId(product.getProductType() != null ? product.getProductType().getId() : null);
         dto.setReorderLevel(product.getReorderLevel());
-        dto.setValueDate(DateUtil.parseLocalDateString(product.getValueDate(), Pattern.ddMMyyyy));
+        dto.setValueDate(product.getValueDate());
         return dto;
     }
     
@@ -173,6 +173,7 @@ public class ProductMapper {
         packaging.setInventory(inventory);
         packaging.setPackaging(packaging1);
         packaging.setSellingPrice(dto.getSellingPrice());
+        packaging.setPackageQty(dto.getPackageQty());
         return packaging;
     }
     
@@ -185,6 +186,7 @@ public class ProductMapper {
         dto.setPackaging(packaging.getPackaging().getPackagingName());
         dto.setPackagingId(packaging.getPackaging().getId());
         dto.setSellingPrice(packaging.getSellingPrice());
+        dto.setPackageQty(packaging.getPackageQty());
         return dto;
     }
      

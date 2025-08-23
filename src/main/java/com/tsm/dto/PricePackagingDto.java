@@ -8,6 +8,7 @@ public class PricePackagingDto extends Base{
     private String packaging;
     private String packagingId;
     private Double sellingPrice;
+    private Integer packageQty;
     private String inventory;
     private String inventoryId;
 
@@ -49,6 +50,14 @@ public class PricePackagingDto extends Base{
 
     public void setInventoryId(String inventoryId) {
         this.inventoryId = inventoryId;
+    }
+
+    public Integer getPackageQty() {
+        return packageQty;
+    }
+
+    public void setPackageQty(Integer packageQty) {
+        this.packageQty = packageQty;
     }
     
 }

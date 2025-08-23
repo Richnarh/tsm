@@ -4,15 +4,18 @@ import com.dolphindoors.resource.exception.DataNotFoundException;
 import com.dolphindoors.resource.jpa.CrudApi;
 import com.dolphindoors.resource.utilities.JUtils;
 import com.tsm.AppParam;
+import com.tsm.dto.CreditPaymentDto;
 import com.tsm.dto.CustomerDto;
 import com.tsm.dto.SaleItemDto;
 import com.tsm.dto.SalesDto;
+import com.tsm.entities.CreditPayment;
 import com.tsm.entities.Customer;
 import com.tsm.entities.Inventory;
+import com.tsm.entities.PricePackage;
 import com.tsm.entities.SaleItem;
 import com.tsm.entities.Sales;
-import com.tsm.services.AppConfigService;
 import com.tsm.services.AppService;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +39,7 @@ public class SalesMapper {
         }else{
             sales.setSalesDate(LocalDateTime.now());
         }
+        sales.setCreditSale(dto.isCreditSale());
         sales.setPaymentMethod(dto.getPaymentMethod());
         sales.setTotalAmount(dto.getTotalAmount());
         sales.setTotalPayable(dto.getTotalPayable());
@@ -50,6 +54,7 @@ public class SalesMapper {
         SalesDto dto = new SalesDto();
         if (sales.getId() == null)return null;
         dto.setId(sales.getId());
+        dto.setCreditSale(sales.isCreditSale());
         dto.setCustomerId(sales.getCustomer().getId());
         dto.setCustomer(sales.getCustomer().getCustomerName() +" "+sales.getCustomer().getPhone());
         dto.setSalesDate(sales.getSalesDate());
@@ -57,6 +62,7 @@ public class SalesMapper {
         dto.setTotalAmount(sales.getTotalAmount());
         dto.setTotalPayable(sales.getTotalPayable());
         dto.setReceiptNumber(sales.getReceiptNumber());
+        dto.setIssuedDate(sales.getCreatedDate());
         return dto;
     }
     
@@ -104,10 +110,17 @@ public class SalesMapper {
         saleItem.setSubTotal(dto.getQuantity() * dto.getUnitPrice());
         saleItem.genCode();
         
-        int qtyRem = inventory.getQuantity() - dto.getQuantity();
-        inventory.setQuantitySold(dto.getQuantity());
-        inventory.setQuantity(qtyRem);
-        crudApi.save(inventory);
+//        int qtyRem = inventory.getQuantity() - dto.getQuantity();
+//        inventory.setQuantitySold(dto.getQuantity());
+//        inventory.setQuantity(qtyRem);
+//        crudApi.save(inventory);
+        
+        PricePackage pp = crudApi.find(PricePackage.class, dto.getProductPackageId());
+        if(pp != null){
+            int qtyRem = pp.getPackageQty() - dto.getQuantity();
+            pp.setPackageQty(qtyRem);
+            crudApi.save(pp);
+        }
         
         return saleItem;
     }
@@ -141,5 +154,37 @@ public class SalesMapper {
             dtoList.add(toDto(dto));
         }
         return dtoList;
+    }
+    
+
+    public CreditPayment toEntity(CreditPaymentDto paymentDto, AppParam param) {
+        CreditPayment payment = new CreditPayment();
+        payment.setCompanyBranch(as.getBranch(param.getCompanyBranchId()));
+        payment.setAmountPaid(paymentDto.getAmountPaid());
+        payment.setRound(paymentDto.getRound());
+        payment.genCode();
+        payment.setValueDate(LocalDate.now());
+        payment.setAmountRemaining(paymentDto.getAmountRemaining());
+        if(paymentDto.getSalesId() == null){
+            throw new DataNotFoundException("salesId cannot be null");
+        }
+        Sales sales = crudApi.find(Sales.class, paymentDto.getSalesId());
+        payment.setSales(sales);
+        return payment;
+    }
+
+    public CreditPaymentDto toDto(CreditPayment payment) {
+        CreditPaymentDto dto = new CreditPaymentDto();
+        dto.setId(payment.getId());
+        dto.setAmountPaid(payment.getAmountPaid());
+        dto.setRound(payment.getRound());
+        dto.setRefNo(payment.getRefNo());
+        dto.setAmountRemaining(payment.getAmountRemaining());
+        dto.setValueDate(payment.getValueDate());
+        if(payment.getSales() != null){
+            dto.setSales(payment.getSales().getReceiptNumber());
+            dto.setSalesId(payment.getSales().getId());
+        }
+        return dto;
     }
 }

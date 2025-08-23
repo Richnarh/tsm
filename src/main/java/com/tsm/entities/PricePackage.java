@@ -24,6 +24,10 @@ public class PricePackage extends BaseModel{
     @Column(name = "selling_price")
     private Double sellingPrice;
     
+    public static final String _packageQty = "packageQty";
+    @Column(name = "package_qty")
+    private Integer packageQty;
+    
     public static final String _inventory = "inventory";
     @JoinColumn(name = "inventory")
     @ManyToOne
@@ -56,6 +60,14 @@ public class PricePackage extends BaseModel{
 
     public void setSellingPrice(Double sellingPrice) {
         this.sellingPrice = sellingPrice;
+    }
+
+    public Integer getPackageQty() {
+        return packageQty;
+    }
+
+    public void setPackageQty(Integer packageQty) {
+        this.packageQty = packageQty;
     }
     
     @Override

@@ -5,13 +5,15 @@
  */
 package com.tsm.dto;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author richa
  */
 public class Base{
     private String id;
-    private String valueDate;
+    private LocalDate valueDate;
 
     public String getId() {
         return id;
@@ -21,11 +23,12 @@ public class Base{
         this.id = id;
     }
 
-    public String getValueDate() {
+    public LocalDate getValueDate() {
         return valueDate;
     }
 
-    public void setValueDate(String valueDate) {
+    public void setValueDate(LocalDate valueDate) {
         this.valueDate = valueDate;
     }
+    
 }

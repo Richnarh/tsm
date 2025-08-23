@@ -82,7 +82,7 @@ public class EmployeeMapper {
         dto.setOtherName(employee.getOtherName());
         dto.setPhoneNumber(employee.getPhoneNumber());
         dto.setStatus(employee.getStatus());
-        dto.setValueDate(DateUtil.parseLocalDateString(employee.getValueDate(), Pattern.ddMMyyyy));
+//        dto.setValueDate(DateUtil.parseLocalDateString(employee.getValueDate(), Pattern.ddMMyyyy));
         if(employee.getSurname() == null && employee.getOtherName() != null){
             dto.setFullName(employee.getFirstName() +" "+employee.getOtherName());
         }else if(employee.getOtherName() == null && employee.getSurname() != null){
@@ -149,7 +149,7 @@ public class EmployeeMapper {
             }
         }
         dto.setRoles(userAccount.getRoles());
-        dto.setValueDate(DateUtil.parseLocalDateString(userAccount.getValueDate(), Pattern._ddMMyyyy));
+//        dto.setValueDate(DateUtil.parseLocalDateString(userAccount.getValueDate(), Pattern._ddMMyyyy));
         return dto;
     }
 }
