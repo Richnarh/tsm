@@ -7,8 +7,6 @@ package com.tsm.mapper;
 
 import com.dolphindoors.resource.exception.DataNotFoundException;
 import com.dolphindoors.resource.jpa.CrudApi;
-import com.dolphindoors.resource.utilities.DateUtil;
-import com.dolphindoors.resource.utilities.Pattern;
 import com.dolphindoors.resource.utilities.JUtils;
 import com.tsm.dto.EmployeeDto;
 import com.tsm.dto.JobTitleDto;
@@ -137,7 +135,9 @@ public class EmployeeMapper {
         dto.setId(userAccount.getId());
         if(userAccount.getEmployee() != null){
             dto.setEmployeeId(userAccount.getEmployee().getId());
-            dto.setCompanyId(userAccount.getEmployee().getCompanyBranch().getId());
+            if(userAccount.getEmployee().getCompanyBranch() != null){
+                dto.setCompanyId(userAccount.getEmployee().getCompanyBranch().getId());
+            }
             if(userAccount.getEmployee().getSurname() == null && userAccount.getEmployee().getOtherName() != null){
                 dto.setEmployee(userAccount.getEmployee().getFirstName() +" "+userAccount.getEmployee().getOtherName());
             }else if(userAccount.getEmployee().getOtherName() == null && userAccount.getEmployee().getSurname() != null){
